@@ -9,9 +9,8 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-[--color-accent] text-[--color-ink] hover:bg-[--color-accent-soft]",
         light: "bg-[--color-paper] text-[--color-ink] hover:bg-white",
-        outline:
-          "border border-[--color-line-light]/40 text-[--color-paper] hover:bg-[--color-paper]/10",
-        ghost: "text-[--color-paper] hover:bg-[--color-paper]/10",
+        outline: "border border-line-light/40 text-[--color-paper] hover:bg-paper/10",
+        ghost: "text-[--color-paper] hover:bg-paper/10",
       },
       size: {
         sm: "h-9 px-4",

@@ -17,18 +17,12 @@ export default function HomePage() {
         בטבעיות בזמן הגלילה.
       */}
       <section className="relative flex min-h-[170vh] items-start">
-        <div className="fixed inset-0 -z-10 flex items-center justify-center overflow-hidden bg-gradient-to-b from-[--color-ink-soft] to-[--color-ink]">
-          {/* placeholder ויזואלי כדי שאפקט ה-fixed-background יהיה ניכר בעין; להחליף בתמונת סטודיו אמיתית */}
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(45deg, var(--color-accent) 0, var(--color-accent) 2px, transparent 2px, transparent 28px)",
-            }}
-          />
-          <span className="font-display relative text-sm uppercase tracking-[0.3em] text-neutral-500">
-            תמונת רקע — הסטודיו
-          </span>
+        <div
+          className="fixed inset-0 -z-10 bg-cover bg-center"
+          style={{ backgroundImage: "url(/images/hero-bg.jpg)" }}
+        >
+          <div className="absolute inset-0 bg-ink/55" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/70 to-ink" />
         </div>
         <Container className="relative z-10 py-24 pt-[calc(4rem+6rem)]">
           <p className="font-display text-sm uppercase tracking-[0.3em] text-[--color-accent]">
