@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
+import { SectionHeading } from "@/components/section-heading";
+import { ImagePlaceholder } from "@/components/image-placeholder";
 import { siteConfig } from "@/lib/config";
+import { services } from "@/lib/services-data";
+import { testimonials } from "@/lib/testimonials-data";
 
-/* דף בית — שלד ראשוני (Phase 1). הסקציות יתמלאו בתוכן ותמונות ב-Phase 2. */
 export default function HomePage() {
   return (
     <>
@@ -31,14 +34,144 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Placeholder לסקציות הבאות (Phase 2) */}
+      {/* שירותים */}
       <section className="bg-[--color-paper] py-20 text-[--color-ink]">
         <Container>
-          <h2 className="font-display text-3xl font-bold">בקרוב: שירותים, מוצרים נבחרים ואקדמיה</h2>
-          <p className="mt-4 max-w-2xl text-neutral-600">
-            שלד האתר הוקם. הסקציות (שירותים, מוצרים, אקדמיה, גלריה, המלצות) יתווספו בשלב הבא לפי
-            <span className="font-medium"> docs/DESIGN.md</span>.
-          </p>
+          <SectionHeading eyebrow="מה שאנחנו עושים" title="שירותי המספרה" />
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <div
+                key={service.slug}
+                className="rounded-lg border border-[--color-line-light] bg-white p-6"
+              >
+                <h3 className="font-display text-lg font-bold">{service.name}</h3>
+                <p className="mt-2 text-sm text-neutral-600">{service.description}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10">
+            <Link href="/services" className={buttonVariants({ variant: "outline" })}>
+              לכל השירותים
+            </Link>
+          </div>
+        </Container>
+      </section>
+
+      {/* CTA קביעת תור */}
+      <section className="bg-[--color-ink] py-20">
+        <Container className="flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
+          <div>
+            <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
+              מוכנים לתור הבא שלכם?
+            </h2>
+            <p className="mt-3 max-w-md text-neutral-300">
+              קביעת תור מתבצעת באפליקציית Restyle — מהירה, נוחה וזמינה 24/7.
+            </p>
+          </div>
+          <a href={siteConfig.booking.web} className={buttonVariants({ size: "lg" })}>
+            קביעת תור באפליקציה
+          </a>
+        </Container>
+      </section>
+
+      {/* אקדמיה */}
+      <section className="bg-[--color-paper] py-20 text-[--color-ink]">
+        <Container className="grid items-center gap-12 lg:grid-cols-2">
+          <div>
+            <SectionHeading
+              eyebrow="אקדמיית Restyle"
+              title="למדו את המקצוע מהמיטב"
+              description="קורסים מקצועיים בעיצוב שיער ועיצוב זקן, מההתחלה ועד רמת מומחה — בהדרכת הצוות המוביל שלנו."
+            />
+            <Link href="/academy" className={buttonVariants({ className: "mt-8" })}>
+              לכל הקורסים
+            </Link>
+          </div>
+          <ImagePlaceholder label="תמונת אקדמיה" className="aspect-[4/3] rounded-lg" />
+        </Container>
+      </section>
+
+      {/* אודות תקציר */}
+      <section className="bg-[--color-ink] py-20">
+        <Container className="grid items-center gap-12 lg:grid-cols-2">
+          <ImagePlaceholder label="תמונת הסטודיו" className="aspect-[4/3] rounded-lg lg:order-2" />
+          <div>
+            <SectionHeading
+              light
+              eyebrow="הסיפור שלנו"
+              title="יותר ממספרה"
+              description="Restyle נוסדה מתוך אמונה שעיצוב שיער הוא מקצוע — שילוב של אומנות, טכניקה ושירות אישי. הצוות שלנו מחויב לתוצאה ולחוויה בכל ביקור."
+            />
+            <Link href="/about" className={buttonVariants({ variant: "outline", className: "mt-8" })}>
+              קרא עוד עלינו
+            </Link>
+          </div>
+        </Container>
+      </section>
+
+      {/* גלריה */}
+      <section className="bg-[--color-paper] py-20 text-[--color-ink]">
+        <Container>
+          <SectionHeading eyebrow="עבודות נבחרות" title="גלריה" />
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ImagePlaceholder key={i} label="תמונת עבודה" className="aspect-square rounded-md" />
+            ))}
+          </div>
+          <div className="mt-10">
+            <Link href="/gallery" className={buttonVariants({ variant: "outline" })}>
+              לגלריה המלאה
+            </Link>
+          </div>
+        </Container>
+      </section>
+
+      {/* המלצות */}
+      <section className="bg-[--color-ink] py-20">
+        <Container>
+          <SectionHeading light eyebrow="מה אומרים עלינו" title="לקוחות מספרים" />
+          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+            {testimonials.map((t) => (
+              <figure
+                key={t.name}
+                className="rounded-lg border border-[--color-line-dark] bg-[--color-ink-soft] p-6"
+              >
+                <blockquote className="text-neutral-300">&ldquo;{t.quote}&rdquo;</blockquote>
+                <figcaption className="mt-4 font-display text-sm font-semibold text-white">
+                  {t.name}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* מיקום ושעות + צור קשר */}
+      <section className="bg-[--color-paper] py-20 text-[--color-ink]">
+        <Container className="grid gap-12 lg:grid-cols-2">
+          <div>
+            <SectionHeading eyebrow="בואו לבקר" title="מיקום ושעות פתיחה" />
+            <dl className="mt-8 space-y-3 text-neutral-700">
+              <div className="flex gap-3">
+                <dt className="font-medium">כתובת:</dt>
+                <dd>{siteConfig.contact.address || "יפורסם בקרוב"}</dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="font-medium">טלפון:</dt>
+                <dd>{siteConfig.contact.phone || "יפורסם בקרוב"}</dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="font-medium">שעות פעילות:</dt>
+                <dd>א&apos;–ה&apos; 09:00–20:00, ו&apos; 09:00–14:00</dd>
+              </div>
+            </dl>
+          </div>
+          <div>
+            <SectionHeading eyebrow="יש לכם שאלה?" title="צרו קשר" />
+            <Link href="/contact" className={buttonVariants({ className: "mt-8" })}>
+              לעמוד צור קשר
+            </Link>
+          </div>
         </Container>
       </section>
     </>

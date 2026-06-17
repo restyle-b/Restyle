@@ -56,21 +56,21 @@
 ---
 
 ## Phase 2 — אתר תדמית (Marketing)
-- [ ] T2.1 layout משותף ל-marketing
-- [ ] T2.2 Hero section (תמונה גדולה + CTA) — סגנון menspire
-- [ ] T2.3 סקציית שירותים בדף הבית
-- [ ] T2.4 סקציית "אודות" תקציר
-- [ ] T2.5 סקציית גלריה/לפני-אחרי
-- [ ] T2.6 סקציית המלצות/לקוחות
-- [ ] T2.7 סקציית CTA + מיקום/שעות
-- [ ] T2.8 עמוד אודות מלא
-- [ ] T2.9 עמוד שירותים מלא
-- [ ] T2.10 עמוד גלריה
-- [ ] T2.11 עמוד צור קשר + טופס (zod + הגנת ספאם)
-- [ ] T2.12 server action לשליחת טופס צור קשר (Resend)
-- [ ] T2.13 SEO: metadata לכל עמוד + OG images
-- [ ] T2.14 sitemap.xml + robots.txt
-- [ ] T2.15 בדיקת נגישות + Lighthouse לעמודים
+- [x] T2.1 layout משותף ל-marketing — נשאר ה-root layout הקיים; אין עדיין route group נפרד (shop/account/admin עדיין לא קיימים)
+- [x] T2.2 Hero section (תמונה גדולה + CTA) — סגנון menspire (placeholder gradient; תמונה אמיתית בהמשך)
+- [x] T2.3 סקציית שירותים בדף הבית
+- [x] T2.4 סקציית "אודות" תקציר
+- [x] T2.5 סקציית גלריה/לפני-אחרי (placeholder images)
+- [x] T2.6 סקציית המלצות/לקוחות (טקסטים placeholder)
+- [x] T2.7 סקציית CTA + מיקום/שעות
+- [x] T2.8 עמוד אודות מלא
+- [x] T2.9 עמוד שירותים מלא
+- [x] T2.10 עמוד גלריה (placeholder images)
+- [x] T2.11 עמוד צור קשר + טופס (zod + הגנת ספאם — honeypot)
+- [x] T2.12 server action לשליחת טופס צור קשר (Resend, עם fallback ללוג כש-RESEND_API_KEY חסר)
+- [x] T2.13 SEO: metadata לכל עמוד — ⏸️ OG images ממתינות לתמונות/לוגו אמיתיים
+- [x] T2.14 sitemap.xml + robots.txt
+- [ ] T2.15 בדיקת נגישות + Lighthouse לעמודים — ⏸️ ממתין לתמונות אמיתיות (alt text, ניגודיות סופית)
 
 ---
 

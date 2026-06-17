@@ -31,6 +31,7 @@ export const siteConfig = {
 /** פריטי הניווט הראשי (ראה docs/DESIGN.md). */
 export const navLinks = [
   { href: "/about", label: "אודות" },
+  { href: "/services", label: "שירותים" },
   { href: "/academy", label: "אקדמיה" },
   { href: "/shop", label: "חנות" },
   { href: "/locations", label: "מיקום ושעות" },
