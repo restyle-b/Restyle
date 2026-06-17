@@ -16,9 +16,9 @@ export default function HomePage() {
         menspire.com) — z-index שלילי כך שהסקציה הבאה (רקע אטום) מכסה אותו
         בטבעיות בזמן הגלילה.
       */}
-      <section className="relative flex min-h-[calc(100vh-4rem)] items-center">
+      <section className="relative flex min-h-[170vh] items-start">
         <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[--color-ink-soft] to-[--color-ink]" />
-        <Container className="relative z-10 py-24">
+        <Container className="relative z-10 py-24 pt-[calc(4rem+6rem)]">
           <p className="font-display text-sm uppercase tracking-[0.3em] text-[--color-accent]">
             מספרת פרימיום · אקדמיה · חנות
           </p>
