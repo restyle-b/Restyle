@@ -11,6 +11,7 @@ Next.js 15 · TypeScript · Tailwind + shadcn/ui · Supabase (Postgres + Auth) �
 - **[ROADMAP.md](./ROADMAP.md)** — התקדמות הפרויקט (מקור אמת, מתעדכן בכל סשן).
 - **[docs/TASKS.md](./docs/TASKS.md)** — פירוק מלא למשימות קטנות.
 - **[docs/SETUP.md](./docs/SETUP.md)** — הקמת חשבונות ומפתחות (מה צריך ממך).
+- **[docs/DESIGN.md](./docs/DESIGN.md)** — שפת עיצוב (בהשראת menspire.com).
 - **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** — תכנון טכני מלא.
 - **[.claude/skills/](./.claude/skills/)** — סקילים: planning · development · qa · security.
 
