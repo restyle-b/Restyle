@@ -86,8 +86,9 @@ docs/
 - **Course** — id, slug, title, description, priceAgorot, images[], published.
 - **Lesson** — id, courseId, title, content/videoRef, order.
 - **Enrollment** — userId, courseId, status, purchasedAt.
-- **Appointment** (עתידי) — userId, serviceId, startsAt, status.
 - **Payment** — id, orderId/enrollmentId, provider, externalRef, amountAgorot, status.
+
+> אין מודל תורים — קביעת תור מתבצעת באפליקציית Restyle הקיימת; האתר מפנה אליה בלבד.
 
 > כסף תמיד ב-**אגורות (integer)**. כל טבלה עם נתוני משתמש מקבלת **RLS**.
 

@@ -21,37 +21,37 @@
 
 ---
 
-## Phase 1 — Scaffolding ותשתית קוד
+## Phase 1 — Scaffolding ותשתית קוד 🔄
 ### 1A. אתחול
-- [ ] T1.1 `create-next-app` (App Router, TS, src/, ESLint)
-- [ ] T1.2 הגדרת `tsconfig` strict + path aliases (`@/*`)
-- [ ] T1.3 התקנת Tailwind + הגדרת `tailwind.config` + `globals.css`
-- [ ] T1.4 התקנת shadcn/ui + theme ראשוני
-- [ ] T1.5 Prettier + ESLint rules + `.editorconfig`
-- [ ] T1.6 הגדרת scripts: `dev/build/lint/typecheck/test`
+- [x] T1.1 אתחול Next.js 15 (App Router, TS, src/) — הוקם ידנית
+- [x] T1.2 `tsconfig` strict + path aliases (`@/*`) + noUncheckedIndexedAccess
+- [x] T1.3 Tailwind v4 + `globals.css` + `postcss.config`
+- [x] T1.4 תבנית shadcn (cva + cn) + primitives ראשוניים
+- [x] T1.5 Prettier + ESLint (next/core-web-vitals + typescript)
+- [x] T1.6 scripts: dev/build/lint/typecheck/test/format/db
 
 ### 1B. RTL ועברית
-- [ ] T1.7 `<html dir="rtl" lang="he">` ב-root layout
-- [ ] T1.8 חיבור פונט עברי (Heebo/Assistant) דרך `next/font`
-- [ ] T1.9 הגדרות Tailwind ל-RTL (logical properties)
+- [x] T1.7 `<html dir="rtl" lang="he">` ב-root layout
+- [x] T1.8 פונטים Heebo + Assistant דרך `next/font`
+- [x] T1.9 design tokens + RTL (logical properties כברירת מחדל)
 
 ### 1C. תשתיות
-- [ ] T1.10 `lib/env.ts` — אימות משתני סביבה ב-zod
-- [ ] T1.11 `.env.example` + תיעוד משתנים
-- [ ] T1.12 התקנת Prisma + `schema.prisma` ריק + חיבור Supabase
-- [ ] T1.13 `lib/db.ts` — Prisma client singleton
-- [ ] T1.14 migration ראשונה + בדיקת חיבור DB
-- [ ] T1.15 הגדרת Vitest + בדיקת sanity
+- [x] T1.10 `lib/env.ts` — אימות משתני סביבה ב-zod (חוזה)
+- [x] T1.11 `.env.example` + תיעוד משתנים
+- [x] T1.12 Prisma + `schema.prisma` (User+Role) — *חיבור Supabase ממתין למפתחות*
+- [x] T1.13 `lib/db.ts` — Prisma client singleton
+- [ ] T1.14 migration ראשונה + בדיקת חיבור DB — ⏸️ ממתין ל-DATABASE_URL
+- [x] T1.15 Vitest + בדיקת sanity (cn)
 - [ ] T1.16 הגדרת Playwright + בדיקת sanity
 
 ### 1D. עיצוב בסיס + CI
-- [ ] T1.17 ערכת עיצוב (צבעים/טיפוגרפיה/spacing) — design tokens
-- [ ] T1.18 Header + ניווט רספונסיבי
-- [ ] T1.19 Footer
-- [ ] T1.20 קומפוננטות UI בסיס (Button/Input/Card/Container)
-- [ ] T1.21 דף בית placeholder
-- [ ] T1.22 חיבור פרויקט ל-Vercel + preview deploy
-- [ ] T1.23 GitHub Actions: lint + typecheck + test על PR
+- [x] T1.17 ערכת עיצוב (צבעים/טיפוגרפיה) — design tokens ב-globals.css
+- [x] T1.18 Header + ניווט רספונסיבי
+- [x] T1.19 Footer
+- [x] T1.20 קומפוננטות UI: Button (cva) + Container — *Input/Card בהמשך לפי צורך*
+- [x] T1.21 דף בית (Hero + placeholder)
+- [ ] T1.22 חיבור פרויקט ל-Vercel + preview deploy — ⏸️ דורש פעולת משתמש
+- [x] T1.23 GitHub Actions: typecheck + lint + test + build על PR
 
 ---
 
@@ -161,12 +161,12 @@
 
 ---
 
-## Phase 9 — תורים/הזמנת שירות (עתידי)
-- [ ] T9.1 מודל Service + Appointment + זמינות
-- [ ] T9.2 לוח זמינות/יומן
-- [ ] T9.3 זרימת קביעת תור online
-- [ ] T9.4 ניהול תורים באדמין
-- [ ] T9.5 תזכורות מייל/SMS (אופציונלי)
+## Phase 9 — חיבור לאפליקציית Restyle (קביעת תור)
+> אין ניהול תורים באתר — קיימת אפליקציית Restyle. מפנים אליה.
+- [ ] T9.1 `lib/config.ts` — קישורי האפליקציה (App Store / Google Play / web)
+- [ ] T9.2 כפתור/CTA "קביעת תור" → אפליקציה (Hero + ניווט)
+- [ ] T9.3 סקציית "הורד את האפליקציה" בדף הבית
+- [ ] T9.4 badges של חנויות האפליקציות
 
 ---
 

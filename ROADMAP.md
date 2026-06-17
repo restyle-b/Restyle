@@ -13,10 +13,11 @@
 ניהול הזמנות, ממשק ניהול מתקדם, ותשתית תשלומים (Tranzila/HYP בעתיד).
 
 ## סיכום סטטוס נוכחי
-- **שלב נוכחי:** Phase 0 — תכנון ותשתית תיעוד.
-- **הבא בתור:** Phase 1 — Scaffolding הפרויקט.
+- **שלב נוכחי:** Phase 1 — Scaffolding (רוב המשימות הושלמו; נותרו תלויות-חשבונות).
+- **הבא בתור:** השלמת חיבורים חיים (Supabase/Vercel) ואז Phase 2 — אתר תדמית.
 - **פירוט משימות קטנות:** ראה [`docs/TASKS.md`](./docs/TASKS.md).
 - **הקמת חשבונות ומפתחות (מה צריך ממך):** ראה [`docs/SETUP.md`](./docs/SETUP.md).
+- **בדיקות:** typecheck + lint + test + build — ✅ ירוקים.
 
 ---
 
@@ -29,14 +30,16 @@
 - [x] ✅ מסמך ארכיטקטורה מפורט `docs/ARCHITECTURE.md`
 - [ ] ⬜ commit + push ראשוני (לפי הוראת המשתמש)
 
-## Phase 1 — Scaffolding ותשתית קוד ⬜
-- [ ] ⬜ אתחול Next.js 15 + TypeScript + Tailwind + shadcn/ui
-- [ ] ⬜ הגדרת RTL + עברית + פונטים
-- [ ] ⬜ ESLint + Prettier + tsconfig strict
-- [ ] ⬜ Prisma + חיבור Supabase + `lib/env.ts` (אימות zod)
-- [ ] ⬜ Vitest + Playwright skeleton
-- [ ] ⬜ Layout בסיסי (header/footer/ניווט) + ערכת עיצוב (צבעים/טיפוגרפיה)
-- [ ] ⬜ CI בסיסי (lint/typecheck/test) + deploy ל-Vercel
+## Phase 1 — Scaffolding ותשתית קוד 🔄
+- [x] ✅ אתחול Next.js 15 + TypeScript strict + Tailwind v4 + תבנית shadcn
+- [x] ✅ RTL + עברית + פונטים (Heebo/Assistant)
+- [x] ✅ ESLint + Prettier + tsconfig strict
+- [x] ✅ Prisma + `schema.prisma` (User) + `lib/env.ts` (zod) + `lib/db.ts`
+- [x] ✅ Vitest + בדיקת sanity
+- [x] ✅ Layout בסיסי (header/footer/ניווט) + design tokens + דף בית (Hero)
+- [x] ✅ CI (GitHub Actions: typecheck/lint/test/build)
+- [ ] ⏸️ חיבור Supabase (migration) + deploy ל-Vercel — ממתין למפתחות/חשבון
+- [ ] ⬜ Playwright skeleton
 
 ## Phase 2 — אתר תדמית (Marketing) ⬜
 - [ ] ⬜ דף בית (Hero, שירותים, אודות תקציר, גלריה, CTA)
@@ -82,9 +85,11 @@
 - [ ] ⬜ ניהול תוכן וגלריה (העלאה ל-R2)
 - [ ] ⬜ ניהול משתמשים/הרשאות
 
-## Phase 9 — תורים/הזמנת שירות (אופציונלי/עתידי) ⬜
-- [ ] ⬜ מודל תורים + זמינות
-- [ ] ⬜ קביעת תור online + ניהול באדמין
+## Phase 9 — חיבור לאפליקציית Restyle (קביעת תור) ⬜
+> אין ניהול תורים באתר — קיימת אפליקציית Restyle. ה-CTA "קביעת תור" מפנה אליה.
+- [ ] ⬜ קונפיג קישורי האפליקציה (App Store / Google Play / קישור web)
+- [ ] ⬜ כפתורי "קביעת תור" → אפליקציה לאורך האתר (Hero, ניווט, סקציה ייעודית)
+- [ ] ⬜ סקציית "הורד את האפליקציה" בדף הבית
 
 ## Phase 10 — הקשחה והשקה ⬜
 - [ ] ⬜ סקירת אבטחה מקיפה + security headers + rate limiting
@@ -100,3 +105,4 @@
 |-------|---------|-----------|
 | 2026-06-17 | Phase 0: בחירת סטאק ואירוח, יצירת 4 סקילים, CLAUDE.md, ROADMAP, מסמך ארכיטקטורה | commit/push ואז Phase 1 — Scaffolding |
 | 2026-06-17 | פירוק מלא למשימות קטנות (docs/TASKS.md) + מדריך הקמת חשבונות ומפתחות (docs/SETUP.md) | הקמת חשבונות Vercel/Supabase/R2 ע"י המשתמש, ואז Phase 1 |
+| 2026-06-17 | המותג = Restyle; הוסר ניהול תורים (הפניה לאפליקציית Restyle). Phase 1 Scaffolding: Next.js 15+TS+Tailwind v4, RTL+פונטים עבריים, header/footer/דף בית, Prisma+env+db, Vitest, CI. typecheck/lint/test/build ✅ | חיבור Supabase/Vercel (מפתחות מהמשתמש), Playwright, ואז Phase 2 |

@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+/* ── ערכת עיצוב Restyle (ראה docs/DESIGN.md) ── */
+@theme {
+  --color-ink: #0e0e0e; /* רקע ראשי כהה */
+  --color-ink-soft: #1a1a1a; /* רקע משני כהה */
+  --color-paper: #fafaf8; /* רקע בהיר חמים */
+  --color-line-dark: #2a2a2a;
+  --color-line-light: #e8e6e0;
+  --color-accent: #c9a227; /* זהב מעושן */
+  --color-accent-soft: #b08d57; /* ברונזה */
+
+  --font-sans:
+    var(--font-assistant), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-heebo), var(--font-assistant), sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: #e5e5e5;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* כותרות ראווה */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
