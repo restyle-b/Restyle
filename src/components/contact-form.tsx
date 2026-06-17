@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const inputClass =
-  "w-full rounded-md border border-[--color-line-dark] bg-[--color-ink-soft] px-4 py-2.5 text-white placeholder:text-neutral-500 focus:border-[--color-accent] focus:outline-none";
+  "w-full rounded-md border border-line-dark bg-ink-soft px-4 py-2.5 text-white placeholder:text-neutral-500 focus:border-accent focus:outline-none";
 
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -35,7 +35,7 @@ export function ContactForm() {
 
   if (status === "success") {
     return (
-      <p className="rounded-md border border-[--color-accent] bg-[--color-ink-soft] p-6 text-white">
+      <p className="rounded-md border border-accent bg-ink-soft p-6 text-white">
         ההודעה נשלחה בהצלחה! נחזור אליכם בקרוב.
       </p>
     );

@@ -19,7 +19,7 @@ export default function ServicesPage() {
         {services.map((service) => (
           <div
             key={service.slug}
-            className="rounded-lg border border-[--color-line-dark] bg-[--color-ink-soft] p-6"
+            className="rounded-lg border border-line-dark bg-ink-soft p-6"
           >
             <h2 className="font-display text-lg font-bold text-white">{service.name}</h2>
             <p className="mt-2 text-sm text-neutral-400">{service.description}</p>

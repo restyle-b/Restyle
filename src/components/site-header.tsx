@@ -5,7 +5,7 @@ import { navLinks, siteConfig } from "@/lib/config";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[--color-line-dark] bg-ink/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-line-dark bg-ink/80 backdrop-blur">
       <Container className="flex h-16 items-center justify-between">
         <Link href="/" className="font-display text-2xl font-extrabold tracking-wide text-white">
           {siteConfig.name}

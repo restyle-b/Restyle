@@ -10,7 +10,7 @@ export function ImagePlaceholder({ label, className }: { label: string; classNam
       role="img"
       aria-label={label}
       className={cn(
-        "flex items-center justify-center bg-gradient-to-br from-[--color-ink-soft] to-[--color-ink] text-center",
+        "flex items-center justify-center bg-gradient-to-br from-ink-soft to-ink text-center",
         className,
       )}
     >

@@ -5,6 +5,7 @@ export function SectionHeading({
   title,
   description,
   light,
+  center,
   className,
 }: {
   eyebrow?: string;
@@ -12,15 +13,17 @@ export function SectionHeading({
   description?: string;
   /** true כשהסקציה על רקע כהה (טקסט בהיר) */
   light?: boolean;
+  /** true למרכוז הכותרת (בהשראת בלוקים מלאי-רוחב ב-menspire.com) */
+  center?: boolean;
   className?: string;
 }) {
   return (
-    <div className={cn("max-w-2xl", className)}>
+    <div className={cn("max-w-2xl", center && "mx-auto text-center", className)}>
       {eyebrow && (
         <p
           className={cn(
             "font-display text-sm uppercase tracking-[0.3em]",
-            light ? "text-[--color-accent]" : "text-[--color-accent-soft]",
+            light ? "text-accent" : "text-accent-soft",
           )}
         >
           {eyebrow}
@@ -29,7 +32,7 @@ export function SectionHeading({
       <h2
         className={cn(
           "font-display mt-3 text-3xl font-bold sm:text-4xl",
-          light ? "text-white" : "text-[--color-ink]",
+          light ? "text-white" : "text-ink",
         )}
       >
         {title}

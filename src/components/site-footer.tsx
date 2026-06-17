@@ -4,7 +4,7 @@ import { navLinks, siteConfig } from "@/lib/config";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-[--color-line-dark] bg-[--color-ink-soft]">
+    <footer className="border-t border-line-dark bg-ink-soft">
       <Container className="grid gap-10 py-14 md:grid-cols-3">
         <div>
           <div className="font-display text-2xl font-extrabold tracking-wide text-white">
@@ -36,14 +36,14 @@ export function SiteFooter() {
           </p>
           <a
             href={siteConfig.booking.web}
-            className="mt-3 inline-block text-sm font-medium text-[--color-accent] hover:underline"
+            className="mt-3 inline-block text-sm font-medium text-accent hover:underline"
           >
             להורדת האפליקציה ←
           </a>
         </div>
       </Container>
 
-      <div className="border-t border-[--color-line-dark] py-6">
+      <div className="border-t border-line-dark py-6">
         <Container className="text-center text-xs text-neutral-500">
           © {new Date().getFullYear()} {siteConfig.name}. כל הזכויות שמורות.
         </Container>
