@@ -10,10 +10,17 @@
 
 ## 🚦 להתחיל מכאן בסשן הבא — קריטי!
 
-**מצב:** Phase 2 (אתר תדמית) ברובו מוכן. ה-DB עדיין לא מאומת בפועל — ה-sandbox
-ממשיך לחסום TCP ל-Postgres גם עם "Network Access: Full" (רק HTTPS עובד; ייתכן
-שזו מגבלת sandbox כללית ולא תלויה בהגדרה הזו). **אל תבזבז זמן בלהילחם בזה —
-המשך ב-Phase 2 / Phase 3 קוד-בלבד ותחזור לבדיקת ה-DB מתישהו עם `migrate status`.**
+**מצב:** Phase 2 (אתר תדמית) ברובו מוכן. Phase 3 (Supabase Auth) **מומש בקוד ואומת
+מול ה-API האמיתי של Supabase (HTTPS)** — ראה Session Log למטה. ה-DB עדיין לא מאומת
+בפועל — ה-sandbox ממשיך לחסום TCP ל-Postgres גם עם "Network Access: Full" (רק HTTPS
+עובד; ייתכן שזו מגבלת sandbox כללית ולא תלויה בהגדרה הזו). **אל תבזבז זמן בלהילחם בזה —
+המשך קוד-בלבד ותחזור לבדיקת ה-DB מתישהו עם `migrate status`.**
+
+**משימה ממתינה קריטית (תלויה ב-TCP או בהרצה ידנית של המשתמש):** יש להריץ ב-Supabase
+SQL Editor את `prisma/migrations/20260617010000_auth_sync_and_rls/migration.sql`
+(trigger שמסנכרן `auth.users`→`public.users` + RLS) — **בלעדיו הרשמה אמיתית תיכשל
+בשקט מבחינת טבלת `users` שלנו** (ה-auth עצמו ב-Supabase יעבוד, אבל השורה ב-`public.users`
+לא תיווצר). אחרי הרצה: `npx prisma migrate resolve --applied 20260617010000_auth_sync_and_rls`.
 
 ### מה כבר קיים ב-container (לא צריך לשחזר):
 - `.env.local` מלא עם 4 הערכים מ-Supabase: `NEXT_PUBLIC_SUPABASE_URL`,
@@ -96,11 +103,23 @@
 - [x] ✅ SEO בסיסי: metadata לכל עמוד, sitemap.xml, robots.txt
 - [ ] ⬜ OG images, נגישות מלאה (axe/Lighthouse) — ממתין לתמונות אמיתיות
 
-## Phase 3 — אימות ואזור אישי ⬜
-- [ ] ⬜ Supabase Auth (אימייל/OTP) + הרשמה/התחברות/איפוס
-- [ ] ⬜ middleware הגנת נתיבים + ניהול roles (user/admin)
-- [ ] ⬜ דשבורד אזור אישי (פרופיל, הזמנות, קורסים, תורים)
-- [ ] ⬜ RLS ב-Supabase + סקירת security
+## Phase 3 — אימות ואזור אישי 🔄
+> תכנון מלא: [`docs/features/auth.md`](./docs/features/auth.md)
+- [x] ✅ תכנון (planning skill): מודל נתונים, חוזה API, UI, אבטחה, קריטריוני קבלה
+- [x] ✅ התקנת `@supabase/supabase-js` + `@supabase/ssr`
+- [x] ✅ `src/lib/supabase/{server,client,middleware}.ts`
+- [x] ✅ `middleware.ts` (root) — חידוש session + הגנת `/account`
+- [x] 🔄 SQL: trigger `handle_new_user` + RLS על `public.users` — קובץ מוכן
+      (`prisma/migrations/20260617010000_auth_sync_and_rls/`), **לא הורץ עדיין** —
+      TCP חסום ב-sandbox; להריץ ידנית ב-Supabase SQL Editor (כמו ה-migration הקודמת)
+      ואז `npx prisma migrate resolve --applied 20260617010000_auth_sync_and_rls`.
+- [x] ✅ `src/lib/auth-schema.ts` + `src/server/actions/auth.ts` (signUp/signIn/signOut/reset)
+- [x] ✅ עמודים: `/login` `/register` `/forgot-password` `/reset-password` `/account`
+- [x] ✅ `src/app/auth/callback/route.ts`
+- [x] ✅ קישור התחברות/אזור אישי ב-`site-header.tsx`
+- [x] ✅ סקיל security — נמצא ותוקן open-redirect דרך `?next=` (נוסף `safeRedirectPath`),
+      נוסף honeypot אנטי-ספאם לטופס הרשמה
+- [x] ✅ QA מול קריטריוני הקבלה — ראה Session Log למטה לפירוט מה אומת ומה ממתין ל-TCP/production
 
 ## Phase 4 — חנות (E-commerce) ⬜
 - [ ] ⬜ מודל מוצרים/קטגוריות/מלאי (Prisma)
@@ -159,3 +178,4 @@
 | 2026-06-17 | המשתמש דיווח שלא ראה את האפקט בפריוויו — אותר ותוקן באג: גובה ה-Hero היה מדויק ל-viewport אחד כך שלא היה מרחק גלילה בו ה-pinning ניכר; שונה ל-`min-h-[170vh]`. נוסף רקע תמונה אמיתית (`public/images/hero-bg.jpg`, תמונת המשתמש) במקום placeholder. התגלה ותוקן **באג קריטי ב-Tailwind v4**: שילוב syntax של ערך שרירותי בסוגריים על טוקן `@theme` רשום + modifier שקיפות (למשל `bg-[--color-ink]/55`) מקמפל ל-CSS לא תקין (`color-mix` בלי `var()`) שהדפדפן מתעלם ממנו בשקט — תוקן בכל הקובץ ע"י מעבר לשם הטוקן הרשום בלי סוגריים (`bg-ink/55` וכו') ב-`page.tsx`, `button.tsx`, `site-header.tsx`. typecheck/lint/test/build ✅, אומת ויזואלית עם Playwright — הטקסט קריא על הרקע הכהה וה-pinning ניכר בבירור. | Push, לבדוק עם המשתמש מול ה-preview, ואז Phase 2 שאריות / Phase 3 |
 | 2026-06-17 | המשתמש שלח הקלטת מסך של menspire.com וביקש לסגנן את דף הבית בהשראתו (הוחלט בתיאום: דף הבית בלבד, לא סקציות תוכן חדשות). דף הבית עוצב מחדש: כותרות ממורכזות, באנרי תמונה מלאי-רוחב לסקציות אקדמיה/אודות, פינות חדות (rounded-none) בכרטיסי שירותים/גלריה/באנרים, כפתורי outline עם uppercase+tracking, כרטיסי שירותים/המלצות בגריד עם border דק. **בתהליך נתגלה באג Tailwind v4 חריף יותר ממה שזוהה קודם**: `bg-[--color-x]` (גם בלי modifier שקיפות!) מקמפל ל-`background-color:--color-x` לא תקין (חסר `var()`) — גרם לכל הסקציות עם רקע אטום לאבד את הרקע בשקט, וה-Hero ה-fixed "מדמם" דרכן בכל הדף. **תוקן גלובלית**: כל מופע `[--color-x]` בקוד הומר לשם הטוקן הרשום (`x`) ב-8 קבצים (`page.tsx`, `section-heading.tsx`, `site-header.tsx`, `button.tsx`, `contact-form.tsx`, `services/page.tsx`, `image-placeholder.tsx`, `site-footer.tsx`). typecheck/lint/test/build ✅, אומת ויזואלית עם Playwright בכמה עומקי גלילה — כל הרקעים אטומים כצפוי, אין דימום, העיצוב החדש תקין. | Push, לבדוק עם המשתמש מול ה-preview |
 | 2026-06-17 | המשתמש ביקש "כפתורים עם מראה מודרני" — עודכן `buttonVariants` ב-`button.tsx` (קומפוננטה משותפת לכל האתר): hover lift עדין (`-translate-y-0.5`) + shadow מוגבר, מעבר חלק (`transition-all duration-200`), ו-`active:scale-[0.97]` למשוב לחיצה טקטילי. typecheck/lint/test/build ✅, אומת ויזואלית עם Playwright (צילום מסך לפני/אחרי hover). הסשן מסתיים כאן לפי בקשת המשתמש — תיעוד מלא למעבר לסשן חדש. | לפתוח סשן חדש → לפי הצ'קליסט "🚦 להתחיל מכאן" למעלה (עדיין רלוונטי, אין שינוי במצב ה-DB/env). להמשיך Phase 2 שאריות (OG images, a11y/Lighthouse — תלוי תמונות אמיתיות) ואז Phase 3 — Supabase Auth. PR #1 פתוח (draft) ומחובר ל-Vercel preview; כל ה-pushes האחרונים deployed בהצלחה. |
+| 2026-06-17 | **Phase 3 — Supabase Auth מומש במלואו (קוד)**, לפי תהליך מלא planning→development→security→qa: תכנון מתועד ב-`docs/features/auth.md`. הותקנו `@supabase/supabase-js`+`@supabase/ssr`. נוצרו `src/lib/supabase/{server,client,middleware}.ts`, `middleware.ts` (root, מגן על `/account/**`), `src/lib/auth-schema.ts` (zod), `src/server/actions/auth.ts` (signUp/signIn/signOut/requestPasswordReset/updatePassword — כולם בודקים session אמיתי בשרת, לעולם לא סומכים על קלט קליינט), עמודי `/login` `/register` `/forgot-password` `/reset-password` `/account` (RTL, עברית, תבנית react-hook-form+zod זהה לטופס צור קשר), `src/app/auth/callback/route.ts`, וקישור התחברות/אזור אישי ב-`site-header.tsx`. נכתב SQL migration (`prisma/migrations/20260617010000_auth_sync_and_rls/`) עם trigger `handle_new_user` (מסנכרן auth.users→public.users) ו-RLS על `public.users` — **טרם הורץ** (TCP חסום, כמו בכל הסשנים). **סקירת security מצאה ותיקנה**: open-redirect דרך פרמטר `?next=` (נוסף `safeRedirectPath` ב-`lib/utils.ts`, מופעל ב-login-form וב-callback route) + נוסף honeypot אנטי-ספאם לטופס הרשמה. **QA**: typecheck/lint/test/build ✅; אומת מול ה-API האמיתי של Supabase (HTTPS עובד גם כש-TCP חסום) — signUp/signIn/forgot-password נבדקו בפועל מול הפרויקט (כולל פגיעה אמיתית ב-rate-limit של Supabase, שמוכיחה אינטגרציה אמיתית); `/account` ללא session מפנה 307 ל-`/login?next=/account` (אומת ב-curl); RTL+מובייל/דסקטופ אומתו ויזואלית ב-Playwright בכל 4 העמודים החדשים. **לא אומת** (תלוי TCP/production): כתיבה בפועל לטבלת `public.users` דרך ה-trigger, ומסע משתמש מלא הרשמה→אימות מייל→התחברות→logout מקצה-לקצה (כי signUp האחרון נחסם ב-rate-limit). | להריץ את ה-SQL migration ב-Supabase SQL Editor (קריטי — בלעדיו `public.users` לא יתעדכן בהרשמה אמיתית), ואז `prisma migrate resolve --applied`. להמשיך Phase 2 שאריות (OG images/Lighthouse — תלוי תמונות), ולשקול Phase 4 (חנות) כהמשך טבעי. ממתין להחלטת המשתמש לגבי commit/push. |
