@@ -303,7 +303,8 @@
       "emailInvalid": "כתובת אימייל לא תקינה",
       "messageTooShort": "ההודעה קצרה מדי",
       "invalidInput": "קלט לא תקין",
-      "sendFailed": "שליחת ההודעה נכשלה, נסו שוב מאוחר יותר"
+      "sendFailed": "שליחת ההודעה נכשלה, נסו שוב מאוחר יותר",
+      "rateLimited": "יותר מדי בקשות — נסו שוב בעוד דקה"
     }
   },
   "contactActions": {

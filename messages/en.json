@@ -303,7 +303,8 @@
       "emailInvalid": "Invalid email address",
       "messageTooShort": "Message is too short",
       "invalidInput": "Invalid input",
-      "sendFailed": "Failed to send the message, please try again later"
+      "sendFailed": "Failed to send the message, please try again later",
+      "rateLimited": "Too many requests — please try again in a minute"
     }
   },
   "contactActions": {

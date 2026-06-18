@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { createContactSchema } from "@/lib/contact-schema";
 import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export type ContactActionResult = { ok: true } | { ok: false; error: string };
 
@@ -29,16 +30,22 @@ export async function submitContactForm(
     return { ok: true };
   }
 
+  // rate limiting לפי IP — מניעת ספאם/הפצצת מיילים (5 בקשות לדקה)
+  const ip = await getClientIp();
+  if (!rateLimit(`contact:${ip}`, 5, 60_000).ok) {
+    return { ok: false, error: t("rateLimited") };
+  }
+
   const { name, email, phone, message } = parsed.data;
 
-  // Resend לא הוקם עדיין (ראה ROADMAP) — רושמים בלוג השרת עד לחיבור בפועל.
+  // Resend לא הוקם עדיין (ראה ROADMAP). לא רושמים PII ללוג הפרודקשן —
+  // פרטי ההודעה נחשפים בלוג רק בפיתוח, לצורך דיבוג מקומי.
   if (!process.env.RESEND_API_KEY) {
-    console.info("[contact] התקבלה הודעת צור קשר (Resend לא מוגדר):", {
-      name,
-      email,
-      phone,
-      message,
-    });
+    if (process.env.NODE_ENV === "development") {
+      console.info("[contact] (dev) התקבלה הודעת צור קשר:", { name, email, phone, message });
+    } else {
+      console.info("[contact] התקבלה הודעת צור קשר אך Resend לא מוגדר — ההודעה לא נשלחה");
+    }
     return { ok: true };
   }
 

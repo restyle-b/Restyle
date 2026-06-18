@@ -8,9 +8,12 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * מאשרת שנתיב הפניה (מ-query param כמו `?next=`) הוא נתיב פנימי יחסי בלבד —
- * מונע open redirect (למשל `?next=https://evil.com` או `?next=//evil.com`).
+ * מונע open redirect. חוסם:
+ *  - URL מוחלט (`https://evil.com`)
+ *  - protocol-relative (`//evil.com`)
+ *  - עקיפת backslash (`/\evil.com`) שדפדפנים מפרשים כ-`//evil.com`
  */
 export function safeRedirectPath(path: string | null | undefined, fallback: string): string {
-  if (!path || !path.startsWith("/") || path.startsWith("//")) return fallback;
+  if (!path || path[0] !== "/" || path[1] === "/" || path[1] === "\\") return fallback;
   return path;
 }

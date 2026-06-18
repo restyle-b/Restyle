@@ -118,6 +118,19 @@ interface PaymentProvider {
 - ולידציית zod על כל קלט; Prisma פרמטרי (אנטי-injection); סניטציית XSS.
 - תאימות פרטיות (חוק הגנת הפרטיות הישראלי): מדיניות פרטיות, מינימיזציה, זכות מחיקה.
 
+### 7.1 ממצאי Pentest שטופלו (2026-06-18)
+- **הסלמת הרשאות (HIGH):** ה-policy `users_update_own` איפשרה למשתמש לעדכן `role` לעצמו דרך
+  PostgREST. נוסף trigger `prevent_role_change` (migration `20260618120000`) שמאפס שינוי `role`
+  לכל מי שאינו `service_role`. ⚠️ דורש הרצה ידנית ב-Supabase SQL Editor.
+- **Security headers (MED):** הוגדרו ב-`next.config.ts` — CSP, HSTS, X-Frame-Options: DENY,
+  X-Content-Type-Options, Referrer-Policy, Permissions-Policy. הגופנים מוגשים עצמית (next/font).
+- **Rate limiting (MED):** `lib/rate-limit.ts` (in-memory, best-effort) על טופס צור-קשר (5/דק'),
+  signin (10/דק'), signup (5/דק'), reset (3/דק', שקט). לפרודקשן: לעבור ל-Vercel KV / Upstash.
+- **לוג PII (MED):** טופס צור-קשר כבר לא רושם שם/מייל/טלפון/הודעה ללוג הפרודקשן (רק ב-dev).
+- **Host header poisoning (MED):** `getOrigin` ב-auth מאמת host מול allowlist (דומיין פרודקשן /
+  *.vercel.app / localhost) ונופל ל-`siteConfig.url`, למניעת הרעלת קישורי איפוס סיסמה.
+- **Open-redirect backslash (LOW):** `safeRedirectPath` חוסם כעת גם `/\evil.com` (+בדיקה).
+
 ---
 
 ## 8. בדיקות ו-CI
