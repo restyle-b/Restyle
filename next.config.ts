@@ -40,6 +40,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // לא לחשוף את הטכנולוגיה/גרסה (fingerprinting)
+  poweredByHeader: false,
   images: {
     // אחסון תמונות ב-Cloudflare R2 (יוגדר ב-Phase 4). דומיין ה-CDN יתווסף כאן.
     remotePatterns: [

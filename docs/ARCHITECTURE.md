@@ -156,6 +156,21 @@ interface PaymentProvider {
   (URL חיצוני ו-169.254.169.254 → 400, `remotePatterns` ריק); React escaping על שם המשתמש
   המוצג ב-`/account` (אין stored XSS).
 
+### 7.4 סבב Pentest רביעי — מבוסס מחקר CVE עדכני (2026-06-18)
+מחקר באתרי Next.js/Vercel הרשמיים + OWASP. אומת מול הקוד והרצה בפועל:
+- **גרסת Next מול כל ה-CVEs הידועים — מאומת מוגן:** אנו על **15.5.19** (העדכני ביותר בקו 15.5).
+  - CVE-2025-29927 (middleware auth bypass דרך `x-middleware-subrequest`) — תוקן ב-15.2.3.
+    **נבדק בפועל:** שליחת ה-header (כולל chained) ל-`/account` עדיין מחזירה 307 ✅.
+  - CVE-2025-66478 "React2Shell" (RCE, CVSS 10.0) — תוקן ב-15.5.7.
+  - CVE-2025-55183/55184/67779 (Source Code Exposure + DoS) — תוקן ב-15.5.9.
+  - Next.js May 2026 release (13 advisories: middleware/proxy bypass, DoS, SSRF, cache
+    poisoning, XSS, CVE-2026-23870) — תוקן ב-15.5.18. אנו על 15.5.19 → מכוסה.
+  - ⚠️ הקו 15.5 הוא תחזוקה; ה-latest הוא 16.2.x. לתכנן הגירה ל-16.x להמשך תמיכת אבטחה.
+- **X-Powered-By (LOW):** נחשף `Next.js` (fingerprinting) → בוטל ב-`poweredByHeader: false`.
+- **נבדק ונקי:** אין source maps בפרודקשן (404); path traversal (גולמי+מקודד) → 404;
+  long path (8k) → 404; TRACE → 500 גנרי בלי stack ללקוח; שיטות HTTP לא צפויות על `/account`
+  → 307 (ההגנה חלה על כל ה-methods); אין X-Powered-By אחרי התיקון.
+
 ---
 
 ## 8. בדיקות ו-CI
