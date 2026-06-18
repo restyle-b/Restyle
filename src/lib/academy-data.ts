@@ -1,38 +1,12 @@
 /**
- * קורסי אקדמיית ReStyle — תוכן בלבד (ללא הרשמה/רכישה — זו הרחבה עתידית).
- * מוצג בעמוד /academy ובסקציית האקדמיה בדף הבית.
+ * סלאגים של קורסי אקדמיית ReStyle (תוכן בלבד — ללא הרשמה/רכישה, זו הרחבה עתידית).
+ * שם/תיאור/משך/רמה מתורגמים ב-messages.academyData.
  */
-export const courses = [
-  {
-    slug: "barbering-foundations",
-    name: "יסודות הספרות",
-    description:
-      "קורס בסיס למתחילים — אחיזת כלים, טכניקות גזירה, פייד וגימור. הדרך הנכונה להיכנס למקצוע.",
-    duration: "8 שבועות",
-    level: "מתחילים",
-  },
-  {
-    slug: "advanced-fades",
-    name: "פייד וטכניקות מתקדמות",
-    description:
-      "שכלול טכניקות הפייד, מעברים חלקים, עיצוב קווים ועבודה עם מכונה ותער ברמה מקצועית.",
-    duration: "4 שבועות",
-    level: "מתקדמים",
-  },
-  {
-    slug: "beard-design",
-    name: "עיצוב זקן",
-    description:
-      "עיצוב וגילוח זקן, עבודת תער קלאסית, חימום מגבת חמה וטיפוח עור — חוויית הברבר המלאה.",
-    duration: "3 שבועות",
-    level: "כל הרמות",
-  },
-  {
-    slug: "masterclass",
-    name: "מאסטרקלאס מקצועי",
-    description:
-      "סדנת מומחים אינטנסיבית בהדרכת הצוות המוביל של ReStyle — טרנדים, ניהול לקוח ומיתוג אישי.",
-    duration: "סדנה מרוכזת",
-    level: "מקצוענים",
-  },
+export const courseSlugs = [
+  "barbering-foundations",
+  "advanced-fades",
+  "beard-design",
+  "masterclass",
 ] as const;
+
+export type CourseSlug = (typeof courseSlugs)[number];

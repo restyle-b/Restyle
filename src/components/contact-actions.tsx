@@ -1,8 +1,14 @@
-import { contactLinks } from "@/lib/contact-links";
+import { useLocale, useTranslations } from "next-intl";
+import { getContactLinks } from "@/lib/contact-links";
+import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 /** שורת לחצני יצירת קשר מהירה — וייז, טלפון, וואטסאפ. */
 export function ContactActions({ className }: { className?: string }) {
+  const t = useTranslations("contactActions");
+  const locale = useLocale() as Locale;
+  const contactLinks = getContactLinks(t("whatsappMessage"), locale);
+
   return (
     <div className={cn("flex flex-wrap gap-3", className)}>
       <a
@@ -12,7 +18,7 @@ export function ContactActions({ className }: { className?: string }) {
         className="inline-flex items-center gap-2 rounded-lg border border-line-dark bg-ink-soft px-4 py-2 text-sm font-medium text-white transition-colors hover:border-accent"
       >
         <WazeIcon className="h-5 w-5 text-accent" />
-        ניווט בוייז
+        {t("waze")}
       </a>
 
       <a
@@ -20,7 +26,7 @@ export function ContactActions({ className }: { className?: string }) {
         className="inline-flex items-center gap-2 rounded-lg border border-line-dark bg-ink-soft px-4 py-2 text-sm font-medium text-white transition-colors hover:border-accent"
       >
         <PhoneIcon className="h-5 w-5 text-accent" />
-        התקשרו אלינו
+        {t("call")}
       </a>
 
       <a
@@ -30,7 +36,7 @@ export function ContactActions({ className }: { className?: string }) {
         className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
       >
         <WhatsAppIcon className="h-5 w-5" />
-        וואטסאפ
+        {t("whatsapp")}
       </a>
     </div>
   );

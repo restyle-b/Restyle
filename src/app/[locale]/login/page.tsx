@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { Link } from "@/i18n/navigation";
 import { AuthCard } from "@/components/auth/auth-card";
 import { LoginForm } from "@/components/auth/login-form";
 
@@ -19,9 +20,9 @@ export default function LoginPage() {
         <LoginForm />
       </Suspense>
       <p className="mt-4 text-center text-sm">
-        <a href="/forgot-password" className="text-accent hover:underline">
+        <Link href="/forgot-password" className="text-accent hover:underline">
           שכחת סיסמה?
-        </a>
+        </Link>
       </p>
     </AuthCard>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 /** מצב הנגישות הנשמר ב-localStorage */
 type A11yState = {
@@ -67,16 +69,17 @@ function applyState(state: A11yState) {
 
 type ToggleKey = Exclude<keyof A11yState, "fontScale">;
 
-const TOGGLES: { key: ToggleKey; label: string }[] = [
-  { key: "contrast", label: "ניגודיות גבוהה" },
-  { key: "grayscale", label: "גווני אפור" },
-  { key: "links", label: "הדגשת קישורים" },
-  { key: "readable", label: "פונט קריא" },
-  { key: "noMotion", label: "עצירת אנימציות" },
-  { key: "bigCursor", label: "סמן גדול" },
+const TOGGLES: { key: ToggleKey }[] = [
+  { key: "contrast" },
+  { key: "grayscale" },
+  { key: "links" },
+  { key: "readable" },
+  { key: "noMotion" },
+  { key: "bigCursor" },
 ];
 
 export function AccessibilityMenu() {
+  const t = useTranslations("accessibilityMenu");
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<A11yState>(DEFAULT_STATE);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -118,38 +121,37 @@ export function AccessibilityMenu() {
   }, [open]);
 
   return (
-    <div className="fixed bottom-4 left-4 z-[60] print:hidden">
+    <div className="fixed bottom-4 start-4 z-[60] print:hidden">
       {open && (
         <div
           ref={panelRef}
           role="dialog"
-          aria-label="תפריט נגישות"
+          aria-label={t("dialogAria")}
           className="mb-3 w-72 rounded-lg border border-line-dark bg-ink-soft p-4 text-right shadow-2xl"
         >
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-base font-bold text-white">תפריט נגישות</h2>
+            <h2 className="font-display text-base font-bold text-white">{t("title")}</h2>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label="סגירת תפריט הנגישות"
+              aria-label={t("closeAria")}
               className="rounded p-1 text-neutral-400 hover:text-white"
             >
               ✕
             </button>
           </div>
 
-          {/* גודל טקסט */}
           <div className="mt-4">
-            <p className="text-sm text-neutral-300">גודל טקסט</p>
+            <p className="text-sm text-neutral-300">{t("fontSizeLabel")}</p>
             <div className="mt-2 flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => changeFont(-FONT_STEP)}
                 disabled={state.fontScale <= FONT_MIN}
-                aria-label="הקטנת טקסט"
+                aria-label={t("decreaseAria")}
                 className="flex-1 rounded border border-line-dark py-2 text-white hover:bg-ink disabled:opacity-40"
               >
-                א−
+                {t("decreaseSymbol")}
               </button>
               <span className="w-14 text-center text-sm text-neutral-300" aria-live="polite">
                 {state.fontScale}%
@@ -158,17 +160,16 @@ export function AccessibilityMenu() {
                 type="button"
                 onClick={() => changeFont(FONT_STEP)}
                 disabled={state.fontScale >= FONT_MAX}
-                aria-label="הגדלת טקסט"
+                aria-label={t("increaseAria")}
                 className="flex-1 rounded border border-line-dark py-2 text-white hover:bg-ink disabled:opacity-40"
               >
-                א+
+                {t("increaseSymbol")}
               </button>
             </div>
           </div>
 
-          {/* אפשרויות הפעלה/כיבוי */}
           <div className="mt-4 grid grid-cols-2 gap-2">
-            {TOGGLES.map(({ key, label }) => (
+            {TOGGLES.map(({ key }) => (
               <button
                 key={key}
                 type="button"
@@ -180,7 +181,7 @@ export function AccessibilityMenu() {
                     : "border-line-dark text-neutral-300 hover:bg-ink"
                 }`}
               >
-                {label}
+                {t(`toggles.${key}`)}
               </button>
             ))}
           </div>
@@ -190,15 +191,15 @@ export function AccessibilityMenu() {
             onClick={reset}
             className="mt-4 w-full rounded border border-line-dark py-2 text-sm text-neutral-300 hover:bg-ink"
           >
-            איפוס הגדרות
+            {t("resetButton")}
           </button>
 
-          <a
+          <Link
             href="/accessibility"
             className="mt-3 block text-center text-xs text-accent hover:underline"
           >
-            הצהרת נגישות ←
-          </a>
+            {t("statementLink")}
+          </Link>
         </div>
       )}
 
@@ -206,7 +207,7 @@ export function AccessibilityMenu() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label="פתיחת תפריט נגישות"
+        aria-label={t("openAria")}
         className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-ink shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <svg

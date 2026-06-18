@@ -1,0 +1,341 @@
+{
+  "layout": {
+    "title": "ReStyle — Barbershop & Academy",
+    "description": "ReStyle Barbershop — haircuts, hairstyling and a professional academy."
+  },
+  "nav": {
+    "about": "About",
+    "services": "Services",
+    "academy": "Academy",
+    "gallery": "Gallery",
+    "locations": "Location & Hours",
+    "contact": "Contact",
+    "homeAria": "ReStyle — Home page",
+    "mainAria": "Main navigation",
+    "footerAria": "Footer navigation",
+    "bookingCta": "Book Now"
+  },
+  "footer": {
+    "navHeading": "Navigation",
+    "bookingHeading": "Book Now",
+    "bookingText": "Booking is done through the ReStyle app.",
+    "downloadApp": "Download the app ←",
+    "legalAria": "Legal links",
+    "accessibilityStatement": "Accessibility Statement",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms",
+    "rights": "© {year} {name}. All rights reserved."
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "he": "עברית",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "home": {
+    "heroEyebrow": "Premium Barbershop · Academy",
+    "heroTitle": "{name} — Precision, Style & Craft",
+    "heroSubtitle": "A top-tier hairstyling experience, a professional team, and an academy for training stylists.",
+    "bookingCta": "Book Now",
+    "servicesCta": "View Services",
+    "servicesEyebrow": "What We Do",
+    "servicesTitle": "Barbershop Services",
+    "allServicesCta": "All Services",
+    "ctaEyebrow": "Book Now",
+    "ctaTitle": "Ready for your next appointment?",
+    "ctaText": "Booking is done through the ReStyle app — fast, easy and available 24/7.",
+    "ctaBooking": "Book in the app",
+    "academyImageLabel": "Academy photo",
+    "academyEyebrow": "Our Academy",
+    "academyTitle": "Learn the craft from the best",
+    "academyDescription": "Professional courses in hairstyling and beard design, from beginner to expert level — led by our top team.",
+    "allCoursesCta": "All Courses",
+    "aboutImageLabel": "Studio photo",
+    "aboutEyebrow": "Our Story",
+    "aboutTitle": "More than a barbershop",
+    "aboutDescription": "ReStyle was founded on the belief that hairstyling is a craft — a blend of art, technique and personal service. Our team is committed to the result and the experience of every visit.",
+    "readMoreCta": "Read more about us",
+    "galleryEyebrow": "Selected Work",
+    "galleryTitle": "Gallery",
+    "workImageLabel": "Work photo",
+    "fullGalleryCta": "Full Gallery",
+    "testimonialsEyebrow": "What People Say",
+    "testimonialsTitle": "Our Clients Speak",
+    "locationsEyebrow": "Come Visit",
+    "locationsTitle": "Location & Opening Hours",
+    "addressLabel": "Address:",
+    "phoneLabel": "Phone:",
+    "hoursLabel": "Hours:",
+    "directionsCta": "Directions & Map",
+    "contactEyebrow": "Have a question?",
+    "contactTitle": "Contact Us",
+    "contactPageCta": "Go to Contact"
+  },
+  "about": {
+    "metaTitle": "About",
+    "metaDescription": "The ReStyle story — a premium barbershop and academy.",
+    "eyebrow": "Our Story",
+    "title": "More than a barbershop",
+    "description": "ReStyle was founded on the belief that hairstyling is a craft — a blend of art, technique and personal service.",
+    "teamImageLabel": "Team photo",
+    "paragraph1": "We started as a small studio with a simple vision: to give every client a precise, personal experience on par with the best boutique barbershops in the world. Over the years, ReStyle has grown into a brand that combines a barbershop with an academy for training hairstylists.",
+    "paragraph2": "Our team is made up of certified, experienced stylists who are committed to continuous growth — and they pass that knowledge on to the next generation of professionals at our academy."
+  },
+  "academy": {
+    "metaTitle": "Academy",
+    "metaDescription": "ReStyle Academy — professional courses in hairstyling and barbering, from beginner to expert level.",
+    "eyebrow": "Our Academy",
+    "title": "Learn the craft from the best",
+    "description": "Professional courses in hairstyling, fades and beard design — led by our top team. Every course combines theory with hands-on practice.",
+    "imageLabel": "Academy photo",
+    "paragraph1": "ReStyle Academy was founded to pass on our knowledge, technique and professional standards to the next generation of professionals. Learning happens in small groups, in a real work environment, with close personal guidance.",
+    "paragraph2": "For details on start dates, pricing and enrollment terms — contact us and we'll be happy to tell you everything.",
+    "durationLabel": "Duration: {duration}",
+    "ctaText": "For details and enrollment — contact us"
+  },
+  "accessibility": {
+    "metaTitle": "Accessibility Statement",
+    "metaDescription": "ReStyle's website accessibility statement — compliance level, accommodations and accessibility coordinator details.",
+    "eyebrow": "Committed to Everyone",
+    "title": "Accessibility Statement",
+    "intro": "ReStyle Barbershop places great importance on providing equal service to all clients, and works to make its website accessible so that people with disabilities can use it comfortably.",
+    "levelHeading": "Site Accessibility Level",
+    "levelBody": "This site has been made accessible in accordance with the Equal Rights for Persons with Disabilities Regulations (Service Accessibility Adjustments), 2013, and in accordance with Israeli Standard IS 5568, based on the Web Content Accessibility Guidelines (WCAG) 2.0, Level AA.",
+    "accommodationsHeading": "Accessibility Accommodations on the Site",
+    "items": [
+      "An accessibility menu is available on every page of the site (a fixed button in the corner of the screen).",
+      "Ability to increase or decrease text size.",
+      "High-contrast and grayscale modes.",
+      "Link highlighting and a readable font.",
+      "Stopping animations and motion.",
+      "Enlarged mouse cursor.",
+      "A \"Skip to main content\" link and full keyboard navigation.",
+      "Semantic structure, alt text for images, and clear focus indication."
+    ],
+    "limitationsHeading": "Known Limitations",
+    "limitationsBody": "Some parts of the site may not yet be fully accessible. We continuously work to improve accessibility. If you encounter inaccessible content, please let us know and we will act to fix it promptly.",
+    "contactHeading": "Accessibility Inquiries",
+    "contactIntro": "For any request, suggestion, or report of an accessibility issue, you may contact our accessibility coordinator:",
+    "nameLabel": "Name:",
+    "phoneLabel": "Phone:",
+    "emailLabel": "Email:",
+    "coordinatorName": "The ReStyle Team",
+    "updatedText": "This accessibility statement was last updated on {date}."
+  },
+  "contact": {
+    "metaTitle": "Contact",
+    "metaDescription": "Have a question? Leave us a message and we'll get back to you soon.",
+    "eyebrow": "Have a question?",
+    "title": "Contact Us",
+    "description": "Leave us a message and we'll get back to you soon. To book an appointment — use the ReStyle app.",
+    "addressLabel": "Address:",
+    "phoneLabel": "Phone:",
+    "emailLabel": "Email:",
+    "comingSoon": "Coming soon"
+  },
+  "gallery": {
+    "metaTitle": "Gallery",
+    "metaDescription": "Selected work from the barbershop — haircuts, beard styling and coloring.",
+    "eyebrow": "Selected Work",
+    "title": "Gallery",
+    "workImageLabel": "Work photo"
+  },
+  "locations": {
+    "metaTitle": "Location & Hours",
+    "metaDescription": "ReStyle Barbershop — {address}. Opening hours and directions.",
+    "eyebrow": "Come Visit",
+    "title": "Location & Opening Hours",
+    "description": "We'd love to see you. Here's everything you need to find us.",
+    "addressHeading": "Address",
+    "hoursHeading": "Opening Hours",
+    "contactHeading": "Contact",
+    "phoneLabel": "Phone:",
+    "emailLabel": "Email:",
+    "quickContactHeading": "Quick Contact",
+    "bookingCta": "Book in the app",
+    "mapTitle": "Map — {address}"
+  },
+  "privacy": {
+    "metaTitle": "Privacy Policy",
+    "metaDescription": "ReStyle's privacy policy — what data is collected, how it's used, and your rights.",
+    "eyebrow": "Transparency & Trust",
+    "title": "Privacy Policy",
+    "intro": "ReStyle Barbershop (\"we\") respects the privacy of our website visitors. This policy explains what information is collected, what it's used for, and how you can exercise your rights. Use of the site constitutes agreement to this policy.",
+    "dataCollectedHeading": "What Information Is Collected",
+    "dataCollectedBody": "The only information collected is the details you choose to provide in the \"Contact\" form: name, email address, phone number (optional), and message content. We do not collect this information without your active submission.",
+    "dataUseHeading": "Purpose of Use",
+    "dataUseBody": "The information is used solely to respond to your inquiry and get back to you. We do not use it for marketing purposes and do not pass it on to third parties for advertising purposes.",
+    "dataSharingHeading": "Sharing Information with Service Providers",
+    "dataSharingBody": "To operate the site, we rely on standard infrastructure providers: a website hosting service (Vercel) and an email delivery service (Resend), through which your inquiry message is sent to us. These providers process the information solely to provide their service.",
+    "cookiesHeading": "Accessibility Settings & Cookies",
+    "cookiesBody": "Accessibility menu settings are saved only in your browser's local storage (localStorage), are not sent to us, and do not identify you. As of now, the site does not use tracking cookies or analytics tools. If such a tool is added in the future, this policy will be updated accordingly.",
+    "securityHeading": "Data Security",
+    "securityBody": "Communication with the site is secured by encryption (HTTPS). We take reasonable measures to protect information, but we cannot guarantee absolute protection against every risk.",
+    "rightsHeading": "Your Rights",
+    "rightsBody": "In accordance with the Privacy Protection Law, 1981, you have the right to review information submitted about you and to request its correction or deletion. For inquiries on this matter, you may contact us:",
+    "phoneLabel": "Phone:",
+    "emailLabel": "Email:",
+    "updatedText": "This privacy policy was last updated on {date}."
+  },
+  "terms": {
+    "metaTitle": "Terms of Use",
+    "metaDescription": "Terms of use for the ReStyle website.",
+    "eyebrow": "Our Rules",
+    "title": "Terms of Use",
+    "intro": "Welcome to the ReStyle website. Use of the site is subject to the terms below. Please read them carefully; continued use of the site constitutes agreement to these terms.",
+    "natureHeading": "Nature of the Site",
+    "natureBody": "The site is used to present ReStyle's barbershop, services and academy, and for contact purposes. Appointments are booked via the dedicated ReStyle app, which the site's links direct to.",
+    "contentHeading": "Content & Information",
+    "contentBody": "We strive to keep the information on the site (services, courses, opening hours and contact details) accurate and up to date, but changes, errors or inaccuracies may occur. The information does not constitute a commitment and may be updated from time to time without prior notice. Final pricing and course details will be provided upon direct inquiry.",
+    "ipHeading": "Intellectual Property",
+    "ipBody": "All content on the site — including text, design, logo and images — is the property of ReStyle and is protected by copyright. Copying, duplicating or making commercial use of it without written permission is prohibited.",
+    "privacyHeading": "Privacy",
+    "privacyBodyBefore": "The use of information submitted on the site is subject to our",
+    "privacyLink": "Privacy Policy",
+    "privacyBodyAfter": ".",
+    "contactHeading": "Contact",
+    "contactBodyBefore": "For questions regarding these terms, you may contact us by phone at",
+    "contactBodyMiddle": "or by email at",
+    "updatedText": "These terms were last updated on {date}."
+  },
+  "services": {
+    "metaTitle": "Services",
+    "metaDescription": "All of ReStyle's barbershop services — haircuts, beard design, coloring and hair treatments.",
+    "eyebrow": "What We Do",
+    "title": "All Our Services",
+    "bookingCta": "Book Now"
+  },
+  "servicesData": {
+    "haircut": {
+      "name": "Precision Haircut",
+      "description": "A haircut tailored to your face shape and style, with a short consultation."
+    },
+    "beard": {
+      "name": "Beard Styling",
+      "description": "Precise shaving and trimming, including a hot towel treatment and skin care."
+    },
+    "coloring": {
+      "name": "Color & Highlights",
+      "description": "Professional coloring and highlights using premium products, without damaging hair structure."
+    },
+    "treatment": {
+      "name": "Hair Treatments",
+      "description": "Nourishing and restorative treatments for hair and scalp, tailored to your hair type."
+    },
+    "kids": {
+      "name": "Kids' Haircuts",
+      "description": "A pleasant, quick experience at the barbershop, with patience and professionalism."
+    },
+    "vip": {
+      "name": "VIP Experience",
+      "description": "A comprehensive treatment — haircut, beard and grooming, with personal attention and extended quality time."
+    }
+  },
+  "academyData": {
+    "barbering-foundations": {
+      "name": "Barbering Foundations",
+      "description": "A foundational course for beginners — tool handling, cutting techniques, fades and finishing. The right way to enter the profession.",
+      "duration": "8 weeks",
+      "level": "Beginners"
+    },
+    "advanced-fades": {
+      "name": "Fades & Advanced Techniques",
+      "description": "Refining fade techniques, smooth transitions, line design and professional-level work with clippers and razors.",
+      "duration": "4 weeks",
+      "level": "Advanced"
+    },
+    "beard-design": {
+      "name": "Beard Design",
+      "description": "Beard design and shaving, classic razor work, hot towel treatment and skin care — the full barber experience.",
+      "duration": "3 weeks",
+      "level": "All Levels"
+    },
+    "masterclass": {
+      "name": "Professional Masterclass",
+      "description": "An intensive expert workshop led by ReStyle's leading team — trends, client management and personal branding.",
+      "duration": "Intensive Workshop",
+      "level": "Professionals"
+    }
+  },
+  "testimonialsData": {
+    "items": [
+      {
+        "name": "Itay Cohen",
+        "quote": "The team is professional on a whole different level. Every time I leave with a precise result and feel right at home."
+      },
+      {
+        "name": "Noam Levi",
+        "quote": "The atmosphere is truly premium, and the personal attention is felt from the very first minute."
+      },
+      {
+        "name": "Daniel Avraham",
+        "quote": "I studied at the academy and stayed on as a regular client — a rare mix of professionalism and human warmth."
+      }
+    ]
+  },
+  "hours": [
+    {
+      "day": "Sun–Thu",
+      "hours": "09:00–20:00"
+    },
+    {
+      "day": "Friday",
+      "hours": "09:00–14:00"
+    },
+    {
+      "day": "Saturday",
+      "hours": "Closed"
+    }
+  ],
+  "contactForm": {
+    "nameLabel": "Full Name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone (optional)",
+    "messageLabel": "Message",
+    "companyLabel": "Company",
+    "submitting": "Sending...",
+    "submit": "Send",
+    "successMessage": "Your message was sent successfully! We'll get back to you soon.",
+    "errors": {
+      "nameTooShort": "Name is too short",
+      "emailInvalid": "Invalid email address",
+      "messageTooShort": "Message is too short",
+      "invalidInput": "Invalid input",
+      "sendFailed": "Failed to send the message, please try again later"
+    }
+  },
+  "contactActions": {
+    "waze": "Navigate with Waze",
+    "call": "Call Us",
+    "whatsapp": "WhatsApp",
+    "whatsappMessage": "Hi! I would like more information about ReStyle."
+  },
+  "floatingContact": {
+    "whatsappAria": "Chat on WhatsApp",
+    "callAria": "Call us"
+  },
+  "skipToContent": {
+    "text": "Skip to main content"
+  },
+  "accessibilityMenu": {
+    "dialogAria": "Accessibility menu",
+    "title": "Accessibility Menu",
+    "closeAria": "Close accessibility menu",
+    "fontSizeLabel": "Text Size",
+    "decreaseAria": "Decrease text size",
+    "increaseAria": "Increase text size",
+    "decreaseSymbol": "A−",
+    "increaseSymbol": "A+",
+    "toggles": {
+      "contrast": "High Contrast",
+      "grayscale": "Grayscale",
+      "links": "Highlight Links",
+      "readable": "Readable Font",
+      "noMotion": "Stop Animations",
+      "bigCursor": "Large Cursor"
+    },
+    "resetButton": "Reset Settings",
+    "statementLink": "Accessibility statement ←",
+    "openAria": "Open accessibility menu"
+  }
+}

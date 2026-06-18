@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { contactSchema, type ContactInput } from "@/lib/contact-schema";
+import { useLocale, useTranslations } from "next-intl";
+import { createContactSchema, type ContactInput } from "@/lib/contact-schema";
 import { submitContactForm } from "@/server/actions/contact";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,8 +13,21 @@ const inputClass =
   "w-full rounded-md border border-line-dark bg-ink-soft px-4 py-2.5 text-white placeholder:text-neutral-500 focus:border-accent focus:outline-none";
 
 export function ContactForm() {
+  const t = useTranslations("contactForm");
+  const locale = useLocale();
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const contactSchema = useMemo(
+    () =>
+      createContactSchema({
+        nameTooShort: t("errors.nameTooShort"),
+        emailInvalid: t("errors.emailInvalid"),
+        messageTooShort: t("errors.messageTooShort"),
+      }),
+    [t],
+  );
+
   const {
     register,
     handleSubmit,
@@ -23,7 +37,7 @@ export function ContactForm() {
 
   async function onSubmit(values: ContactInput) {
     setServerError(null);
-    const result = await submitContactForm(values);
+    const result = await submitContactForm(values, locale);
     if (result.ok) {
       setStatus("success");
       reset();
@@ -36,7 +50,7 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <p className="rounded-md border border-accent bg-ink-soft p-6 text-white">
-        ההודעה נשלחה בהצלחה! נחזור אליכם בקרוב.
+        {t("successMessage")}
       </p>
     );
   }
@@ -45,7 +59,7 @@ export function ContactForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       <div>
         <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-neutral-300">
-          שם מלא
+          {t("nameLabel")}
         </label>
         <input id="name" className={inputClass} {...register("name")} />
         {errors.name && <p className="mt-1.5 text-sm text-red-400">{errors.name.message}</p>}
@@ -53,7 +67,7 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-neutral-300">
-          אימייל
+          {t("emailLabel")}
         </label>
         <input id="email" type="email" className={inputClass} {...register("email")} />
         {errors.email && <p className="mt-1.5 text-sm text-red-400">{errors.email.message}</p>}
@@ -61,14 +75,14 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-neutral-300">
-          טלפון (אופציונלי)
+          {t("phoneLabel")}
         </label>
         <input id="phone" type="tel" className={inputClass} {...register("phone")} />
       </div>
 
       <div>
         <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-neutral-300">
-          הודעה
+          {t("messageLabel")}
         </label>
         <textarea id="message" rows={5} className={inputClass} {...register("message")} />
         {errors.message && <p className="mt-1.5 text-sm text-red-400">{errors.message.message}</p>}
@@ -76,7 +90,7 @@ export function ContactForm() {
 
       {/* honeypot — מוסתר ממשתמשים אנושיים, לא חלק מה-tab order */}
       <div className="hidden" aria-hidden="true">
-        <label htmlFor="company">חברה</label>
+        <label htmlFor="company">{t("companyLabel")}</label>
         <input id="company" tabIndex={-1} autoComplete="off" {...register("company")} />
       </div>
 
@@ -87,7 +101,7 @@ export function ContactForm() {
         disabled={isSubmitting}
         className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
       >
-        {isSubmitting ? "שולח..." : "שליחה"}
+        {isSubmitting ? t("submitting") : t("submit")}
       </button>
     </form>
   );

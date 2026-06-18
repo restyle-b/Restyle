@@ -4,7 +4,6 @@
  */
 export const siteConfig = {
   name: "ReStyle",
-  description: "מספרת ReStyle — תספורת, עיצוב שיער ואקדמיה מקצועית.",
   url: "https://restyle.co.il",
 
   /** קישורי קביעת תור — אפליקציית ReStyle */
@@ -27,28 +26,16 @@ export const siteConfig = {
     whatsapp: "972505961800",
   },
 
-  /** שעות פעילות — מקור אמת יחיד (דף בית + עמוד מיקום) */
-  hours: [
-    { day: "ראשון–חמישי", hours: "09:00–20:00" },
-    { day: "שישי", hours: "09:00–14:00" },
-    { day: "שבת", hours: "סגור" },
-  ],
-
-  /** פרטי נגישות — לעמוד הצהרת הנגישות (חובה לפי תקנות שוויון זכויות) */
-  accessibility: {
-    coordinatorName: "צוות ReStyle",
-    phone: "050-5961800",
-    email: "Restyle.Barbershop@outlook.com",
-    lastUpdated: "18 ביוני 2026",
-  },
+  /** תאריך עדכון אחרון — לעמודי הצהרת נגישות/פרטיות/תקנון (תאריך אינו טעון תרגום) */
+  lastUpdated: "18.06.2026",
 } as const;
 
-/** פריטי הניווט הראשי (ראה docs/DESIGN.md). */
+/** מפתחות פריטי הניווט הראשי — התוויות מגיעות מ-messages.nav (ראה docs/DESIGN.md). */
 export const navLinks = [
-  { href: "/about", label: "אודות" },
-  { href: "/services", label: "שירותים" },
-  { href: "/academy", label: "אקדמיה" },
-  { href: "/gallery", label: "גלריה" },
-  { href: "/locations", label: "מיקום ושעות" },
-  { href: "/contact", label: "צור קשר" },
+  { href: "/about", key: "about" },
+  { href: "/services", key: "services" },
+  { href: "/academy", key: "academy" },
+  { href: "/gallery", key: "gallery" },
+  { href: "/locations", key: "locations" },
+  { href: "/contact", key: "contact" },
 ] as const;

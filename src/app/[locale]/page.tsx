@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
@@ -6,10 +7,14 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 import { Reveal } from "@/components/reveal";
 import { BookingLink } from "@/components/booking-link";
 import { siteConfig } from "@/lib/config";
-import { services } from "@/lib/services-data";
-import { testimonials } from "@/lib/testimonials-data";
+import { serviceSlugs } from "@/lib/services-data";
 
 export default function HomePage() {
+  const t = useTranslations("home");
+  const tServices = useTranslations("servicesData");
+  const tRoot = useTranslations();
+  const testimonials = tRoot.raw("testimonialsData.items") as { name: string; quote: string }[];
+  const hours = tRoot.raw("hours") as { day: string; hours: string }[];
   return (
     <>
       {/*
@@ -27,19 +32,17 @@ export default function HomePage() {
         </div>
         <Container className="relative z-10 py-24 pt-[calc(4rem+6rem)]">
           <p className="font-display text-sm uppercase tracking-[0.3em] text-accent">
-            מספרת פרימיום · אקדמיה
+            {t("heroEyebrow")}
           </p>
           <h1 className="font-display mt-6 max-w-3xl text-4xl font-extrabold leading-tight text-white sm:text-6xl">
-            {siteConfig.name} — דיוק, סגנון ומקצועיות
+            {t("heroTitle", { name: siteConfig.name })}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-neutral-300">
-            חוויית עיצוב שיער ברמה הגבוהה ביותר, צוות מקצועי ואקדמיה להכשרת מעצבים.
-          </p>
+          <p className="mt-6 max-w-xl text-lg text-neutral-300">{t("heroSubtitle")}</p>
           <div className="mt-10 flex flex-wrap gap-4">
             <BookingLink
               className={buttonVariants({ size: "lg", className: "rounded-none uppercase tracking-[0.2em]" })}
             >
-              קביעת תור
+              {t("bookingCta")}
             </BookingLink>
             <Link
               href="/services"
@@ -49,7 +52,7 @@ export default function HomePage() {
                 className: "rounded-none uppercase tracking-[0.2em]",
               })}
             >
-              לשירותים
+              {t("servicesCta")}
             </Link>
           </div>
         </Container>
@@ -59,14 +62,16 @@ export default function HomePage() {
       <section className="bg-paper py-24 text-ink">
         <Container>
           <Reveal>
-            <SectionHeading center eyebrow="מה שאנחנו עושים" title="שירותי המספרה" />
+            <SectionHeading center eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
           </Reveal>
           <div className="mt-16 grid gap-px overflow-hidden border border-line-light sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
-              <Reveal key={service.slug}>
+            {serviceSlugs.map((slug) => (
+              <Reveal key={slug}>
                 <div className="h-full border-line-light bg-white p-8 transition-colors hover:bg-paper sm:border-l">
-                  <h3 className="font-display text-lg font-bold uppercase tracking-wide">{service.name}</h3>
-                  <p className="mt-3 text-sm text-neutral-600">{service.description}</p>
+                  <h3 className="font-display text-lg font-bold uppercase tracking-wide">
+                    {tServices(`${slug}.name`)}
+                  </h3>
+                  <p className="mt-3 text-sm text-neutral-600">{tServices(`${slug}.description`)}</p>
                 </div>
               </Reveal>
             ))}
@@ -79,7 +84,7 @@ export default function HomePage() {
                 className: "rounded-none uppercase tracking-[0.2em]",
               })}
             >
-              לכל השירותים
+              {t("allServicesCta")}
             </Link>
           </Reveal>
         </Container>
@@ -90,20 +95,18 @@ export default function HomePage() {
         <Container className="flex flex-col items-center">
           <Reveal>
             <p className="font-display text-sm uppercase tracking-[0.3em] text-accent">
-              קביעת תור
+              {t("ctaEyebrow")}
             </p>
             <h2 className="font-display mt-3 max-w-xl text-2xl font-bold text-white sm:text-3xl">
-              מוכנים לתור הבא שלכם?
+              {t("ctaTitle")}
             </h2>
-            <p className="mx-auto mt-3 max-w-md text-neutral-300">
-              קביעת תור מתבצעת באפליקציית ReStyle — מהירה, נוחה וזמינה 24/7.
-            </p>
+            <p className="mx-auto mt-3 max-w-md text-neutral-300">{t("ctaText")}</p>
           </Reveal>
           <Reveal className="mt-8">
             <BookingLink
               className={buttonVariants({ size: "lg", className: "rounded-none uppercase tracking-[0.2em]" })}
             >
-              קביעת תור באפליקציה
+              {t("ctaBooking")}
             </BookingLink>
           </Reveal>
         </Container>
@@ -112,21 +115,21 @@ export default function HomePage() {
       {/* אקדמיה */}
       <section className="bg-paper text-ink">
         <Reveal>
-          <ImagePlaceholder label="תמונת אקדמיה" className="aspect-[16/9] sm:aspect-[21/9]" />
+          <ImagePlaceholder label={t("academyImageLabel")} className="aspect-[16/9] sm:aspect-[21/9]" />
         </Reveal>
         <Container className="py-20">
           <Reveal>
             <SectionHeading
               center
-              eyebrow="האקדמיה שלנו"
-              title="למדו את המקצוע מהמיטב"
-              description="קורסים מקצועיים בעיצוב שיער ועיצוב זקן, מההתחלה ועד רמת מומחה — בהדרכת הצוות המוביל שלנו."
+              eyebrow={t("academyEyebrow")}
+              title={t("academyTitle")}
+              description={t("academyDescription")}
               className="mx-auto"
             />
           </Reveal>
           <Reveal className="mt-8 flex justify-center">
             <Link href="/academy" className={buttonVariants({ className: "rounded-none uppercase tracking-[0.2em]" })}>
-              לכל הקורסים
+              {t("allCoursesCta")}
             </Link>
           </Reveal>
         </Container>
@@ -135,16 +138,16 @@ export default function HomePage() {
       {/* אודות תקציר */}
       <section className="bg-ink">
         <Reveal>
-          <ImagePlaceholder label="תמונת הסטודיו" className="aspect-[16/9] sm:aspect-[21/9]" />
+          <ImagePlaceholder label={t("aboutImageLabel")} className="aspect-[16/9] sm:aspect-[21/9]" />
         </Reveal>
         <Container className="py-20">
           <Reveal>
             <SectionHeading
               light
               center
-              eyebrow="הסיפור שלנו"
-              title="יותר ממספרה"
-              description="ReStyle נוסדה מתוך אמונה שעיצוב שיער הוא מקצוע — שילוב של אומנות, טכניקה ושירות אישי. הצוות שלנו מחויב לתוצאה ולחוויה בכל ביקור."
+              eyebrow={t("aboutEyebrow")}
+              title={t("aboutTitle")}
+              description={t("aboutDescription")}
               className="mx-auto"
             />
           </Reveal>
@@ -153,7 +156,7 @@ export default function HomePage() {
               href="/about"
               className={buttonVariants({ variant: "outline", className: "rounded-none uppercase tracking-[0.2em]" })}
             >
-              קרא עוד עלינו
+              {t("readMoreCta")}
             </Link>
           </Reveal>
         </Container>
@@ -163,12 +166,12 @@ export default function HomePage() {
       <section className="bg-paper py-24 text-ink">
         <Container>
           <Reveal>
-            <SectionHeading center eyebrow="עבודות נבחרות" title="גלריה" />
+            <SectionHeading center eyebrow={t("galleryEyebrow")} title={t("galleryTitle")} />
           </Reveal>
           <div className="mt-16 grid grid-cols-2 gap-px sm:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <Reveal key={i}>
-                <ImagePlaceholder label="תמונת עבודה" className="aspect-square" />
+                <ImagePlaceholder label={t("workImageLabel")} className="aspect-square" />
               </Reveal>
             ))}
           </div>
@@ -177,7 +180,7 @@ export default function HomePage() {
               href="/gallery"
               className={buttonVariants({ variant: "outline", className: "rounded-none uppercase tracking-[0.2em]" })}
             >
-              לגלריה המלאה
+              {t("fullGalleryCta")}
             </Link>
           </Reveal>
         </Container>
@@ -187,16 +190,16 @@ export default function HomePage() {
       <section className="bg-ink py-24">
         <Container>
           <Reveal>
-            <SectionHeading center light eyebrow="מה אומרים עלינו" title="לקוחות מספרים" />
+            <SectionHeading center light eyebrow={t("testimonialsEyebrow")} title={t("testimonialsTitle")} />
           </Reveal>
           <div className="mt-16 grid gap-px sm:grid-cols-3">
-            {testimonials.map((t) => (
-              <Reveal key={t.name}>
+            {testimonials.map((item) => (
+              <Reveal key={item.name}>
                 <figure className="h-full border-t border-line-dark px-6 py-8 text-center">
                   <span className="font-display text-4xl text-accent">&rdquo;</span>
-                  <blockquote className="mt-2 text-neutral-300">{t.quote}</blockquote>
+                  <blockquote className="mt-2 text-neutral-300">{item.quote}</blockquote>
                   <figcaption className="mt-4 font-display text-sm font-semibold uppercase tracking-wide text-white">
-                    {t.name}
+                    {item.name}
                   </figcaption>
                 </figure>
               </Reveal>
@@ -210,21 +213,19 @@ export default function HomePage() {
         <Container className="grid gap-12 lg:grid-cols-2">
           <Reveal>
             <div>
-              <SectionHeading eyebrow="בואו לבקר" title="מיקום ושעות פתיחה" />
+              <SectionHeading eyebrow={t("locationsEyebrow")} title={t("locationsTitle")} />
               <dl className="mt-8 space-y-3 text-neutral-700">
                 <div className="flex gap-3">
-                  <dt className="font-medium">כתובת:</dt>
+                  <dt className="font-medium">{t("addressLabel")}</dt>
                   <dd>{siteConfig.contact.address}</dd>
                 </div>
                 <div className="flex gap-3">
-                  <dt className="font-medium">טלפון:</dt>
+                  <dt className="font-medium">{t("phoneLabel")}</dt>
                   <dd>{siteConfig.contact.phone}</dd>
                 </div>
                 <div className="flex gap-3">
-                  <dt className="font-medium">שעות פעילות:</dt>
-                  <dd>
-                    {siteConfig.hours.map((row) => `${row.day} ${row.hours}`).join(", ")}
-                  </dd>
+                  <dt className="font-medium">{t("hoursLabel")}</dt>
+                  <dd>{hours.map((row) => `${row.day} ${row.hours}`).join(", ")}</dd>
                 </div>
               </dl>
               <Link
@@ -234,18 +235,18 @@ export default function HomePage() {
                   className: "mt-8 rounded-none uppercase tracking-[0.2em]",
                 })}
               >
-                לפרטי הגעה ומפה
+                {t("directionsCta")}
               </Link>
             </div>
           </Reveal>
           <Reveal>
             <div>
-              <SectionHeading eyebrow="יש לכם שאלה?" title="צרו קשר" />
+              <SectionHeading eyebrow={t("contactEyebrow")} title={t("contactTitle")} />
               <Link
                 href="/contact"
                 className={buttonVariants({ className: "mt-8 rounded-none uppercase tracking-[0.2em]" })}
               >
-                לעמוד צור קשר
+                {t("contactPageCta")}
               </Link>
             </div>
           </Reveal>

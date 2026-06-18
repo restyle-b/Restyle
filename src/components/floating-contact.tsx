@@ -1,17 +1,24 @@
-import { contactLinks } from "@/lib/contact-links";
+import { useLocale, useTranslations } from "next-intl";
+import { getContactLinks } from "@/lib/contact-links";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * לחצנים צפים ליצירת קשר מהירה (וואטסאפ + טלפון) — בכל עמודי האתר.
- * פינה ימנית-תחתונה (תפריט הנגישות בשמאל — אין התנגשות).
+ * פינה קדמית-תחתונה (start = ימין ב-RTL, שמאל ב-LTR; תפריט הנגישות בקצה ההפוך — אין התנגשות).
  */
 export function FloatingContact() {
+  const t = useTranslations("floatingContact");
+  const tActions = useTranslations("contactActions");
+  const locale = useLocale() as Locale;
+  const contactLinks = getContactLinks(tActions("whatsappMessage"), locale);
+
   return (
-    <div className="fixed bottom-4 right-4 z-[55] flex flex-col gap-3 print:hidden">
+    <div className="fixed bottom-4 end-4 z-[55] flex flex-col gap-3 print:hidden">
       <a
         href={contactLinks.whatsapp}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="צ'אט בוואטסאפ"
+        aria-label={t("whatsappAria")}
         className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7" aria-hidden="true">
@@ -21,7 +28,7 @@ export function FloatingContact() {
 
       <a
         href={contactLinks.tel}
-        aria-label="התקשרו אלינו"
+        aria-label={t("callAria")}
         className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-ink shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6" aria-hidden="true">

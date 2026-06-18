@@ -1,13 +1,27 @@
 "use server";
 
-import { contactSchema } from "@/lib/contact-schema";
+import { getTranslations } from "next-intl/server";
+import { createContactSchema } from "@/lib/contact-schema";
+import { hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 
 export type ContactActionResult = { ok: true } | { ok: false; error: string };
 
-export async function submitContactForm(input: unknown): Promise<ContactActionResult> {
+export async function submitContactForm(
+  input: unknown,
+  locale: string,
+): Promise<ContactActionResult> {
+  const resolvedLocale = hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
+  const t = await getTranslations({ locale: resolvedLocale, namespace: "contactForm.errors" });
+  const contactSchema = createContactSchema({
+    nameTooShort: t("nameTooShort"),
+    emailInvalid: t("emailInvalid"),
+    messageTooShort: t("messageTooShort"),
+  });
+
   const parsed = contactSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "קלט לא תקין" };
+    return { ok: false, error: parsed.error.issues[0]?.message ?? t("invalidInput") };
   }
 
   // honeypot מלא => התעלמות שקטה, מציגים הצלחה כדי לא לחשוף את המנגנון לבוטים
@@ -39,7 +53,7 @@ export async function submitContactForm(input: unknown): Promise<ContactActionRe
   });
 
   if (error) {
-    return { ok: false, error: "שליחת ההודעה נכשלה, נסו שוב מאוחר יותר" };
+    return { ok: false, error: t("sendFailed") };
   }
 
   return { ok: true };
