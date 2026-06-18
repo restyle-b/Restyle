@@ -3,6 +3,8 @@ import { Heebo, Assistant } from "next/font/google";
 import { siteConfig } from "@/lib/config";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SkipToContent } from "@/components/skip-to-content";
+import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu";
 import "./globals.css";
 
 const heebo = Heebo({
@@ -19,7 +21,7 @@ const assistant = Assistant({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} — מספרה, אקדמיה וחנות`,
+    default: `${siteConfig.name} — מספרה ואקדמיה`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -35,9 +37,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="he" dir="rtl" className={`${heebo.variable} ${assistant.variable}`}>
       <body className="flex min-h-screen flex-col">
+        <SkipToContent />
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main id="main" className="flex-1">
+          {children}
+        </main>
         <SiteFooter />
+        <AccessibilityMenu />
       </body>
     </html>
   );

@@ -42,8 +42,13 @@ export function SiteFooter() {
       </Container>
 
       <div className="border-t border-line-dark py-6">
-        <Container className="text-center text-xs text-neutral-500">
-          © {new Date().getFullYear()} {siteConfig.name}. כל הזכויות שמורות.
+        <Container className="flex flex-col items-center gap-2 text-center text-xs text-neutral-500 sm:flex-row sm:justify-between">
+          <span>
+            © {new Date().getFullYear()} {siteConfig.name}. כל הזכויות שמורות.
+          </span>
+          <Link href="/accessibility" className="transition-colors hover:text-white">
+            הצהרת נגישות
+          </Link>
         </Container>
       </div>
     </footer>

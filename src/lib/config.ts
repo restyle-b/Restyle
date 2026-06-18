@@ -1,11 +1,10 @@
 /**
  * תצורת אתר Restyle.
  * קביעת תור מתבצעת באפליקציית Restyle — הקישורים כאן מפנים אליה.
- * החלף ב-URLs האמיתיים כשהאפליקציה תהיה זמינה (ראה docs/SETUP.md).
  */
 export const siteConfig = {
   name: "Restyle",
-  description: "מספרת Restyle — תספורת, עיצוב, אקדמיה ומוצרי טיפוח פרימיום.",
+  description: "מספרת Restyle — תספורת, עיצוב שיער ואקדמיה מקצועית.",
   url: "https://restyle.co.il",
 
   /** קישורי קביעת תור — אפליקציית Restyle */
@@ -21,9 +20,24 @@ export const siteConfig = {
   },
 
   contact: {
-    phone: "",
-    email: "",
-    address: "",
+    phone: "050-5961800",
+    email: "Restyle.Barbershop@outlook.com",
+    address: "חיים לסקוב 4, תל אביב",
+  },
+
+  /** שעות פעילות — מקור אמת יחיד (דף בית + עמוד מיקום) */
+  hours: [
+    { day: "ראשון–חמישי", hours: "09:00–20:00" },
+    { day: "שישי", hours: "09:00–14:00" },
+    { day: "שבת", hours: "סגור" },
+  ],
+
+  /** פרטי נגישות — לעמוד הצהרת הנגישות (חובה לפי תקנות שוויון זכויות) */
+  accessibility: {
+    coordinatorName: "צוות Restyle",
+    phone: "050-5961800",
+    email: "Restyle.Barbershop@outlook.com",
+    lastUpdated: "18 ביוני 2026",
   },
 } as const;
 
@@ -32,7 +46,7 @@ export const navLinks = [
   { href: "/about", label: "אודות" },
   { href: "/services", label: "שירותים" },
   { href: "/academy", label: "אקדמיה" },
-  { href: "/shop", label: "חנות" },
+  { href: "/gallery", label: "גלריה" },
   { href: "/locations", label: "מיקום ושעות" },
   { href: "/contact", label: "צור קשר" },
 ] as const;

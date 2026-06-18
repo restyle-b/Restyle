@@ -5,7 +5,7 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 
 export const metadata: Metadata = {
   title: "אודות",
-  description: "הסיפור של Restyle — מספרה, אקדמיה וחנות פרימיום.",
+  description: "הסיפור של Restyle — מספרה ואקדמיה פרימיום.",
 };
 
 export default function AboutPage() {
@@ -22,8 +22,8 @@ export default function AboutPage() {
         <div className="space-y-6 text-neutral-300">
           <p>
             התחלנו כסטודיו קטן עם חזון פשוט: לתת לכל לקוח חוויה מדויקת ואישית, ברמה שמוכרת
-            ממספרות הבוטיק הטובות בעולם. עם השנים, Restyle צמחה למותג שמשלב מספרה, אקדמיה
-            להכשרת מעצבי שיער, וחנות מוצרי טיפוח נבחרים.
+            ממספרות הבוטיק הטובות בעולם. עם השנים, Restyle צמחה למותג שמשלב מספרה ואקדמיה
+            להכשרת מעצבי שיער.
           </p>
           <p>
             הצוות שלנו מורכב ממעצבי שיער מוסמכים ומנוסים, שמחויבים להמשיך ולהתפתח — ומעבירים

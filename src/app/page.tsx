@@ -27,13 +27,13 @@ export default function HomePage() {
         </div>
         <Container className="relative z-10 py-24 pt-[calc(4rem+6rem)]">
           <p className="font-display text-sm uppercase tracking-[0.3em] text-accent">
-            מספרת פרימיום · אקדמיה · חנות
+            מספרת פרימיום · אקדמיה
           </p>
           <h1 className="font-display mt-6 max-w-3xl text-4xl font-extrabold leading-tight text-white sm:text-6xl">
             {siteConfig.name} — דיוק, סגנון ומקצועיות
           </h1>
           <p className="mt-6 max-w-xl text-lg text-neutral-300">
-            חוויית עיצוב שיער ברמה הגבוהה ביותר, מוצרי טיפוח נבחרים, ואקדמיה מקצועית.
+            חוויית עיצוב שיער ברמה הגבוהה ביותר, צוות מקצועי ואקדמיה להכשרת מעצבים.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <BookingLink
@@ -42,14 +42,14 @@ export default function HomePage() {
               קביעת תור
             </BookingLink>
             <Link
-              href="/shop"
+              href="/services"
               className={buttonVariants({
                 variant: "outline",
                 size: "lg",
                 className: "rounded-none uppercase tracking-[0.2em]",
               })}
             >
-              לחנות
+              לשירותים
             </Link>
           </div>
         </Container>
@@ -214,17 +214,28 @@ export default function HomePage() {
               <dl className="mt-8 space-y-3 text-neutral-700">
                 <div className="flex gap-3">
                   <dt className="font-medium">כתובת:</dt>
-                  <dd>{siteConfig.contact.address || "יפורסם בקרוב"}</dd>
+                  <dd>{siteConfig.contact.address}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">טלפון:</dt>
-                  <dd>{siteConfig.contact.phone || "יפורסם בקרוב"}</dd>
+                  <dd>{siteConfig.contact.phone}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">שעות פעילות:</dt>
-                  <dd>א&apos;–ה&apos; 09:00–20:00, ו&apos; 09:00–14:00</dd>
+                  <dd>
+                    {siteConfig.hours.map((row) => `${row.day} ${row.hours}`).join(", ")}
+                  </dd>
                 </div>
               </dl>
+              <Link
+                href="/locations"
+                className={buttonVariants({
+                  variant: "outline",
+                  className: "mt-8 rounded-none uppercase tracking-[0.2em]",
+                })}
+              >
+                לפרטי הגעה ומפה
+              </Link>
             </div>
           </Reveal>
           <Reveal>

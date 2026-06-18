@@ -59,9 +59,8 @@ SQL Editor את `prisma/migrations/20260617010000_auth_sync_and_rls/migration.sq
 - Cloudflare R2 (bucket + tokens) — לא דחוף עד Phase 4.
 - Resend API key אמיתי (יש fallback ללוג כרגע) + `CONTACT_NOTIFICATION_EMAIL`.
 - לוגו + תמונות איכותיות למספרה (ל-Hero/גלריה) — כרגע placeholders אפורים.
-- קישורי אפליקציית Restyle (App Store / Google Play / web) ל-`src/lib/config.ts`
-  (`siteConfig.booking`) — עדיין placeholders (`#`).
-- פרטי קשר אמיתיים (`siteConfig.contact`) — כרגע ריקים, מוצג "יפורסם בקרוב".
+- ~~קישורי אפליקציית Restyle~~ ✅ הוגדרו ב-`siteConfig.booking` (App Store + Google Play, דרך `BookingLink`).
+- ~~פרטי קשר אמיתיים~~ ✅ הוזנו ב-`siteConfig.contact` (חיים לסקוב 4 ת"א, 050-5961800, Restyle.Barbershop@outlook.com).
 
 ---
 
@@ -175,11 +174,26 @@ SQL Editor את `prisma/migrations/20260617010000_auth_sync_and_rls/migration.sq
 - [ ] ⬜ ניהול תוכן וגלריה (העלאה ל-R2)
 - [ ] ⬜ ניהול משתמשים/הרשאות
 
-## Phase 9 — חיבור לאפליקציית Restyle (קביעת תור) ⬜
+## Phase 9 — חיבור לאפליקציית Restyle (קביעת תור) ✅
 > אין ניהול תורים באתר — קיימת אפליקציית Restyle. ה-CTA "קביעת תור" מפנה אליה.
-- [ ] ⬜ קונפיג קישורי האפליקציה (App Store / Google Play / קישור web)
-- [ ] ⬜ כפתורי "קביעת תור" → אפליקציה לאורך האתר (Hero, ניווט, סקציה ייעודית)
-- [ ] ⬜ סקציית "הורד את האפליקציה" בדף הבית
+- [x] ✅ קונפיג קישורי האפליקציה (App Store / Google Play) ב-`siteConfig.booking`
+- [x] ✅ כפתורי "קביעת תור" → אפליקציה לאורך האתר (Hero, ניווט, services, CTA, footer)
+      דרך `BookingLink` (זיהוי פלטפורמה: Android→Google Play, אחרת→App Store)
+- [x] ✅ סקציית "קביעת תור באפליקציה" בדף הבית
+
+## Stage 1 — השלמת חלופה א' (אתר תדמית) 🔄
+> תכנון מלא: [`docs/features/stage1-marketing-completion.md`](./docs/features/stage1-marketing-completion.md).
+> Stage 1 = חלופה א' (`docs/QUOTE.md`). סגירת הפער בין הקוד לתכולה הנמכרת.
+- [x] ✅ תכנון (planning skill) — מסמך פיצ'ר + קריטריוני קבלה
+- [x] ✅ הרחבת `siteConfig` — פרטי קשר אמיתיים, `hours`, `accessibility`; `navLinks` בלי חנות + עם גלריה
+- [x] ✅ ווידג'ט נגישות (`accessibility-menu`) + CSS + skip-to-content + `main#main`
+- [x] ✅ עמוד הצהרת נגישות `/accessibility` (תאימות ת"י 5568/WCAG 2.0 AA, הסדרים, רכז נגישות, דיווח)
+- [x] ✅ עמוד אקדמיה `/academy` (תוכן בלבד, ללא הרשמה) + `academy-data.ts`
+- [x] ✅ עמוד מיקום ושעות `/locations` (כתובת/שעות/מפת Google)
+- [x] ✅ הסתרת שאריות חלופה ב': קישור auth ב-header, חנות בניווט/hero, אזכורי "חנות" במטא-דאטה
+- [x] ✅ security review (ווידג'ט נגישות + iframe) — אין ממצא Critical/High; נוסף `sandbox` ל-iframe
+- [x] ✅ QA (Playwright): כל הנתיבים 200, אין חנות/התחברות, ווידג'ט נגישות עובד+נשמר אחרי רענון
+- [x] ✅ typecheck/lint/test/build ירוקים
 
 ## Phase 10 — הקשחה והשקה ⬜
 - [ ] ⬜ סקירת אבטחה מקיפה + security headers + rate limiting
@@ -205,3 +219,5 @@ SQL Editor את `prisma/migrations/20260617010000_auth_sync_and_rls/migration.sq
 | 2026-06-17 | **Phase 3 — Supabase Auth מומש במלואו (קוד)**, לפי תהליך מלא planning→development→security→qa: תכנון מתועד ב-`docs/features/auth.md`. הותקנו `@supabase/supabase-js`+`@supabase/ssr`. נוצרו `src/lib/supabase/{server,client,middleware}.ts`, `middleware.ts` (root, מגן על `/account/**`), `src/lib/auth-schema.ts` (zod), `src/server/actions/auth.ts` (signUp/signIn/signOut/requestPasswordReset/updatePassword — כולם בודקים session אמיתי בשרת, לעולם לא סומכים על קלט קליינט), עמודי `/login` `/register` `/forgot-password` `/reset-password` `/account` (RTL, עברית, תבנית react-hook-form+zod זהה לטופס צור קשר), `src/app/auth/callback/route.ts`, וקישור התחברות/אזור אישי ב-`site-header.tsx`. נכתב SQL migration (`prisma/migrations/20260617010000_auth_sync_and_rls/`) עם trigger `handle_new_user` (מסנכרן auth.users→public.users) ו-RLS על `public.users` — **טרם הורץ** (TCP חסום, כמו בכל הסשנים). **סקירת security מצאה ותיקנה**: open-redirect דרך פרמטר `?next=` (נוסף `safeRedirectPath` ב-`lib/utils.ts`, מופעל ב-login-form וב-callback route) + נוסף honeypot אנטי-ספאם לטופס הרשמה. **QA**: typecheck/lint/test/build ✅; אומת מול ה-API האמיתי של Supabase (HTTPS עובד גם כש-TCP חסום) — signUp/signIn/forgot-password נבדקו בפועל מול הפרויקט (כולל פגיעה אמיתית ב-rate-limit של Supabase, שמוכיחה אינטגרציה אמיתית); `/account` ללא session מפנה 307 ל-`/login?next=/account` (אומת ב-curl); RTL+מובייל/דסקטופ אומתו ויזואלית ב-Playwright בכל 4 העמודים החדשים. **לא אומת** (תלוי TCP/production): כתיבה בפועל לטבלת `public.users` דרך ה-trigger, ומסע משתמש מלא הרשמה→אימות מייל→התחברות→logout מקצה-לקצה (כי signUp האחרון נחסם ב-rate-limit). | להריץ את ה-SQL migration ב-Supabase SQL Editor (קריטי — בלעדיו `public.users` לא יתעדכן בהרשמה אמיתית), ואז `prisma migrate resolve --applied`. להמשיך Phase 2 שאריות (OG images/Lighthouse — תלוי תמונות), ולשקול Phase 4 (חנות) כהמשך טבעי. ממתין להחלטת המשתמש לגבי commit/push. |
 | 2026-06-17/18 | Phase 3 הועלה ל-production (Vercel): commit+push, אותרו ותוקנו שני באגי CI/Deploy לא קשורים לקוד עצמו — (1) `NEXT_PUBLIC_SUPABASE_URL`/`NEXT_PUBLIC_SUPABASE_ANON_KEY` היו רק ב-`.env.local` המקומי ולא ב-GitHub Actions secrets/Vercel Env Vars → build נכשל; המשתמש הוסיף אותם בשני המקומות, ו-`ci.yml` עודכן להזריק אותם לשלב ה-build. (2) Vercel Hobby חסם deploy כי ה-commit הגיע מ"מחבר" (Claude bot identity) בלי הרשאת collaborator על ריפו פרטי — נפתר ע"י הפיכת הריפו לציבורי (אומת קודם שאין סודות בהיסטוריית git). שני ה-redeploy-ים הבאים הצליחו (Ready). נוצרה גם `docs/QUOTE.md` — הצעת מחיר ללקוח בשתי חלופות (דף תדמית פרימיום ₪4,500-8,500 / מערכת מלאה ₪35,000-65,000 + עלויות שוטפות), והופק כ-PDF (לא נשמר ב-git, נשלח למשתמש). | בקשת המשתמש (ראה רשומה הבאה): שינוי סדר עדיפויות ב-ROADMAP. |
 | 2026-06-18 | **שינוי סדר עדיפויות (לא שינוי קוד)**: לפי בקשת המשתמש, המוצר שנמסר ראשון הוא **אתר תדמית בלי חנות ובלי הרשמת משתמשים**; חנות+תשלומים+הזמנות+אקדמיה+אדמין+auth (Phases 3-8) עברו לסטטוס "🔀 הרחבה אופציונלית" שתופעל רק אם הלקוח יבחר בה (תואם את שתי החלופות ב-`docs/QUOTE.md`). **הקוד הקיים של Phase 3 (Auth) לא הוסר ולא בוטל** — נשאר פעיל בפרודקשן כמו שהוא; רק עדיפות העבודה הבאה השתנתה. נוספה תיבת "🔀 שני מסלולים" בראש הרודמאפ, ועודכנה תיבת "🚦 להתחיל מכאן". | המשך **Phase 2 שאריות** (OG images, a11y/Lighthouse — תלוי תמונות אמיתיות) ואז **Phase 9** (קישורי אפליקציה אמיתיים) כדי לסגור את מסלול הבסיס. Phase 3-8 ימתינו לאישור מפורש שהלקוח בחר בהרחבה. לשקול (לא בוצע) הסרת קישור "התחברות/אזור אישי" מה-header אם מסלול הבסיס הוא הסופי. |
+| 2026-06-18 | עודכנה הצעת המחיר (`docs/QUOTE.md`): מחירים ₪5,000 (חלופה א') / +₪10,000 (חלופה ב', סה"כ ₪15,000), עלות API מיילים מעל 30/יום, Vercel Pro לריפו פרטי, כפתורי נגישות לפי חוק, גישה לקוד בגיטהאב בסיום. יעד מיילי צור קשר שונה ל-`Restyle.Barbershop@outlook.com`. **עוגן נוהל ב-CLAUDE.md**: תמיד planning → עדכון ROADMAP → build. | תחילת Stage 1. |
+| 2026-06-18 | **Stage 1 = חלופה א' — הושלם** (planning→ROADMAP→development→security→QA). תכנון: `docs/features/stage1-marketing-completion.md`. נבנו: (1) **ווידג'ט נגישות** (`accessibility-menu.tsx`, client+localStorage) עם הגדלת/הקטנת טקסט, ניגודיות גבוהה, גווני אפור, הדגשת קישורים, פונט קריא, עצירת אנימציות, סמן גדול, איפוס; CSS ב-`globals.css`; `skip-to-content` + `main#main` + focus-visible. (2) **עמוד הצהרת נגישות** `/accessibility` (ת"י 5568/WCAG 2.0 AA + רכז נגישות). (3) **עמוד אקדמיה** `/academy` (תוכן בלבד) + `academy-data.ts`. (4) **עמוד מיקום ושעות** `/locations` (כתובת/שעות/מפת Google iframe עם sandbox). (5) **הסתרת שאריות חלופה ב'**: הוסר קישור auth + קריאת supabase מה-header (header סטטי), הוסר "חנות" מ-navLinks/hero/מטא-דאטה, נוסף "גלריה" לניווט. הורחב `siteConfig` (contact אמיתי, hours, accessibility). security: אין Critical/High. QA Playwright: כל הנתיבים 200, ווידג'ט עובד+נשמר אחרי רענון. typecheck/lint/test/build ✅. | תמונות אמיתיות (Hero/גלריה/אקדמיה) + Lighthouse; שם רכז נגישות ייעודי; דומיין+production. ממתין להחלטת המשתמש לגבי commit/push ומיזוג. |

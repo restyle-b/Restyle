@@ -3,12 +3,8 @@ import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
 import { navLinks, siteConfig } from "@/lib/config";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export async function SiteHeader() {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getUser();
-
+export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-line-dark bg-ink/80 backdrop-blur">
       <Container className="flex h-16 items-center justify-between">
@@ -26,12 +22,6 @@ export async function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href={data.user ? "/account" : "/login"}
-            className="text-sm text-neutral-300 transition-colors hover:text-white"
-          >
-            {data.user ? "אזור אישי" : "התחברות"}
-          </Link>
         </nav>
 
         <BookingLink className={buttonVariants({ size: "sm", className: "hidden sm:inline-flex" })}>
