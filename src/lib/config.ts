@@ -10,7 +10,7 @@ export const siteConfig = {
 
   /** קישורי קביעת תור — אפליקציית Restyle */
   booking: {
-    appStore: "#", // TODO: קישור App Store
+    appStore: "https://apps.apple.com/il/app/restyle/id6744821132?l=he",
     googlePlay: "#", // TODO: קישור Google Play
     web: "#", // TODO: קישור web לקביעת תור (אם קיים)
   },
