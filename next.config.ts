@@ -10,9 +10,16 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
  *   של Next App Router (ללא nonce). אין רינדור של HTML ממשתמש, לכן משטח ה-XSS מינימלי.
  * - connect-src ל-Supabase (REST + realtime), frame-src למפת Google בעמוד מיקום.
  */
+// next dev עוטף מודולים ב-eval() (HMR/source maps) — בלי unsafe-eval כל
+// האינטראקטיביות בצד הלקוח נשברת מקומית. ב-production הבאנדל לא משתמש ב-eval.
+const scriptSrc =
+  process.env.NODE_ENV === "production"
+    ? "script-src 'self' 'unsafe-inline'"
+    : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  scriptSrc,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
