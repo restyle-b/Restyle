@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
+import { BookingLink } from "@/components/booking-link";
 import { navLinks, siteConfig } from "@/lib/config";
 
 export function SiteFooter() {
@@ -34,12 +35,9 @@ export function SiteFooter() {
           <p className="mt-4 text-sm text-neutral-400">
             קביעת תור מתבצעת באפליקציית Restyle.
           </p>
-          <a
-            href={siteConfig.booking.web}
-            className="mt-3 inline-block text-sm font-medium text-accent hover:underline"
-          >
+          <BookingLink className="mt-3 inline-block text-sm font-medium text-accent hover:underline">
             להורדת האפליקציה ←
-          </a>
+          </BookingLink>
         </div>
       </Container>
 

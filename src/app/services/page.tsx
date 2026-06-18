@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { buttonVariants } from "@/components/ui/button";
-import { siteConfig } from "@/lib/config";
+import { BookingLink } from "@/components/booking-link";
 import { services } from "@/lib/services-data";
 
 export const metadata: Metadata = {
@@ -28,9 +28,7 @@ export default function ServicesPage() {
       </div>
 
       <div className="mt-12">
-        <a href={siteConfig.booking.web} className={buttonVariants({ size: "lg" })}>
-          קביעת תור
-        </a>
+        <BookingLink className={buttonVariants({ size: "lg" })}>קביעת תור</BookingLink>
       </div>
     </Container>
   );

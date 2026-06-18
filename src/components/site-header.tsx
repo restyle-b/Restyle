@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
+import { BookingLink } from "@/components/booking-link";
 import { navLinks, siteConfig } from "@/lib/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -33,12 +34,9 @@ export async function SiteHeader() {
           </Link>
         </nav>
 
-        <a
-          href={siteConfig.booking.web}
-          className={buttonVariants({ size: "sm", className: "hidden sm:inline-flex" })}
-        >
+        <BookingLink className={buttonVariants({ size: "sm", className: "hidden sm:inline-flex" })}>
           קביעת תור
-        </a>
+        </BookingLink>
       </Container>
     </header>
   );

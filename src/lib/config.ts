@@ -12,7 +12,6 @@ export const siteConfig = {
   booking: {
     appStore: "https://apps.apple.com/il/app/restyle/id6744821132?l=he",
     googlePlay: "https://play.google.com/store/apps/details?id=com.smtio.restyle",
-    web: "#", // TODO: קישור web לקביעת תור (אם קיים)
   },
 
   social: {
