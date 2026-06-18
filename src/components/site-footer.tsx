@@ -42,13 +42,21 @@ export function SiteFooter() {
       </Container>
 
       <div className="border-t border-line-dark py-6">
-        <Container className="flex flex-col items-center gap-2 text-center text-xs text-neutral-500 sm:flex-row sm:justify-between">
+        <Container className="flex flex-col items-center gap-3 text-center text-xs text-neutral-500 sm:flex-row sm:justify-between">
           <span>
             © {new Date().getFullYear()} {siteConfig.name}. כל הזכויות שמורות.
           </span>
-          <Link href="/accessibility" className="transition-colors hover:text-white">
-            הצהרת נגישות
-          </Link>
+          <nav aria-label="קישורים משפטיים" className="flex flex-wrap justify-center gap-4">
+            <Link href="/accessibility" className="transition-colors hover:text-white">
+              הצהרת נגישות
+            </Link>
+            <Link href="/privacy" className="transition-colors hover:text-white">
+              מדיניות פרטיות
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-white">
+              תקנון
+            </Link>
+          </nav>
         </Container>
       </div>
     </footer>
