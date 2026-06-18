@@ -38,10 +38,21 @@ export function rateLimit(key: string, limit: number, windowMs: number): RateLim
   return { ok: true, retryAfter: 0 };
 }
 
-/** כתובת ה-IP של הלקוח מה-headers של הפרוקסי (Vercel). */
+/**
+ * כתובת ה-IP של הלקוח. ⚠️ קריטי: `x-real-ip` מוגדר ע"י הפרוקסי של Vercel
+ * ואינו ניתן לזיוף ע"י הלקוח. אסור להשתמש ב-entry השמאלי של `x-forwarded-for`
+ * כי הוא נשלט ע"י הלקוח (אפשר לזייף IP אקראי בכל בקשה ולעקוף את ה-rate-limit
+ * לחלוטין + לנפח את ה-Map בזיכרון). ה-fallback ל-XFF לוקח את ה-entry האחרון
+ * (זה שהוסיף הפרוקסי הקרוב), לא הראשון.
+ */
 export async function getClientIp(): Promise<string> {
   const h = await headers();
+  const realIp = h.get("x-real-ip");
+  if (realIp) return realIp.trim();
   const forwarded = h.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]!.trim();
-  return h.get("x-real-ip") ?? "unknown";
+  if (forwarded) {
+    const parts = forwarded.split(",");
+    return parts[parts.length - 1]!.trim();
+  }
+  return "unknown";
 }

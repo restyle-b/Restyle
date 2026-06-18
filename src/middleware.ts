@@ -64,5 +64,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  // לא להריץ את ה-middleware על נכסים סטטיים וקבצי SEO (robots.txt/sitemap.xml),
+  // אחרת next-intl מנסה לפרש אותם כנתיב locale ומחזיר 404.
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+  ],
 };

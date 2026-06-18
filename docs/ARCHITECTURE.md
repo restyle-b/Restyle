@@ -131,6 +131,17 @@ interface PaymentProvider {
   *.vercel.app / localhost) ונופל ל-`siteConfig.url`, למניעת הרעלת קישורי איפוס סיסמה.
 - **Open-redirect backslash (LOW):** `safeRedirectPath` חוסם כעת גם `/\evil.com` (+בדיקה).
 
+### 7.2 סבב Pentest שני — ממצאים שטופלו (2026-06-18)
+- **עקיפת rate-limit דרך X-Forwarded-For (MED, רגרסיה בתיקון של 7.1):** `getClientIp`
+  לקח את ה-entry השמאלי של `x-forwarded-for` שנשלט ע"י הלקוח → זיוף IP בכל בקשה עוקף
+  את ה-rate-limit ומנפח את ה-Map. תוקן: עדיפות ל-`x-real-ip` (מוגדר ע"י Vercel, לא ניתן לזיוף).
+- **Account enumeration (LOW):** הודעת שגיאת signUp רמזה על קיום אימייל → הוחלפה בגנרית.
+- **Honeypot ללא הגבלת אורך (LOW):** `company` ב-signUp קיבל מחרוזת בכל גודל → הוגבל ל-256.
+- **חוסר COOP (LOW):** נוסף `Cross-Origin-Opener-Policy: same-origin`.
+- **robots.txt / sitemap.xml מחזירים 404 (BUG/SEO):** ה-matcher של ה-middleware תפס אותם
+  ו-next-intl פירש כנתיב locale. תוקן ה-matcher (החרגת robots.txt/sitemap.xml + סיומות
+  ico/txt/xml). אומת: שניהם 200, `/account` עדיין מוגן (307).
+
 ---
 
 ## 8. בדיקות ו-CI

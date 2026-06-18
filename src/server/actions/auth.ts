@@ -62,8 +62,9 @@ export async function signUp(input: unknown): Promise<AuthActionResult> {
   });
 
   if (error) {
+    // הודעה גנרית — לא לרמוז על קיום האימייל במערכת (account enumeration)
     console.error("[auth] signUp failed:", error.message);
-    return { ok: false, error: "ההרשמה נכשלה — ייתכן שהאימייל הזה כבר רשום" };
+    return { ok: false, error: "ההרשמה נכשלה, נסו שוב מאוחר יותר" };
   }
 
   return { ok: true };
