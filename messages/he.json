@@ -13,7 +13,9 @@
     "homeAria": "ReStyle — לדף הבית",
     "mainAria": "ניווט ראשי",
     "footerAria": "ניווט תחתון",
-    "bookingCta": "קביעת תור"
+    "bookingCta": "קביעת תור",
+    "openAria": "פתיחת תפריט",
+    "closeAria": "סגירת תפריט"
   },
   "footer": {
     "navHeading": "ניווט",

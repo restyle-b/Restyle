@@ -13,7 +13,9 @@
     "homeAria": "ReStyle — Home page",
     "mainAria": "Main navigation",
     "footerAria": "Footer navigation",
-    "bookingCta": "Book Now"
+    "bookingCta": "Book Now",
+    "openAria": "Open menu",
+    "closeAria": "Close menu"
   },
   "footer": {
     "navHeading": "Navigation",

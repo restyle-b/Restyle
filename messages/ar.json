@@ -13,7 +13,9 @@
     "homeAria": "ريستايل — الصفحة الرئيسية",
     "mainAria": "التنقل الرئيسي",
     "footerAria": "تنقل التذييل",
-    "bookingCta": "حجز موعد"
+    "bookingCta": "حجز موعد",
+    "openAria": "فتح القائمة",
+    "closeAria": "إغلاق القائمة"
   },
   "footer": {
     "navHeading": "التنقل",

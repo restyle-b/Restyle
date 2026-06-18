@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
 import { Wordmark } from "@/components/wordmark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { MobileNav } from "@/components/mobile-nav";
 import { navLinks } from "@/lib/config";
 
 export function SiteHeader() {
@@ -12,7 +13,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line-dark bg-ink/80 backdrop-blur">
-      <Container className="flex h-16 items-center justify-between">
+      <Container className="relative flex h-16 items-center justify-between">
         <Link href="/" className="text-white" aria-label={t("homeAria")}>
           <Wordmark className="h-8" />
         </Link>
@@ -30,10 +31,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <LocaleSwitcher className="hidden sm:inline-flex" />
+          <LocaleSwitcher className="hidden md:inline-flex" />
           <BookingLink className={buttonVariants({ size: "sm", className: "hidden sm:inline-flex" })}>
             {t("bookingCta")}
           </BookingLink>
+          <MobileNav />
         </div>
       </Container>
     </header>
