@@ -21,6 +21,15 @@ export async function middleware(request: NextRequest) {
   const { prefix, rest } = splitLocale(request.nextUrl.pathname);
   const isProtected = PROTECTED_SEGMENTS.some((p) => rest.startsWith(p));
 
+  // אנטי-DoS + ביצועים: getUser() פונה לשרת ה-Auth של Supabase. בלי הסינון הזה
+  // כל hit לעמוד ציבורי (גם אנונימי) היה מייצר קריאת auth יוצאת — הגברת DoS
+  // (הצפת האתר → הצפת Supabase → מיצוי מכסה/חסימה). פונים רק אם הנתיב מוגן או
+  // אם קיים cookie של session (משתמש מחובר שצריך רענון).
+  const hasAuthCookie = request.cookies.getAll().some((c) => c.name.startsWith("sb-"));
+  if (!isProtected && !hasAuthCookie) {
+    return intlResponse;
+  }
+
   const env = getClientEnv();
   let response = intlResponse;
   const supabase = createServerClient(

@@ -142,6 +142,20 @@ interface PaymentProvider {
   ו-next-intl פירש כנתיב locale. תוקן ה-matcher (החרגת robots.txt/sitemap.xml + סיומות
   ico/txt/xml). אומת: שניהם 200, `/account` עדיין מוגן (307).
 
+### 7.3 סבב Pentest שלישי (מעמיק) — 2026-06-18
+- **DoS amplification ב-middleware (MED):** `supabase.auth.getUser()` רץ על כל בקשה תואמת,
+  כולל תנועה אנונימית לעמודים ציבוריים — כל hit ייצר קריאת auth יוצאת ל-Supabase. הצפת
+  האתר → הצפת Supabase Auth → מיצוי מכסה/חסימה (auth outage). תוקן: פונים ל-Supabase רק
+  אם הנתיב מוגן או אם קיים cookie `sb-*` (משתמש מחובר). אומת: `/`=200 (מדלג), `/account`=307.
+- **עקיפת allowlist ב-getOrigin (MED, פגם בתיקון 7.1#5):** `host.startsWith("localhost")`
+  אישר גם `localhost.evil.com` → poisoning. תוקן להתאמה מדויקת (`localhost` / `localhost:`).
+- **תלויות (npm audit):** HIGH (`vite`) ו-moderate (`postcss`) הם dev/build-time בלבד ולא
+  חשופים בפרודקשן (vitest dev-server; postcss מעבד CSS פנימי מהימן). ⚠️ לא להריץ
+  `npm audit fix --force` — הוא מוריד את Next ל-v9 (שובר). לעדכן בנקודת זמן עתידית.
+- **נבדק ונקי:** אין סודות-שרת ב-bundle הקליינט; אין SSRF דרך `/_next/image`
+  (URL חיצוני ו-169.254.169.254 → 400, `remotePatterns` ריק); React escaping על שם המשתמש
+  המוצג ב-`/account` (אין stored XSS).
+
 ---
 
 ## 8. בדיקות ו-CI

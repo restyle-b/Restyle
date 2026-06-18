@@ -28,7 +28,10 @@ async function getOrigin() {
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "";
   const protocol = h.get("x-forwarded-proto") ?? "https";
   const allowed =
-    host === PROD_HOST || host.endsWith(".vercel.app") || host.startsWith("localhost");
+    host === PROD_HOST ||
+    host.endsWith(".vercel.app") ||
+    host === "localhost" ||
+    host.startsWith("localhost:");
   return allowed ? `${protocol}://${host}` : siteConfig.url;
 }
 
