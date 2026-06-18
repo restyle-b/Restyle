@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Assistant, Frank_Ruhl_Libre, Cairo, El_Messiri } from "next/font/google";
+import { Assistant, Cairo } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -12,32 +12,21 @@ import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu
 import { FloatingContact } from "@/components/floating-contact";
 import "../globals.css";
 
-/** כותרות עברית/אנגלית — סריף פרימיום עם נוכחות עיתונאית. */
-const frankRuhlLibre = Frank_Ruhl_Libre({
-  subsets: ["hebrew", "latin"],
-  weight: ["500", "700", "900"],
-  variable: "--font-heading-latin",
-});
-
-/** טקסט רץ עברית/אנגלית. */
+/**
+ * טיפוגרפיה עברית/אנגלית — Assistant לכותרות ולטקסט הרץ כאחד (מינימליסטי-נקי,
+ * בהשראת אור חיון). הבחנה נעשית במשקל ובגודל, לא בהחלפת משפחת גופן.
+ */
 const assistant = Assistant({
   subsets: ["hebrew", "latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body-latin",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-latin",
 });
 
-/** כותרות ערבית — סריף-דיספליי עם אופי תואם. */
-const elMessiri = El_Messiri({
-  subsets: ["arabic", "latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-heading-arabic",
-});
-
-/** טקסט רץ ערבית. */
+/** טיפוגרפיה ערבית — Cairo לכותרות ולטקסט הרץ. */
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body-arabic",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-arabic",
 });
 
 const OG_LOCALES: Record<Locale, string> = {
@@ -91,7 +80,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={locale === "en" ? "ltr" : "rtl"}
-      className={`${frankRuhlLibre.variable} ${assistant.variable} ${elMessiri.variable} ${cairo.variable}`}
+      className={`${assistant.variable} ${cairo.variable}`}
     >
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>

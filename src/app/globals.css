@@ -11,14 +11,14 @@
   --color-accent-soft: #b08d57; /* ברונזה */
 
   --font-sans:
-    var(--font-body-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-heading-latin), var(--font-body-latin), serif;
+    var(--font-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
-/* ערבית: סריף-דיספליי ייעודי לכותרות + sans ייעודי לטקסט רץ (Frank Ruhl Libre/Assistant אינם תומכים בערבית) */
+/* ערבית: Cairo לכותרות ולטקסט הרץ (Assistant אינו תומך בערבית) */
 html[lang="ar"] {
-  --font-sans: var(--font-body-arabic), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-heading-arabic), var(--font-body-arabic), sans-serif;
+  --font-sans: var(--font-arabic), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-arabic), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 html {
@@ -32,10 +32,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* כותרות ראווה */
+/* כותרות ראווה — sans נקי. ה-tracking נקבע ע"י utility בכל כותרת בנפרד. */
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: 0.01em;
 }
 
 /* ── נגישות ── */
