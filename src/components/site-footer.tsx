@@ -32,7 +32,7 @@ export function SiteFooter() {
         <div>
           <h3 className="text-sm font-semibold text-white">קביעת תור</h3>
           <p className="mt-4 text-sm text-neutral-400">
-            קביעת תור מתבצעת באפליקציית Restyle.
+            קביעת תור מתבצעת באפליקציית ReStyle.
           </p>
           <BookingLink className="mt-3 inline-block text-sm font-medium text-accent hover:underline">
             להורדת האפליקציה ←

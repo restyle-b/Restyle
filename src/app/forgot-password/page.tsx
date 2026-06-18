@@ -4,7 +4,7 @@ import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 
 export const metadata: Metadata = {
   title: "שכחתי סיסמה",
-  description: "איפוס סיסמה לאזור האישי באתר Restyle.",
+  description: "איפוס סיסמה לאזור האישי באתר ReStyle.",
 };
 
 export default function ForgotPasswordPage() {

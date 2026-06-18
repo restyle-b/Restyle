@@ -5,7 +5,7 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 
 export const metadata: Metadata = {
   title: "אודות",
-  description: "הסיפור של Restyle — מספרה ואקדמיה פרימיום.",
+  description: "הסיפור של ReStyle — מספרה ואקדמיה פרימיום.",
 };
 
 export default function AboutPage() {
@@ -14,7 +14,7 @@ export default function AboutPage() {
       <SectionHeading
         eyebrow="הסיפור שלנו"
         title="יותר ממספרה"
-        description="Restyle נוסדה מתוך אמונה שעיצוב שיער הוא מקצוע — שילוב של אומנות, טכניקה ושירות אישי."
+        description="ReStyle נוסדה מתוך אמונה שעיצוב שיער הוא מקצוע — שילוב של אומנות, טכניקה ושירות אישי."
       />
 
       <div className="mt-12 grid items-start gap-12 lg:grid-cols-2">
@@ -22,7 +22,7 @@ export default function AboutPage() {
         <div className="space-y-6 text-neutral-300">
           <p>
             התחלנו כסטודיו קטן עם חזון פשוט: לתת לכל לקוח חוויה מדויקת ואישית, ברמה שמוכרת
-            ממספרות הבוטיק הטובות בעולם. עם השנים, Restyle צמחה למותג שמשלב מספרה ואקדמיה
+            ממספרות הבוטיק הטובות בעולם. עם השנים, ReStyle צמחה למותג שמשלב מספרה ואקדמיה
             להכשרת מעצבי שיער.
           </p>
           <p>

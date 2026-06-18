@@ -4,7 +4,7 @@ import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 
 export const metadata: Metadata = {
   title: "איפוס סיסמה",
-  description: "הגדרת סיסמה חדשה לאזור האישי באתר Restyle.",
+  description: "הגדרת סיסמה חדשה לאזור האישי באתר ReStyle.",
 };
 
 export default function ResetPasswordPage() {

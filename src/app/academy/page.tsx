@@ -8,14 +8,14 @@ import { courses } from "@/lib/academy-data";
 
 export const metadata: Metadata = {
   title: "אקדמיה",
-  description: "אקדמיית Restyle — קורסים מקצועיים בעיצוב שיער ובספרות, מהמתחילים ועד רמת מומחה.",
+  description: "אקדמיית ReStyle — קורסים מקצועיים בעיצוב שיער ובספרות, מהמתחילים ועד רמת מומחה.",
 };
 
 export default function AcademyPage() {
   return (
     <Container className="py-20">
       <SectionHeading
-        eyebrow="אקדמיית Restyle"
+        eyebrow="אקדמיית ReStyle"
         title="למדו את המקצוע מהמיטב"
         description="קורסים מקצועיים בעיצוב שיער, פייד ועיצוב זקן — בהדרכת הצוות המוביל שלנו. כל קורס משלב תיאוריה ועבודה מעשית על דגמים."
       />
@@ -24,7 +24,7 @@ export default function AcademyPage() {
         <ImagePlaceholder label="תמונת אקדמיה" className="aspect-[4/3] rounded-lg" />
         <div className="space-y-6 text-neutral-300">
           <p>
-            אקדמיית Restyle הוקמה כדי להעביר את הידע, הטכניקה והסטנדרט המקצועי שלנו לדור
+            אקדמיית ReStyle הוקמה כדי להעביר את הידע, הטכניקה והסטנדרט המקצועי שלנו לדור
             הבא של אנשי המקצוע. הלימוד בקבוצות קטנות, בסביבת עבודה אמיתית ובליווי אישי צמוד.
           </p>
           <p>

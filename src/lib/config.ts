@@ -1,13 +1,13 @@
 /**
- * תצורת אתר Restyle.
- * קביעת תור מתבצעת באפליקציית Restyle — הקישורים כאן מפנים אליה.
+ * תצורת אתר ReStyle.
+ * קביעת תור מתבצעת באפליקציית ReStyle — הקישורים כאן מפנים אליה.
  */
 export const siteConfig = {
-  name: "Restyle",
-  description: "מספרת Restyle — תספורת, עיצוב שיער ואקדמיה מקצועית.",
+  name: "ReStyle",
+  description: "מספרת ReStyle — תספורת, עיצוב שיער ואקדמיה מקצועית.",
   url: "https://restyle.co.il",
 
-  /** קישורי קביעת תור — אפליקציית Restyle */
+  /** קישורי קביעת תור — אפליקציית ReStyle */
   booking: {
     appStore: "https://apps.apple.com/il/app/restyle/id6744821132?l=he",
     googlePlay: "https://play.google.com/store/apps/details?id=com.smtio.restyle",
@@ -36,7 +36,7 @@ export const siteConfig = {
 
   /** פרטי נגישות — לעמוד הצהרת הנגישות (חובה לפי תקנות שוויון זכויות) */
   accessibility: {
-    coordinatorName: "צוות Restyle",
+    coordinatorName: "צוות ReStyle",
     phone: "050-5961800",
     email: "Restyle.Barbershop@outlook.com",
     lastUpdated: "18 ביוני 2026",

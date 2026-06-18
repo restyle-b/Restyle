@@ -9,7 +9,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-line-dark bg-ink/80 backdrop-blur">
       <Container className="flex h-16 items-center justify-between">
-        <Link href="/" className="text-white" aria-label="Restyle — לדף הבית">
+        <Link href="/" className="text-white" aria-label="ReStyle — לדף הבית">
           <Wordmark className="h-8" />
         </Link>
 

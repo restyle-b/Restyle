@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/config";
  * נבנים מ-siteConfig כדי שעדכון פרטים יתעדכן בכל האתר.
  */
 
-const WHATSAPP_MESSAGE = "היי! אשמח לקבל פרטים על Restyle.";
+const WHATSAPP_MESSAGE = "היי! אשמח לקבל פרטים על ReStyle.";
 
 export const contactLinks = {
   /** חיוג ישיר */

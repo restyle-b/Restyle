@@ -19,7 +19,7 @@ export default function ContactPage() {
             light
             eyebrow="יש לכם שאלה?"
             title="צרו קשר"
-            description="השאירו לנו הודעה ונחזור אליכם בהקדם. לקביעת תור — דרך אפליקציית Restyle."
+            description="השאירו לנו הודעה ונחזור אליכם בהקדם. לקביעת תור — דרך אפליקציית ReStyle."
           />
           <dl className="mt-8 space-y-3 text-neutral-300">
             <div className="flex gap-3">

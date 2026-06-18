@@ -7,7 +7,7 @@ import { services } from "@/lib/services-data";
 
 export const metadata: Metadata = {
   title: "שירותים",
-  description: "כל שירותי המספרה של Restyle — תספורות, עיצוב זקן, צבע וטיפולי שיער.",
+  description: "כל שירותי המספרה של ReStyle — תספורות, עיצוב זקן, צבע וטיפולי שיער.",
 };
 
 export default function ServicesPage() {

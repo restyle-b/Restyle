@@ -4,7 +4,7 @@ import { RegisterForm } from "@/components/auth/register-form";
 
 export const metadata: Metadata = {
   title: "הרשמה",
-  description: "הרשמה לאזור האישי באתר Restyle.",
+  description: "הרשמה לאזור האישי באתר ReStyle.",
 };
 
 export default function RegisterPage() {

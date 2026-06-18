@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "הצהרת נגישות",
-  description: "הצהרת הנגישות של אתר Restyle — רמת התאמה, הסדרים ופרטי רכז נגישות.",
+  description: "הצהרת הנגישות של אתר ReStyle — רמת התאמה, הסדרים ופרטי רכז נגישות.",
 };
 
 const { coordinatorName, phone, email, lastUpdated } = siteConfig.accessibility;
@@ -17,7 +17,7 @@ export default function AccessibilityPage() {
 
       <div className="mt-10 max-w-3xl space-y-8 text-neutral-300">
         <p>
-          מספרת Restyle רואה חשיבות רבה במתן שירות שוויוני לכלל הלקוחות, ופועלת להנגשת אתר
+          מספרת ReStyle רואה חשיבות רבה במתן שירות שוויוני לכלל הלקוחות, ופועלת להנגשת אתר
           האינטרנט שלה כדי לאפשר שימוש נוח וזמין גם לאנשים עם מוגבלות.
         </p>
 

@@ -5,7 +5,7 @@ import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata: Metadata = {
   title: "התחברות",
-  description: "התחברות לאזור האישי באתר Restyle.",
+  description: "התחברות לאזור האישי באתר ReStyle.",
 };
 
 export default function LoginPage() {

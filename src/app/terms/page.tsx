@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "תקנון ותנאי שימוש",
-  description: "תנאי השימוש באתר Restyle.",
+  description: "תנאי השימוש באתר ReStyle.",
 };
 
 export default function TermsPage() {
@@ -16,15 +16,15 @@ export default function TermsPage() {
 
       <div className="mt-10 max-w-3xl space-y-8 text-neutral-300">
         <p>
-          ברוכים הבאים לאתר Restyle. השימוש באתר כפוף לתנאים שלהלן. אנא קראו אותם בעיון;
+          ברוכים הבאים לאתר ReStyle. השימוש באתר כפוף לתנאים שלהלן. אנא קראו אותם בעיון;
           המשך השימוש באתר מהווה הסכמה לתנאים אלה.
         </p>
 
         <section>
           <h2 className="font-display text-xl font-bold text-white">אופי האתר</h2>
           <p className="mt-3">
-            האתר משמש להצגת המספרה, השירותים והאקדמיה של Restyle וליצירת קשר. קביעת תורים
-            מתבצעת באמצעות אפליקציית Restyle הייעודית, אליה מפנים הקישורים שבאתר.
+            האתר משמש להצגת המספרה, השירותים והאקדמיה של ReStyle וליצירת קשר. קביעת תורים
+            מתבצעת באמצעות אפליקציית ReStyle הייעודית, אליה מפנים הקישורים שבאתר.
           </p>
         </section>
 
@@ -40,7 +40,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-display text-xl font-bold text-white">קניין רוחני</h2>
           <p className="mt-3">
-            כל התכנים באתר — לרבות טקסטים, עיצוב, לוגו ותמונות — הם רכושה של Restyle ומוגנים
+            כל התכנים באתר — לרבות טקסטים, עיצוב, לוגו ותמונות — הם רכושה של ReStyle ומוגנים
             בזכויות יוצרים. אין להעתיק, לשכפל או לעשות בהם שימוש מסחרי ללא אישור בכתב.
           </p>
         </section>

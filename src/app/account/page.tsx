@@ -7,7 +7,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "אזור אישי",
-  description: "האזור האישי שלך באתר Restyle.",
+  description: "האזור האישי שלך באתר ReStyle.",
 };
 
 export default async function AccountPage() {

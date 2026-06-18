@@ -9,7 +9,7 @@ import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "מיקום ושעות",
-  description: `מספרת Restyle — ${siteConfig.contact.address}. שעות פעילות ופרטי הגעה.`,
+  description: `מספרת ReStyle — ${siteConfig.contact.address}. שעות פעילות ופרטי הגעה.`,
 };
 
 const mapSrc = contactLinks.mapEmbed;

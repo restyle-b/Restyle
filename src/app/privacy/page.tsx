@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "מדיניות פרטיות",
-  description: "מדיניות הפרטיות של אתר Restyle — איזה מידע נאסף, כיצד נעשה בו שימוש וזכויותיכם.",
+  description: "מדיניות הפרטיות של אתר ReStyle — איזה מידע נאסף, כיצד נעשה בו שימוש וזכויותיכם.",
 };
 
 export default function PrivacyPage() {
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
 
       <div className="mt-10 max-w-3xl space-y-8 text-neutral-300">
         <p>
-          מספרת Restyle (&quot;אנחנו&quot;) מכבדת את פרטיות המבקרים באתר. מדיניות זו מסבירה
+          מספרת ReStyle (&quot;אנחנו&quot;) מכבדת את פרטיות המבקרים באתר. מדיניות זו מסבירה
           איזה מידע נאסף, למה הוא משמש, וכיצד תוכלו לממש את זכויותיכם. השימוש באתר מהווה
           הסכמה למדיניות זו.
         </p>

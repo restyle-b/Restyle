@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ── ערכת עיצוב Restyle (ראה docs/DESIGN.md) ── */
+/* ── ערכת עיצוב ReStyle (ראה docs/DESIGN.md) ── */
 @theme {
   --color-ink: #0e0e0e; /* רקע ראשי כהה */
   --color-ink-soft: #1a1a1a; /* רקע משני כהה */

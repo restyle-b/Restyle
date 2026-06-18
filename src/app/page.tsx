@@ -96,7 +96,7 @@ export default function HomePage() {
               מוכנים לתור הבא שלכם?
             </h2>
             <p className="mx-auto mt-3 max-w-md text-neutral-300">
-              קביעת תור מתבצעת באפליקציית Restyle — מהירה, נוחה וזמינה 24/7.
+              קביעת תור מתבצעת באפליקציית ReStyle — מהירה, נוחה וזמינה 24/7.
             </p>
           </Reveal>
           <Reveal className="mt-8">
@@ -118,7 +118,7 @@ export default function HomePage() {
           <Reveal>
             <SectionHeading
               center
-              eyebrow="אקדמיית Restyle"
+              eyebrow="אקדמיית ReStyle"
               title="למדו את המקצוע מהמיטב"
               description="קורסים מקצועיים בעיצוב שיער ועיצוב זקן, מההתחלה ועד רמת מומחה — בהדרכת הצוות המוביל שלנו."
               className="mx-auto"
@@ -144,7 +144,7 @@ export default function HomePage() {
               center
               eyebrow="הסיפור שלנו"
               title="יותר ממספרה"
-              description="Restyle נוסדה מתוך אמונה שעיצוב שיער הוא מקצוע — שילוב של אומנות, טכניקה ושירות אישי. הצוות שלנו מחויב לתוצאה ולחוויה בכל ביקור."
+              description="ReStyle נוסדה מתוך אמונה שעיצוב שיער הוא מקצוע — שילוב של אומנות, טכניקה ושירות אישי. הצוות שלנו מחויב לתוצאה ולחוויה בכל ביקור."
               className="mx-auto"
             />
           </Reveal>
