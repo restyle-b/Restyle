@@ -17,7 +17,7 @@ export default function HomePage() {
         menspire.com) — z-index שלילי כך שהסקציה הבאה (רקע אטום) מכסה אותו
         בטבעיות בזמן הגלילה.
       */}
-      <section className="relative flex min-h-[170vh] items-start">
+      <section className="relative flex min-h-[100svh] items-start sm:min-h-[170vh]">
         <div
           className="fixed inset-0 -z-10 bg-cover bg-center"
           style={{ backgroundImage: "url(/images/hero-bg.jpg)" }}
