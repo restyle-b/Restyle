@@ -11,9 +11,11 @@ function detectAppLink(): string {
 export function BookingLink({
   className,
   children,
+  onClick,
 }: {
   className?: string;
   children: React.ReactNode;
+  onClick?: () => void;
 }) {
   const [href, setHref] = useState<string>(siteConfig.booking.appStore);
 
@@ -22,7 +24,7 @@ export function BookingLink({
   }, []);
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+    <a href={href} target="_blank" rel="noopener noreferrer" className={className} onClick={onClick}>
       {children}
     </a>
   );

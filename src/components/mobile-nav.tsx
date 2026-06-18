@@ -1,51 +1,124 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { Wordmark } from "@/components/wordmark";
 import { navLinks } from "@/lib/config";
 
 export function MobileNav() {
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+
+  // נועל גלילת רקע כשהתפריט פתוח, סוגר ב-Escape, ולוכד את ה-focus בתוך
+  // הפאנל (דפוס dialog נגיש לפי WAI-ARIA) כדי ש-Tab לא יברח לתוכן שמתחת.
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const focusables = panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button, select, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0]!;
+      const last = focusables[focusables.length - 1]!;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   return (
     <div className="md:hidden">
       <button
         type="button"
-        aria-label={open ? t("closeAria") : t("openAria")}
+        aria-label={t("openAria")}
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(true)}
         className="flex h-9 w-9 items-center justify-center rounded-md text-neutral-300 transition-colors hover:text-white"
       >
-        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        <Menu className="h-5 w-5" />
       </button>
 
-      {open && (
-        <div className="absolute inset-x-0 top-16 z-50 border-b border-line-dark bg-ink px-4 py-6 shadow-lg">
-          <nav className="flex flex-col gap-4" aria-label={t("mainAria")}>
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="text-base text-neutral-300 transition-colors hover:text-white"
-              >
-                {t(link.key)}
+      {open &&
+        createPortal(
+          // מוצמד ל-document.body ולא נשאר תחת ה-header: ל-header יש
+          // backdrop-blur (backdrop-filter), שיוצר containing block ל-position:fixed
+          // ב-Chromium — בלעדי ה-portal הדיאלוג היה "נכלא" בגובה ה-header במקום
+          // לכסות את כל המסך.
+          <div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            className="fixed inset-0 z-[70] flex flex-col bg-ink"
+          >
+            <div className="flex h-16 shrink-0 items-center justify-between border-b border-line-dark px-4 sm:px-6">
+              <Link href="/" onClick={() => setOpen(false)} className="text-white" aria-label={t("homeAria")}>
+                <Wordmark className="h-8" />
               </Link>
-            ))}
-          </nav>
+              <h2 id={titleId} className="sr-only">
+                {t("mainAria")}
+              </h2>
+              <button
+                ref={closeButtonRef}
+                type="button"
+                aria-label={t("closeAria")}
+                onClick={() => setOpen(false)}
+                className="flex h-9 w-9 items-center justify-center rounded-md text-neutral-300 transition-colors hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-          <div className="mt-6 flex items-center justify-between gap-4 border-t border-line-dark pt-6">
-            <LocaleSwitcher />
-            <BookingLink className={buttonVariants({ size: "sm" })}>{t("bookingCta")}</BookingLink>
-          </div>
-        </div>
-      )}
+            <nav className="flex-1 overflow-y-auto px-4 sm:px-6" aria-label={t("mainAria")}>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="block border-b border-line-dark py-5 text-2xl font-semibold text-white transition-colors hover:text-accent"
+                >
+                  {t(link.key)}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="flex shrink-0 items-center justify-between gap-4 border-t border-line-dark px-4 py-6 sm:px-6">
+              <LocaleSwitcher />
+              <BookingLink className={buttonVariants({ size: "sm" })} onClick={() => setOpen(false)}>
+                {t("bookingCta")}
+              </BookingLink>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

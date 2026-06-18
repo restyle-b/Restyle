@@ -171,6 +171,21 @@ interface PaymentProvider {
   long path (8k) → 404; TRACE → 500 גנרי בלי stack ללקוח; שיטות HTTP לא צפויות על `/account`
   → 307 (ההגנה חלה על כל ה-methods); אין X-Powered-By אחרי התיקון.
 
+### 7.5 CSP בפיתוח מול פרודקשן (2026-06-18)
+ב-QA חזותי עם Playwright התגלה ש-`npm run dev` נשבר תחת ה-CSP המחמיר: webpack
+HMR עוטף מודולים ב-`eval()`, וה-CSP (`script-src 'self' 'unsafe-inline'` בלי
+`unsafe-eval`) חסם את כל ה-JS בצד הלקוח מקומית. **תוקן** ב-`next.config.ts`:
+`unsafe-eval` מתווסף ל-`script-src` רק כש-`NODE_ENV !== "production"`; ה-CSP
+בפרודקשן (מאומת עם `next start`) ללא שינוי. זה תיקון DX בלבד — אינו מרחיב את
+משטח התקיפה בפרודקשן.
+
+### 7.6 סקירת אבטחה — תפריט מובייל מסך-מלא (2026-06-18)
+לפני בניית התפריט הופעל סקיל security מראש (לא רק retrospect). ממצא: אין קלט
+משתמש חדש, אין XSS (כל הטקסט מ-`next-intl`, לא מהמשתמש), קישורי `target=_blank`
+כבר עם `rel="noopener noreferrer"`. הוסר LOW יחיד: נוסף **focus trap** מלא
+(Tab/Shift+Tab לא בורחים מהדיאלוג) לפי דפוס WAI-ARIA Dialog — מונע מצב שבו
+משתמש מקלדת/קורא מסך "נתקע" בתוכן חבוי מתחת לתפריט הפתוח.
+
 ---
 
 ## 8. בדיקות ו-CI
