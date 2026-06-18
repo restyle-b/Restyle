@@ -7,8 +7,8 @@
   --color-paper: #fafaf8; /* רקע בהיר חמים */
   --color-line-dark: #2a2a2a;
   --color-line-light: #e8e6e0;
-  --color-accent: #c9a227; /* זהב מעושן */
-  --color-accent-soft: #b08d57; /* ברונזה */
+  --color-accent: #e5e5e5; /* אפור בהיר */
+  --color-accent-soft: #cfcfcf; /* אפור בהיר — hover */
 
   --font-sans:
     var(--font-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
