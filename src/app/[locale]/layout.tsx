@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Heebo, Assistant } from "next/font/google";
+import { Assistant, Frank_Ruhl_Libre, Cairo, El_Messiri } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -12,16 +12,32 @@ import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu
 import { FloatingContact } from "@/components/floating-contact";
 import "../globals.css";
 
-const heebo = Heebo({
+/** כותרות עברית/אנגלית — סריף פרימיום עם נוכחות עיתונאית. */
+const frankRuhlLibre = Frank_Ruhl_Libre({
   subsets: ["hebrew", "latin"],
-  weight: ["400", "700", "800", "900"],
-  variable: "--font-heebo",
+  weight: ["500", "700", "900"],
+  variable: "--font-heading-latin",
 });
 
+/** טקסט רץ עברית/אנגלית. */
 const assistant = Assistant({
   subsets: ["hebrew", "latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-assistant",
+  variable: "--font-body-latin",
+});
+
+/** כותרות ערבית — סריף-דיספליי עם אופי תואם. */
+const elMessiri = El_Messiri({
+  subsets: ["arabic", "latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-heading-arabic",
+});
+
+/** טקסט רץ ערבית. */
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body-arabic",
 });
 
 const OG_LOCALES: Record<Locale, string> = {
@@ -75,7 +91,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={locale === "en" ? "ltr" : "rtl"}
-      className={`${heebo.variable} ${assistant.variable}`}
+      className={`${frankRuhlLibre.variable} ${assistant.variable} ${elMessiri.variable} ${cairo.variable}`}
     >
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>

@@ -11,8 +11,14 @@
   --color-accent-soft: #b08d57; /* ברונזה */
 
   --font-sans:
-    var(--font-assistant), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-heebo), var(--font-assistant), sans-serif;
+    var(--font-body-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-heading-latin), var(--font-body-latin), serif;
+}
+
+/* ערבית: סריף-דיספליי ייעודי לכותרות + sans ייעודי לטקסט רץ (Frank Ruhl Libre/Assistant אינם תומכים בערבית) */
+html[lang="ar"] {
+  --font-sans: var(--font-body-arabic), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-heading-arabic), var(--font-body-arabic), sans-serif;
 }
 
 html {
