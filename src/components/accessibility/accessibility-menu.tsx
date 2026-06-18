@@ -177,7 +177,7 @@ export function AccessibilityMenu() {
                 aria-pressed={state[key]}
                 className={`rounded border px-2 py-2 text-xs transition-colors ${
                   state[key]
-                    ? "border-accent bg-accent text-ink"
+                    ? "border-accent bg-concrete text-ink"
                     : "border-line-dark text-neutral-300 hover:bg-ink"
                 }`}
               >
@@ -208,7 +208,7 @@ export function AccessibilityMenu() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={t("openAria")}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-ink shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-concrete text-ink shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
