@@ -3,6 +3,8 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
+import { ContactActions } from "@/components/contact-actions";
+import { contactLinks } from "@/lib/contact-links";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -10,9 +12,7 @@ export const metadata: Metadata = {
   description: `מספרת Restyle — ${siteConfig.contact.address}. שעות פעילות ופרטי הגעה.`,
 };
 
-const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(
-  siteConfig.contact.address,
-)}&hl=he&z=16&output=embed`;
+const mapSrc = contactLinks.mapEmbed;
 
 export default function LocationsPage() {
   return (
@@ -62,6 +62,11 @@ export default function LocationsPage() {
                 </dd>
               </div>
             </dl>
+          </div>
+
+          <div>
+            <h2 className="font-display text-lg font-bold text-white">יצירת קשר מהירה</h2>
+            <ContactActions className="mt-3" />
           </div>
 
           <BookingLink className={buttonVariants({ size: "lg" })}>קביעת תור באפליקציה</BookingLink>

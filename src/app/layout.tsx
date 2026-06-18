@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SkipToContent } from "@/components/skip-to-content";
 import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu";
+import { FloatingContact } from "@/components/floating-contact";
 import "./globals.css";
 
 const heebo = Heebo({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <SiteFooter />
+        <FloatingContact />
         <AccessibilityMenu />
       </body>
     </html>

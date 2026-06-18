@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { ContactForm } from "@/components/contact-form";
+import { ContactActions } from "@/components/contact-actions";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -34,6 +35,8 @@ export default function ContactPage() {
               <dd>{siteConfig.contact.email || "יפורסם בקרוב"}</dd>
             </div>
           </dl>
+
+          <ContactActions className="mt-8" />
         </div>
 
         <ContactForm />

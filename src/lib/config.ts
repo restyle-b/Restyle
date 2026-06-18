@@ -23,6 +23,8 @@ export const siteConfig = {
     phone: "050-5961800",
     email: "Restyle.Barbershop@outlook.com",
     address: "חיים לסקוב 4, תל אביב",
+    /** מספר ל-wa.me — בפורמט בינלאומי בלי + ובלי 0 מוביל */
+    whatsapp: "972505961800",
   },
 
   /** שעות פעילות — מקור אמת יחיד (דף בית + עמוד מיקום) */
