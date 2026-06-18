@@ -15,7 +15,7 @@ export default function AcademyPage() {
   return (
     <Container className="py-20">
       <SectionHeading
-        eyebrow="אקדמיית ReStyle"
+        eyebrow="האקדמיה שלנו"
         title="למדו את המקצוע מהמיטב"
         description="קורסים מקצועיים בעיצוב שיער, פייד ועיצוב זקן — בהדרכת הצוות המוביל שלנו. כל קורס משלב תיאוריה ועבודה מעשית על דגמים."
       />

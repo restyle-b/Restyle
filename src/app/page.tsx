@@ -118,7 +118,7 @@ export default function HomePage() {
           <Reveal>
             <SectionHeading
               center
-              eyebrow="אקדמיית ReStyle"
+              eyebrow="האקדמיה שלנו"
               title="למדו את המקצוע מהמיטב"
               description="קורסים מקצועיים בעיצוב שיער ועיצוב זקן, מההתחלה ועד רמת מומחה — בהדרכת הצוות המוביל שלנו."
               className="mx-auto"

@@ -40,7 +40,7 @@ export function SiteFooter() {
         </div>
       </Container>
 
-      <div className="border-t border-line-dark py-6">
+      <div className="border-t border-line-dark py-6 pb-28 sm:pb-6">
         <Container className="flex flex-col items-center gap-3 text-center text-xs text-neutral-500 sm:flex-row sm:justify-between">
           <span>
             © {new Date().getFullYear()} {siteConfig.name}. כל הזכויות שמורות.
