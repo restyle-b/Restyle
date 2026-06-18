@@ -10,8 +10,8 @@ export const siteConfig = {
 
   /** קישורי קביעת תור — אפליקציית Restyle */
   booking: {
-    appStore: "#", // TODO: קישור App Store
-    googlePlay: "#", // TODO: קישור Google Play
+    appStore: "https://apps.apple.com/il/app/restyle/id6744821132?l=he",
+    googlePlay: "https://play.google.com/store/apps/details?id=com.smtio.restyle",
     web: "#", // TODO: קישור web לקביעת תור (אם קיים)
   },
 
@@ -31,6 +31,7 @@ export const siteConfig = {
 /** פריטי הניווט הראשי (ראה docs/DESIGN.md). */
 export const navLinks = [
   { href: "/about", label: "אודות" },
+  { href: "/services", label: "שירותים" },
   { href: "/academy", label: "אקדמיה" },
   { href: "/shop", label: "חנות" },
   { href: "/locations", label: "מיקום ושעות" },
