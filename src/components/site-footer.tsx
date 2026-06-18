@@ -9,7 +9,7 @@ export function SiteFooter() {
     <footer className="border-t border-line-dark bg-ink-soft">
       <Container className="grid gap-10 py-14 md:grid-cols-3">
         <div>
-          <Wordmark className="text-3xl font-bold tracking-wide text-white" />
+          <Wordmark className="h-9" />
           <p className="mt-3 max-w-xs text-sm text-neutral-400">{siteConfig.description}</p>
         </div>
 

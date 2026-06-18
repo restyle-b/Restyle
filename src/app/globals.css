@@ -32,12 +32,6 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* גופן הלוגו (wordmark "ReStyle") */
-.font-logo {
-  font-family: var(--font-logo), Georgia, "Times New Roman", serif;
-  letter-spacing: 0.01em;
-}
-
 /* ── נגישות ── */
 
 /* מצב focus גלוי לניווט מקלדת */

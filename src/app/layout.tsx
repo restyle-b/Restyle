@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Heebo, Assistant, Playfair_Display } from "next/font/google";
+import { Heebo, Assistant } from "next/font/google";
 import { siteConfig } from "@/lib/config";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -20,13 +20,6 @@ const assistant = Assistant({
   variable: "--font-assistant",
 });
 
-// גופן הלוגו (wordmark "ReStyle") — serif אלגנטי בניגודיות גבוהה
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-logo",
-});
-
 export const metadata: Metadata = {
   title: {
     default: `${siteConfig.name} — מספרה ואקדמיה`,
@@ -43,11 +36,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="he"
-      dir="rtl"
-      className={`${heebo.variable} ${assistant.variable} ${playfair.variable}`}
-    >
+    <html lang="he" dir="rtl" className={`${heebo.variable} ${assistant.variable}`}>
       <body className="flex min-h-screen flex-col">
         <SkipToContent />
         <SiteHeader />

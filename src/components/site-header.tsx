@@ -10,7 +10,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-line-dark bg-ink/80 backdrop-blur">
       <Container className="flex h-16 items-center justify-between">
         <Link href="/" className="text-white" aria-label="Restyle — לדף הבית">
-          <Wordmark className="text-3xl font-bold tracking-wide" />
+          <Wordmark className="h-8" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="ניווט ראשי">
