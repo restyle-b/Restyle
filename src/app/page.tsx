@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { Reveal } from "@/components/reveal";
+import { BookingLink } from "@/components/booking-link";
 import { siteConfig } from "@/lib/config";
 import { services } from "@/lib/services-data";
 import { testimonials } from "@/lib/testimonials-data";
@@ -35,12 +36,11 @@ export default function HomePage() {
             חוויית עיצוב שיער ברמה הגבוהה ביותר, מוצרי טיפוח נבחרים, ואקדמיה מקצועית.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <a
-              href={siteConfig.booking.web}
+            <BookingLink
               className={buttonVariants({ size: "lg", className: "rounded-none uppercase tracking-[0.2em]" })}
             >
               קביעת תור
-            </a>
+            </BookingLink>
             <Link
               href="/shop"
               className={buttonVariants({
@@ -100,12 +100,11 @@ export default function HomePage() {
             </p>
           </Reveal>
           <Reveal className="mt-8">
-            <a
-              href={siteConfig.booking.web}
+            <BookingLink
               className={buttonVariants({ size: "lg", className: "rounded-none uppercase tracking-[0.2em]" })}
             >
               קביעת תור באפליקציה
-            </a>
+            </BookingLink>
           </Reveal>
         </Container>
       </section>
