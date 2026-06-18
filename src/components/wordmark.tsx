@@ -10,8 +10,8 @@ export function Wordmark({ className }: { className?: string }) {
     <Image
       src="/restyle-logo.png"
       alt="ReStyle"
-      width={855}
-      height={249}
+      width={574}
+      height={172}
       priority
       className={cn("w-auto", className)}
     />
