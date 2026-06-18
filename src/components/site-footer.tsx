@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { BookingLink } from "@/components/booking-link";
+import { Wordmark } from "@/components/wordmark";
 import { navLinks, siteConfig } from "@/lib/config";
 
 export function SiteFooter() {
@@ -8,9 +9,7 @@ export function SiteFooter() {
     <footer className="border-t border-line-dark bg-ink-soft">
       <Container className="grid gap-10 py-14 md:grid-cols-3">
         <div>
-          <div className="font-display text-2xl font-extrabold tracking-wide text-white">
-            {siteConfig.name}
-          </div>
+          <Wordmark className="text-3xl font-bold tracking-wide text-white" />
           <p className="mt-3 max-w-xs text-sm text-neutral-400">{siteConfig.description}</p>
         </div>
 
