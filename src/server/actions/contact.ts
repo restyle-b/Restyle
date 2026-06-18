@@ -32,7 +32,7 @@ export async function submitContactForm(input: unknown): Promise<ContactActionRe
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
     from: "Restyle Website <onboarding@resend.dev>",
-    to: process.env.CONTACT_NOTIFICATION_EMAIL ?? "info@restyle.co.il",
+    to: process.env.CONTACT_NOTIFICATION_EMAIL ?? "Restyle.Barbershop@outlook.com",
     replyTo: email,
     subject: `הודעה חדשה מאתר Restyle — ${name}`,
     text: `שם: ${name}\nאימייל: ${email}\nטלפון: ${phone || "-"}\n\n${message}`,
