@@ -29,7 +29,7 @@ export function FloatingContact() {
       <a
         href={contactLinks.tel}
         aria-label={t("callAria")}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-concrete text-ink shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-ink shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6" aria-hidden="true">
           <path d="M6.62 10.79a15.5 15.5 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.4 11.4 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.24 1.02l-2.2 2.2z" />
