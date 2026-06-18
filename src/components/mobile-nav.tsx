@@ -79,13 +79,7 @@ export function MobileNav() {
             aria-labelledby={titleId}
             className="fixed inset-0 z-[70] flex flex-col bg-ink"
           >
-            <div className="flex h-16 shrink-0 items-center justify-between border-b border-line-dark px-4 sm:px-6">
-              <Link href="/" onClick={() => setOpen(false)} className="text-white" aria-label={t("homeAria")}>
-                <Wordmark className="h-8" />
-              </Link>
-              <h2 id={titleId} className="sr-only">
-                {t("mainAria")}
-              </h2>
+            <div className="grid h-16 shrink-0 grid-cols-[2.25rem_1fr_2.25rem] items-center border-b border-line-dark px-4 sm:px-6">
               <button
                 ref={closeButtonRef}
                 type="button"
@@ -95,15 +89,28 @@ export function MobileNav() {
               >
                 <X className="h-5 w-5" />
               </button>
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                className="flex justify-center text-white"
+                aria-label={t("homeAria")}
+              >
+                <Wordmark className="h-8" />
+              </Link>
+              <h2 id={titleId} className="sr-only">
+                {t("mainAria")}
+              </h2>
             </div>
 
-            <nav className="flex-1 overflow-y-auto px-4 sm:px-6" aria-label={t("mainAria")}>
-              {navLinks.map((link) => (
+            <nav className="flex-1 overflow-y-auto" aria-label={t("mainAria")}>
+              {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block border-b border-line-dark py-5 text-2xl font-semibold text-white transition-colors hover:text-accent"
+                  className={`block border-b border-line-dark px-4 py-5 text-2xl font-semibold text-white transition-colors hover:text-accent sm:px-6 ${
+                    index === 0 ? "bg-white/5" : ""
+                  }`}
                 >
                   {t(link.key)}
                 </Link>
