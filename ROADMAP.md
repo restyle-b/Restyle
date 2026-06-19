@@ -10,57 +10,29 @@
 
 ## 🚦 להתחיל מכאן בסשן הבא — קריטי!
 
-**מצב (עודכן 2026-06-18):** סדר העדיפויות השתנה — **המוצר שנמסר ראשון הוא אתר תדמית
-בלי חנות ובלי הרשמת משתמשים** (ראה "🔀 שני מסלולים" למעלה). Phase 3 (Supabase Auth)
-**כבר מומש בקוד, רץ בפרודקשן ב-Vercel, ואומת מול ה-API האמיתי של Supabase** — אבל
-שייך כעת להרחבה האופציונלית ולא לעדיפות הנוכחית. **אל תמשיך לפתח Phase 3-8 (auth/
-חנות/תשלומים/אקדמיה/אדמין) בלי אישור מפורש מהמשתמש שהלקוח בחר בהרחבה.** העדיפות
-הנוכחית: Phase 2 שאריות + Phase 9 (קישורי אפליקציה).
+**מצב (עודכן 2026-06-18):** מסלול הבסיס (אתר תדמית, ללא חנות/הרשמה) **מושלם פונקציונלית**:
+i18n (he/en/ar), ווידג'ט נגישות, תפריט מובייל מסך-מלא, טיפוגרפיה ופלטת צבעים סופית
+(אפור בהיר שטוח, ללא מרקם), לחצני יצירת קשר צפים, 4 סבבי pentest (HIGH→LOW תוקנו),
+security headers, rate limiting. typecheck/lint/test/build ירוקים בכל commit. נדחף ל-PR #3
+(draft, Vercel preview ירוק). Phase 3-8 (auth/חנות/תשלומים/אקדמיה/אדמין) **כבר מומשו בקוד
+ורצים בפרודקשן**, אבל שייכים ל"הרחבה אופציונלית" (חלופה ב') — **אל תמשיך לפתח אותם בלי
+אישור מפורש מהמשתמש שהלקוח בחר בהרחבה**.
 
-ה-DB עדיין לא מאומת בפועל — ה-sandbox ממשיך לחסום TCP ל-Postgres גם עם "Network
-Access: Full" (רק HTTPS עובד). **אל תבזבז זמן בלהילחם בזה** — זה לא חוסם את העדיפות
-הנוכחית (מסלול הבסיס לא תלוי ב-DB חי).
-
-**משימה ממתינה קריטית (תלויה ב-TCP או בהרצה ידנית של המשתמש):** יש להריץ ב-Supabase
-SQL Editor את `prisma/migrations/20260617010000_auth_sync_and_rls/migration.sql`
-(trigger שמסנכרן `auth.users`→`public.users` + RLS) — **בלעדיו הרשמה אמיתית תיכשל
-בשקט מבחינת טבלת `users` שלנו** (ה-auth עצמו ב-Supabase יעבוד, אבל השורה ב-`public.users`
-לא תיווצר). אחרי הרצה: `npx prisma migrate resolve --applied 20260617010000_auth_sync_and_rls`.
-
-### מה כבר קיים ב-container (לא צריך לשחזר):
-- `.env.local` מלא עם 4 הערכים מ-Supabase: `NEXT_PUBLIC_SUPABASE_URL`,
-  `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`
-  (פרויקט Supabase: `rgivretfxunsvbeimtnu`, region Frankfurt, pooler חיבור
-  transaction על פורט 6543). **קובץ זה לא ב-git** (.gitignore) — אם פותחים
-  container חדש מאפס, הוא לא יהיה קיים ויש לבקש מהמשתמש להזין מחדש (ראה
-  `docs/SETUP.md`). אומת: `curl https://<project>.supabase.co` מצליח (HTTPS תקין),
-  אך `nc` ל-port 6543/5432 נכשל ב-timeout — Postgres TCP חסום בכל הסשנים עד כה.
-- Migration ראשונה (`users` table + `Role` enum) — רצה ידנית ב-Supabase SQL
-  Editor (לא דרך `prisma migrate`, כי לא הייתה גישת TCP). הקובץ קיים גם
-  ב-`prisma/migrations/20260617000000_init/` ונדחף ל-git. **כשתהיה גישת TCP**,
-  צריך `npx prisma migrate resolve --applied 20260617000000_init` לפני המשך.
-- R2 / Resend — עדיין לא הוקמו. `RESEND_API_KEY` אופציונלי ב-`lib/env.ts`;
-  `server/actions/contact.ts` מתנהג כ-fallback (לוג בשרת) כשהוא חסר.
-- Vercel — המשתמש עדיין לא אישר חיבור הריפו.
-- חבילות חדשות שהותקנו בסשן זה: `react-hook-form`, `@hookform/resolvers`, `resend`.
+### משימות פתוחות שדורשות פעולת המשתמש (לא חוסמות פיתוח קוד):
+1. **להריץ ידנית ב-Supabase SQL Editor**: `prisma/migrations/20260618120000_prevent_role_escalation`
+   (trigger שמונע הסלמת הרשאות עצמית בטבלת `users`) — קריטי לפני שחרור admin/auth לפרודקשן.
+2. להחליט אם לשדרג rate-limiting מ-in-memory ל-Vercel KV/Upstash לפני תנועה אמיתית.
+3. תמונות אמיתיות (Hero/גלריה/אקדמיה/אודות) — כרגע placeholders.
+4. שם רכז נגישות אמיתי בעמוד `/accessibility` (כרגע placeholder).
+5. Lighthouse audit + בדיקת קונטרסט WCAG AA מלאה על כל שימושי ה-accent.
+6. החלטה על מיזוג PR #3 ל-main, ועל הגירת Next.js מ-15.5.x ל-16.x בעתיד.
+7. דובר שפת-אם לבדוק את תרגומי en/ar (נעשו ע"י Claude).
 
 ### צ'קליסט פתיחה לסשן הבא:
-1. `git status` ו-`git log -1` — לאשר שה-branch מסונכרן.
-2. ודא ש-`.env.local` קיים (`ls -la .env.local`). אם לא — בקש מהמשתמש להזין שוב
-   (URL, anon/publishable key, service_role/secret key, סיסמת DB).
-3. (אופציונלי, לא חוסם) בדוק חיבור DB: `set -a && source .env.local && set +a &&
-   npx prisma migrate status`. אם מצליח — בצע שלב 4 בתיבה הקודמת. אם נכשל —
-   תתעלם והמשך בעבודת קוד.
-4. המשך **Phase 2** (`docs/TASKS.md` T2.10/T2.15 נותרו: בדיקת נגישות/Lighthouse,
-   תמונות אמיתיות כשיתקבלו) ואז **Phase 3** (אימות עם Supabase Auth).
-
-### דברים שעדיין פתוחים מול המשתמש:
-- אישור חיבור Vercel↔GitHub (T1.22) + הזנת משתני הסביבה ב-Vercel Settings.
-- Cloudflare R2 (bucket + tokens) — לא דחוף עד Phase 4.
-- Resend API key אמיתי (יש fallback ללוג כרגע) + `CONTACT_NOTIFICATION_EMAIL`.
-- לוגו + תמונות איכותיות למספרה (ל-Hero/גלריה) — כרגע placeholders אפורים.
-- ~~קישורי אפליקציית Restyle~~ ✅ הוגדרו ב-`siteConfig.booking` (App Store + Google Play, דרך `BookingLink`).
-- ~~פרטי קשר אמיתיים~~ ✅ הוזנו ב-`siteConfig.contact` (חיים לסקוב 4 ת"א, 050-5961800, Restyle.Barbershop@outlook.com).
+1. `git status` ו-`git log -1` — לאשר שה-branch (`claude/continue-previous-session-fqebtt`) מסונכרן.
+2. `npm run typecheck && npm run lint && npm test && npm run build` — לאשר שהכל ירוק לפני שינוי נוסף.
+3. לקרוא את ה-Session Log האחרון בתחתית הקובץ למצב המדויק שהושאר.
+4. אין כרגע אבני-דרך חסומות מבחינת DB/env — `.env.local` (לא ב-git) קיים ב-container; אם container חדש מאפס, יש לבקש מהמשתמש להזין מחדש לפי `docs/SETUP.md`.
 
 ---
 
@@ -271,3 +243,4 @@ SQL Editor את `prisma/migrations/20260617010000_auth_sync_and_rls/migration.sq
 | 2026-06-18 | **מלל לבן ובולט בכפתורי ה-CTA** (בקשת המשתמש "מלל לבן בולט" — אומת מולו שמדובר בטקסט בכפתורים, לא ב-hero/footer). `button.tsx` variant `primary`: `text-ink`→`text-white font-bold` + `[text-shadow:0_1px_3px_rgb(0_0_0_/_0.6)]` לשמירה על קריאות מעל מרקם הבטון הבהיר (טקסט לבן על אפור-בהיר בלי shadow היה נכשל בקונטרסט WCAG). אומת חזותית בזום גבוה (deviceScaleFactor 3) — קריא וברור. typecheck/lint/test(7)/build ✅. נדחף. | מיזוג PR #3; שאר הפריטים הפתוחים ללא שינוי. |
 | 2026-06-18 | **הוחזר** המלל בכפתור ה-CTA הראשי ל-`text-ink` (לפני: `text-white font-bold`+text-shadow) — בעקבות "תחזיר לקודם, לא אהבתי בלי המחוספס": הטקסט הלבן/בולט הסתיר את מרקם הבטון הבהיר ופגע באפקט המחוספס שהמשתמש רצה לראות. `bg-concrete` (מרקם הבטון עצמו) נשאר ללא שינוי. typecheck/lint/test(7)/build ✅. נדחף. | מיזוג PR #3; שאר הפריטים הפתוחים ללא שינוי. |
 | 2026-06-18 | **הוסר מרקם הבטון המחוספס לחלוטין** — בעקבות תיקון המשתמש: "התכוונתי לחזור אחורה בלי האפור המחוספס, האפור שהיה לפני כן טוב יותר" (לא הייתה כוונה לשמר את המרקם, אלא לחזור לאפור השטוח). הוסרו כללי `.bg-concrete`/`.bg-concrete:hover` מ-`globals.css`; שלושת המקומות שהשתמשו בהם (`button.tsx`, `floating-contact.tsx`, `accessibility-menu.tsx`) חזרו ל-`bg-accent`. תוקן גם `hover:bg-accent-soft` שאבד ב-`button.tsx` בזמן הוספת המרקם (ה-hover נוהל אז ע"י כלל CSS של `.bg-concrete:hover` בלבד). אומת חזותית (build+start+Playwright): כפתור CTA, ווידג'ט נגישות וכפתור טלפון — אפור שטוח `#e5e5e5`/`#cfcfcf` ב-hover, ללא מרקם. typecheck/lint/test(7)/build ✅. נדחף. | מיזוג PR #3; שאר הפריטים הפתוחים ללא שינוי. |
+| 2026-06-19 | **סנכרון מסמכים לפני מעבר לסשן חדש** (בקשת המשתמש "תעדכן את כל המסמכים והסקילים"). נסקרו כל המסמכים (`docs/DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`, `docs/QUOTE.md`) וכל 4 הסקילים (`.claude/skills/*`) לאיתור פערים מהמצב בקוד. נמצא ותוקן פער ב-`docs/DESIGN.md`: תיאר עדיין את הצבע המקורי (`#C9A227` זהב/ברונזה) וגופנים שהוחלפו (Heebo/Ploni) — עודכן לפלטה ולטיפוגרפיה הנוכחיים (אפור `#E5E5E5` שטוח ללא מרקם; Assistant/Cairo). תיבת "🚦 להתחיל מכאן" ברודמאפ נכתבה מחדש — הייתה משקפת מצב bootstrap ישן (env/migrations מ-Phase 1) ולא את המצב האמיתי כיום (מסלול הבסיס מושלם, 4 סבבי pentest בוצעו, i18n+a11y+מובייל גמורים). 4 הסקילים נבדקו ונמצאו ללא תוכן מיושן (הם מתודולוגיים, לא תלויי-מצב-נוכחי). typecheck/lint/test(7)/build ✅ (לא נגעו בקוד). | המשתמש עובר לסשן חדש; שאר הפריטים הפתוחים (migration Supabase, Vercel KV, תמונות אמיתיות, רכז נגישות, Lighthouse, מיזוג PR #3) ללא שינוי — ראה תיבת "🚦 להתחיל מכאן" המעודכנת. |
