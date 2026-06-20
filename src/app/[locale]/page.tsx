@@ -142,7 +142,15 @@ export default function HomePage() {
       {/* אודות תקציר */}
       <section className="bg-ink">
         <Reveal>
-          <ImagePlaceholder label={t("aboutImageLabel")} className="aspect-[16/9] sm:aspect-[21/9]" />
+          <div className="relative aspect-[16/9] overflow-hidden sm:aspect-[21/9]">
+            <Image
+              src="/images/gallery-studio-1.jpg"
+              alt={t("aboutImageLabel")}
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
         </Reveal>
         <Container className="py-14 sm:py-20">
           <Reveal>
