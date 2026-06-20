@@ -89,6 +89,17 @@ body {
   }
 }
 
+/* ריחוף עדין — לחיווי "גלול" ב-Hero */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
 /* utility classes לכניסה בטעינה (Hero וכו').
    animation-fill-mode: both — האלמנט מחזיק את מצב 0% בזמן ה-delay ואת 100% בסוף,
    כך שתחת reduced-motion (משך ~0) הוא נשאר במצב הסופי הגלוי. */
@@ -103,6 +114,9 @@ body {
 }
 .animate-hero-zoom {
   animation: hero-zoom 22s var(--ease-in-out) infinite alternate;
+}
+.animate-float {
+  animation: float 2.4s var(--ease-in-out) infinite;
 }
 
 /* הבזק אור אלכסוני שחולף על כפתור ב-hover — תחושת מתכת פרימיום */

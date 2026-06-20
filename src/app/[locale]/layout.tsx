@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import { siteConfig } from "@/lib/config";
 import { SiteHeader } from "@/components/site-header";
+import { ScrollProgress } from "@/components/scroll-progress";
 import { SiteFooter } from "@/components/site-footer";
 import { SkipToContent } from "@/components/skip-to-content";
 import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu";
@@ -85,6 +86,7 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
           <SkipToContent />
+          <ScrollProgress />
           <SiteHeader />
           <main id="main" className="flex-1">
             {children}

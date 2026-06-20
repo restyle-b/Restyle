@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
@@ -7,12 +10,44 @@ import { Wordmark } from "@/components/wordmark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { MobileNav } from "@/components/mobile-nav";
 import { navLinks } from "@/lib/config";
+import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
+  // scrolled = עברנו את ראש העמוד (מוסיף רקע מלא+צל); hidden = להסתיר בגלילה מטה.
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        setScrolled(y > 8);
+        // מסתירים רק בגלילה מטה אחרי סף; תמיד מציגים סמוך לראש או בגלילה מעלה.
+        if (y > 160 && y > lastY + 4) setHidden(true);
+        else if (y < lastY - 4 || y < 160) setHidden(false);
+        lastY = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line-dark bg-ink/80 backdrop-blur">
+    <header
+      className={cn(
+        "sticky top-0 z-50 border-b backdrop-blur transition-[transform,background-color,border-color,box-shadow] duration-300 ease-out",
+        scrolled
+          ? "border-line-dark bg-ink/95 shadow-lg shadow-black/20"
+          : "border-transparent bg-ink/50",
+        hidden && "-translate-y-full",
+      )}
+    >
       <Container className="relative flex h-16 items-center justify-between">
         <Link href="/" className="text-white" aria-label={t("homeAria")}>
           <Wordmark className="h-8" />

@@ -58,10 +58,28 @@ export default function HomePage() {
             </Link>
           </div>
         </Container>
+
+        {/* חיווי "גלול" — מזמין לגלול מטה (קישוטי, aria-hidden) */}
+        <div className="pointer-events-none absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[90svh]">
+          <span className="animate-float text-accent/80" aria-hidden="true">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
+          </span>
+        </div>
       </section>
 
       {/* שירותים */}
-      <section className="bg-paper py-24 text-ink">
+      <section className="bg-paper py-16 text-ink sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading center eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
@@ -93,7 +111,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA קביעת תור */}
-      <section className="bg-ink py-24 text-center">
+      <section className="bg-ink py-16 text-center sm:py-24">
         <Container className="flex flex-col items-center">
           <Reveal>
             <p className="font-display text-sm uppercase tracking-[0.3em] text-accent">
@@ -119,7 +137,7 @@ export default function HomePage() {
         <Reveal>
           <ImagePlaceholder label={t("academyImageLabel")} className="aspect-[16/9] sm:aspect-[21/9]" />
         </Reveal>
-        <Container className="py-20">
+        <Container className="py-14 sm:py-20">
           <Reveal>
             <SectionHeading
               center
@@ -142,7 +160,7 @@ export default function HomePage() {
         <Reveal>
           <ImagePlaceholder label={t("aboutImageLabel")} className="aspect-[16/9] sm:aspect-[21/9]" />
         </Reveal>
-        <Container className="py-20">
+        <Container className="py-14 sm:py-20">
           <Reveal>
             <SectionHeading
               light
@@ -165,7 +183,7 @@ export default function HomePage() {
       </section>
 
       {/* גלריה */}
-      <section className="bg-paper py-24 text-ink">
+      <section className="bg-paper py-16 text-ink sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading center eyebrow={t("galleryEyebrow")} title={t("galleryTitle")} />
@@ -189,7 +207,7 @@ export default function HomePage() {
       </section>
 
       {/* המלצות */}
-      <section className="bg-ink py-24">
+      <section className="bg-ink py-16 sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading center light eyebrow={t("testimonialsEyebrow")} title={t("testimonialsTitle")} />
@@ -211,7 +229,7 @@ export default function HomePage() {
       </section>
 
       {/* מיקום ושעות + צור קשר */}
-      <section className="bg-paper py-24 text-ink">
+      <section className="bg-paper py-16 text-ink sm:py-24">
         <Container className="grid gap-12 lg:grid-cols-2">
           <Reveal>
             <div>
