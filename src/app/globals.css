@@ -120,6 +120,62 @@ body {
   animation: float 2.4s var(--ease-in-out) infinite;
 }
 
+/* טבעות פולסציה — מבטא תשומת-לב עדין (למשל "פנוי עכשיו" על כפתור צף).
+   רק transform+opacity, ::before/::after כדי לא להוסיף DOM. */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::before,
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid currentColor;
+  animation: pulse-ring 2.4s var(--ease-out) infinite;
+  pointer-events: none;
+}
+.pulse-ring::after {
+  animation-delay: 1.2s;
+}
+
+/* כתם glow רך — תוסיף עומק לסקציות כהות. דקורטיבי בלבד (aria-hidden, ללא pointer-events) */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(229 229 229 / 0.16), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* קו הדגשה זוהר — מחבר תווית לפרט בתמונה (סטייל feature-callout) */
+.feature-glow-line {
+  position: absolute;
+  background: linear-gradient(90deg, rgb(229 229 229 / 0.9), rgb(229 229 229 / 0));
+  height: 1px;
+  box-shadow: 0 0 6px 1px rgb(229 229 229 / 0.6);
+  pointer-events: none;
+}
+.feature-glow-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px 2px rgb(229 229 229 / 0.8);
+  pointer-events: none;
+}
+
 /* הבזק אור אלכסוני שחולף על כפתור ב-hover — תחושת מתכת פרימיום */
 .btn-shine {
   position: relative;

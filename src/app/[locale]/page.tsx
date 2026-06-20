@@ -28,14 +28,14 @@ export default function HomePage() {
           className="animate-hero-zoom fixed inset-0 -z-10 bg-cover bg-center"
           style={{ backgroundImage: "url(/images/hero-bg.jpg)" }}
         >
-          <div className="absolute inset-0 bg-ink/55" />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/70 to-ink" />
+          <div className="bg-ink/55 absolute inset-0" />
+          <div className="from-ink/90 via-ink/70 to-ink absolute inset-0 bg-gradient-to-b" />
         </div>
         <Container className="relative z-10 py-24 pt-[calc(4rem+6rem)]">
-          <p className="animate-fade-up font-display text-sm uppercase tracking-[0.3em] text-accent">
+          <p className="animate-fade-up font-display text-accent text-sm tracking-[0.3em] uppercase">
             {t("heroEyebrow")}
           </p>
-          <h1 className="animate-fade-up font-display mt-6 max-w-3xl text-4xl font-extrabold leading-tight text-white [animation-delay:120ms] sm:text-6xl">
+          <h1 className="animate-fade-up font-display mt-6 max-w-3xl text-4xl leading-tight font-extrabold text-white [animation-delay:120ms] sm:text-6xl">
             {t("heroTitle", { name: siteConfig.name })}
           </h1>
           <p className="animate-fade-up mt-6 max-w-xl text-lg text-neutral-300 [animation-delay:240ms]">
@@ -71,19 +71,21 @@ export default function HomePage() {
       </section>
 
       {/* שירותים */}
-      <section className="bg-paper py-16 text-ink sm:py-24">
+      <section className="bg-paper text-ink py-16 sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading center eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
           </Reveal>
-          <div className="mt-16 grid gap-px overflow-hidden border border-line-light sm:grid-cols-2 lg:grid-cols-3">
+          <div className="border-line-light mt-16 grid gap-px overflow-hidden border sm:grid-cols-2 lg:grid-cols-3">
             {serviceSlugs.map((slug, i) => (
               <Reveal key={slug} delay={i * 70}>
-                <div className="h-full border-line-light bg-cream p-8 transition-colors hover:bg-white sm:border-l">
-                  <h3 className="font-display text-lg font-bold uppercase tracking-wide">
+                <div className="border-line-light bg-cream h-full p-8 transition-colors hover:bg-white sm:border-l">
+                  <h3 className="font-display text-lg font-bold tracking-wide uppercase">
                     {tServices(`${slug}.name`)}
                   </h3>
-                  <p className="mt-3 text-sm text-neutral-600">{tServices(`${slug}.description`)}</p>
+                  <p className="mt-3 text-sm text-neutral-600">
+                    {tServices(`${slug}.description`)}
+                  </p>
                 </div>
               </Reveal>
             ))}
@@ -97,10 +99,11 @@ export default function HomePage() {
       </section>
 
       {/* CTA קביעת תור */}
-      <section className="bg-ink py-16 text-center sm:py-24">
-        <Container className="flex flex-col items-center">
+      <section className="bg-ink relative overflow-hidden py-16 text-center sm:py-24">
+        <div className="glow-orb inset-x-0 -top-24 mx-auto h-72 w-72" aria-hidden="true" />
+        <Container className="relative flex flex-col items-center">
           <Reveal>
-            <p className="font-display text-sm uppercase tracking-[0.3em] text-accent">
+            <p className="font-display text-accent text-sm tracking-[0.3em] uppercase">
               {t("ctaEyebrow")}
             </p>
             <h2 className="font-display mt-3 max-w-xl text-2xl font-bold text-white sm:text-3xl">
@@ -119,7 +122,10 @@ export default function HomePage() {
       {/* אקדמיה */}
       <section className="bg-paper text-ink">
         <Reveal>
-          <ImagePlaceholder label={t("academyImageLabel")} className="aspect-[16/9] sm:aspect-[21/9]" />
+          <ImagePlaceholder
+            label={t("academyImageLabel")}
+            className="aspect-[16/9] sm:aspect-[21/9]"
+          />
         </Reveal>
         <Container className="py-14 sm:py-20">
           <Reveal>
@@ -150,6 +156,26 @@ export default function HomePage() {
               sizes="100vw"
               className="object-cover"
             />
+            {/* קווי הדגשה זוהרים לפרטי הסטודיו — סטייל feature-callout, מוסתר במובייל כדי לא להעמיס */}
+            <div className="pointer-events-none absolute inset-0 hidden sm:block">
+              <span className="feature-glow-dot start-[68%] top-[22%]" />
+              <span className="feature-glow-line start-[68%] top-[22%] w-16 -translate-y-1/2 rtl:-scale-x-100" />
+              <span className="font-display absolute start-[calc(68%+4.5rem)] top-[22%] -translate-y-1/2 text-xs tracking-wide whitespace-nowrap text-white/90 uppercase">
+                {t("studioFeatureLighting")}
+              </span>
+
+              <span className="feature-glow-dot start-[28%] top-[62%]" />
+              <span className="feature-glow-line start-[28%] top-[62%] w-16 -translate-y-1/2 rtl:-scale-x-100" />
+              <span className="font-display absolute start-[calc(28%+4.5rem)] top-[62%] -translate-y-1/2 text-xs tracking-wide whitespace-nowrap text-white/90 uppercase">
+                {t("studioFeatureChairs")}
+              </span>
+
+              <span className="feature-glow-dot start-[48%] top-[40%]" />
+              <span className="feature-glow-line start-[48%] top-[40%] w-16 -translate-y-1/2 rtl:-scale-x-100" />
+              <span className="font-display absolute start-[calc(48%+4.5rem)] top-[40%] -translate-y-1/2 text-xs tracking-wide whitespace-nowrap text-white/90 uppercase">
+                {t("studioFeatureDesign")}
+              </span>
+            </div>
           </div>
         </Reveal>
         <Container className="py-14 sm:py-20">
@@ -172,7 +198,7 @@ export default function HomePage() {
       </section>
 
       {/* גלריה */}
-      <section className="bg-paper py-16 text-ink sm:py-24">
+      <section className="bg-paper text-ink py-16 sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading center eyebrow={t("galleryEyebrow")} title={t("galleryTitle")} />
@@ -204,18 +230,24 @@ export default function HomePage() {
       </section>
 
       {/* המלצות */}
-      <section className="bg-ink py-16 sm:py-24">
-        <Container>
+      <section className="bg-ink relative overflow-hidden py-16 sm:py-24">
+        <div className="glow-orb inset-x-0 -bottom-32 mx-auto h-96 w-96" aria-hidden="true" />
+        <Container className="relative">
           <Reveal>
-            <SectionHeading center light eyebrow={t("testimonialsEyebrow")} title={t("testimonialsTitle")} />
+            <SectionHeading
+              center
+              light
+              eyebrow={t("testimonialsEyebrow")}
+              title={t("testimonialsTitle")}
+            />
           </Reveal>
           <div className="mt-16 grid gap-px sm:grid-cols-3">
             {testimonials.map((item, i) => (
               <Reveal key={item.name} delay={i * 80}>
-                <figure className="h-full border-t border-line-dark px-6 py-8 text-center">
-                  <span className="font-display text-4xl text-accent">&rdquo;</span>
+                <figure className="border-line-dark h-full border-t px-6 py-8 text-center">
+                  <span className="font-display text-accent text-4xl">&rdquo;</span>
                   <blockquote className="mt-2 text-neutral-300">{item.quote}</blockquote>
-                  <figcaption className="mt-4 font-display text-sm font-semibold uppercase tracking-wide text-white">
+                  <figcaption className="font-display mt-4 text-sm font-semibold tracking-wide text-white uppercase">
                     {item.name}
                   </figcaption>
                 </figure>
@@ -226,7 +258,7 @@ export default function HomePage() {
       </section>
 
       {/* מיקום ושעות + צור קשר */}
-      <section className="bg-paper py-16 text-ink sm:py-24">
+      <section className="bg-paper text-ink py-16 sm:py-24">
         <Container className="grid gap-12 lg:grid-cols-2">
           <Reveal>
             <div>
@@ -245,7 +277,10 @@ export default function HomePage() {
                   <dd>{hours.map((row) => `${row.day} ${row.hours}`).join(", ")}</dd>
                 </div>
               </dl>
-              <Link href="/locations" className={buttonVariants({ variant: "outline", className: "mt-8" })}>
+              <Link
+                href="/locations"
+                className={buttonVariants({ variant: "outline", className: "mt-8" })}
+              >
                 {t("directionsCta")}
               </Link>
             </div>
