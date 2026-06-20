@@ -24,21 +24,23 @@ export default function HomePage() {
       */}
       <section className="relative flex min-h-[100svh] items-start sm:min-h-[170vh]">
         <div
-          className="fixed inset-0 -z-10 bg-cover bg-center"
+          className="animate-hero-zoom fixed inset-0 -z-10 bg-cover bg-center"
           style={{ backgroundImage: "url(/images/hero-bg.jpg)" }}
         >
           <div className="absolute inset-0 bg-ink/55" />
           <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/70 to-ink" />
         </div>
         <Container className="relative z-10 py-24 pt-[calc(4rem+6rem)]">
-          <p className="font-display text-sm uppercase tracking-[0.3em] text-accent">
+          <p className="animate-fade-up font-display text-sm uppercase tracking-[0.3em] text-accent">
             {t("heroEyebrow")}
           </p>
-          <h1 className="font-display mt-6 max-w-3xl text-4xl font-extrabold leading-tight text-white sm:text-6xl">
+          <h1 className="animate-fade-up font-display mt-6 max-w-3xl text-4xl font-extrabold leading-tight text-white [animation-delay:120ms] sm:text-6xl">
             {t("heroTitle", { name: siteConfig.name })}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-neutral-300">{t("heroSubtitle")}</p>
-          <div className="mt-10 flex flex-wrap gap-4">
+          <p className="animate-fade-up mt-6 max-w-xl text-lg text-neutral-300 [animation-delay:240ms]">
+            {t("heroSubtitle")}
+          </p>
+          <div className="animate-fade-up mt-10 flex flex-wrap gap-4 [animation-delay:360ms]">
             <BookingLink
               className={buttonVariants({ size: "lg", className: "rounded-none uppercase tracking-[0.2em]" })}
             >
@@ -65,8 +67,8 @@ export default function HomePage() {
             <SectionHeading center eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
           </Reveal>
           <div className="mt-16 grid gap-px overflow-hidden border border-line-light sm:grid-cols-2 lg:grid-cols-3">
-            {serviceSlugs.map((slug) => (
-              <Reveal key={slug}>
+            {serviceSlugs.map((slug, i) => (
+              <Reveal key={slug} delay={i * 70}>
                 <div className="h-full border-line-light bg-white p-8 transition-colors hover:bg-paper sm:border-l">
                   <h3 className="font-display text-lg font-bold uppercase tracking-wide">
                     {tServices(`${slug}.name`)}
@@ -170,7 +172,7 @@ export default function HomePage() {
           </Reveal>
           <div className="mt-16 grid grid-cols-2 gap-px sm:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Reveal key={i}>
+              <Reveal key={i} direction="scale" delay={(i % 4) * 60}>
                 <ImagePlaceholder label={t("workImageLabel")} className="aspect-square" />
               </Reveal>
             ))}
@@ -193,8 +195,8 @@ export default function HomePage() {
             <SectionHeading center light eyebrow={t("testimonialsEyebrow")} title={t("testimonialsTitle")} />
           </Reveal>
           <div className="mt-16 grid gap-px sm:grid-cols-3">
-            {testimonials.map((item) => (
-              <Reveal key={item.name}>
+            {testimonials.map((item, i) => (
+              <Reveal key={item.name} delay={i * 80}>
                 <figure className="h-full border-t border-line-dark px-6 py-8 text-center">
                   <span className="font-display text-4xl text-accent">&rdquo;</span>
                   <blockquote className="mt-2 text-neutral-300">{item.quote}</blockquote>

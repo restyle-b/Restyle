@@ -37,6 +37,116 @@ body {
   font-family: var(--font-display);
 }
 
+/* ── מערכת תנועה (Motion system) — ראה docs/DESIGN.md ו-.claude/skills/ui-ux ── */
+:root {
+  /* easing: כניסות (expo-out, יוקרתי) ו-hover (דו-כיווני חלק) */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* סקאלת משך */
+  --dur-micro: 0.18s;
+  --dur-element: 0.5s;
+  --dur-section: 0.8s;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ken Burns עדין לרקע ה-Hero — זום איטי הלוך-ושוב */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+/* utility classes לכניסה בטעינה (Hero וכו').
+   animation-fill-mode: both — האלמנט מחזיק את מצב 0% בזמן ה-delay ואת 100% בסוף,
+   כך שתחת reduced-motion (משך ~0) הוא נשאר במצב הסופי הגלוי. */
+.animate-fade-up {
+  animation: fade-up var(--dur-section) var(--ease-out) both;
+}
+.animate-fade-in {
+  animation: fade-in var(--dur-section) var(--ease-out) both;
+}
+.animate-scale-in {
+  animation: scale-in var(--dur-section) var(--ease-out) both;
+}
+.animate-hero-zoom {
+  animation: hero-zoom 22s var(--ease-in-out) infinite alternate;
+}
+
+/* הבזק אור אלכסוני שחולף על כפתור ב-hover — תחושת מתכת פרימיום */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgb(255 255 255 / 0.5) 50%,
+    transparent 75%
+  );
+  transform: translateX(-150%);
+  transition: transform 0.75s var(--ease-out);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(150%);
+}
+
+/* קו תחתון שנמתח ב-hover (origin מרכזי — ניטרלי לכיוון RTL/LTR) */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -4px;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--dur-micro) var(--ease-in-out);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
 /* ── נגישות ── */
 
 /* מצב focus גלוי לניווט מקלדת */
@@ -124,9 +234,19 @@ html.a11y-big-cursor * {
     auto !important;
 }
 
-/* כיבוד העדפת מערכת — אם המשתמש ביקש פחות תנועה */
+/* כיבוד העדפת מערכת — אם המשתמש ביקש פחות תנועה, מאפסים אנימציות ומעברים.
+   משך זעיר (לא none) כדי שאנימציות עם fill-mode עדיין "מסתיימות" מיד במצב הגלוי
+   הסופי — כך שום תוכן לא נשאר מוסתר. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

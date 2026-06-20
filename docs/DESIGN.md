@@ -32,6 +32,21 @@
 - מרווחים נדיבים (whitespace), גריד נקי, פינות מעט מעוגלות.
 - אנימציות עדינות בלבד: fade/slide on-scroll, hover מעודן. ללא עומס.
 
+## תנועה (Motion) — "מינימליזם קינטי"
+מקור אמת מפורט: סקיל `.claude/skills/ui-ux`. הקונספט: כניסות עריכותיות, זום איטי
+והבזק מתכתי — בטוח בעצמו, לא צעקני. הכל ב-`transform`/`opacity` בלבד (ביצועים).
+- **טוקני תנועה** (`globals.css` `:root`): `--ease-out` (expo-out לכניסות),
+  `--ease-in-out` (hover), `--dur-micro/element/section` (0.18s / 0.5s / 0.8s).
+- **`<Reveal>`** — כניסה בגלילה עם `direction` (up/down/left/right/scale) ו-`delay`
+  ל-stagger בגריד (~60–80ms בין פריטים).
+- **כניסת Hero** בטעינה — fade-up מדורג (eyebrow→title→subtitle→CTA) + Ken Burns
+  איטי על רקע ה-Hero (`.animate-hero-zoom`).
+- **כפתורי CTA** — הבזק אור אלכסוני ב-hover (`.btn-shine`) + הרמה עדינה.
+- **קישורי ניווט** — קו תחתון שנמתח ב-hover (`.link-underline`, origin מרכזי, RTL-safe).
+- **תמונות גלריה/פיצ'ר** — זום Ken Burns עדין ב-hover + הבהרת accent.
+- **נגישות (חובה):** `@media (prefers-reduced-motion: reduce)` + מחלקת `a11y-no-motion`
+  מאפסים את כל התנועה; כל אנימציה מסתיימת במצב גלוי (אין תוכן שתלוי באנימציה כדי להופיע).
+
 ## ניווט (מיפוי menspire → Restyle)
 | menspire | Restyle (עברית) |
 |----------|------------------|

@@ -23,7 +23,7 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-neutral-300 transition-colors hover:text-white"
+              className="link-underline text-sm text-neutral-300 transition-colors hover:text-white"
             >
               {t(link.key)}
             </Link>
