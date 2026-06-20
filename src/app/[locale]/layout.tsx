@@ -11,7 +11,6 @@ import { SiteFooter } from "@/components/site-footer";
 import { SkipToContent } from "@/components/skip-to-content";
 import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu";
 import { FloatingContact } from "@/components/floating-contact";
-import { MobileBookingBar } from "@/components/mobile-booking-bar";
 import "../globals.css";
 
 /**
@@ -94,7 +93,6 @@ export default async function RootLayout({
           </main>
           <SiteFooter />
           <FloatingContact />
-          <MobileBookingBar />
           <AccessibilityMenu />
         </NextIntlClientProvider>
       </body>

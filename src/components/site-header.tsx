@@ -75,9 +75,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-4">
           <LocaleSwitcher className="hidden md:inline-flex" />
-          <BookingLink
-            className={buttonVariants({ size: "sm", variant: "light", className: "hidden sm:inline-flex" })}
-          >
+          <BookingLink className={buttonVariants({ size: "sm", variant: "light" })}>
             {t("bookingCta")}
           </BookingLink>
           <MobileNav />
