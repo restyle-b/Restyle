@@ -41,19 +41,10 @@ export default function HomePage() {
             {t("heroSubtitle")}
           </p>
           <div className="animate-fade-up mt-10 flex flex-wrap gap-4 [animation-delay:360ms]">
-            <BookingLink
-              className={buttonVariants({ size: "lg", className: "rounded-none uppercase tracking-[0.2em]" })}
-            >
+            <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>
               {t("bookingCta")}
             </BookingLink>
-            <Link
-              href="/services"
-              className={buttonVariants({
-                variant: "outline",
-                size: "lg",
-                className: "rounded-none uppercase tracking-[0.2em]",
-              })}
-            >
+            <Link href="/services" className={buttonVariants({ variant: "outline", size: "lg" })}>
               {t("servicesCta")}
             </Link>
           </div>
@@ -87,7 +78,7 @@ export default function HomePage() {
           <div className="mt-16 grid gap-px overflow-hidden border border-line-light sm:grid-cols-2 lg:grid-cols-3">
             {serviceSlugs.map((slug, i) => (
               <Reveal key={slug} delay={i * 70}>
-                <div className="h-full border-line-light bg-white p-8 transition-colors hover:bg-paper sm:border-l">
+                <div className="h-full border-line-light bg-cream p-8 transition-colors hover:bg-white sm:border-l">
                   <h3 className="font-display text-lg font-bold uppercase tracking-wide">
                     {tServices(`${slug}.name`)}
                   </h3>
@@ -97,13 +88,7 @@ export default function HomePage() {
             ))}
           </div>
           <Reveal className="mt-12 flex justify-center">
-            <Link
-              href="/services"
-              className={buttonVariants({
-                variant: "outline",
-                className: "rounded-none uppercase tracking-[0.2em]",
-              })}
-            >
+            <Link href="/services" className={buttonVariants({ variant: "outline" })}>
               {t("allServicesCta")}
             </Link>
           </Reveal>
@@ -123,9 +108,7 @@ export default function HomePage() {
             <p className="mx-auto mt-3 max-w-md text-neutral-300">{t("ctaText")}</p>
           </Reveal>
           <Reveal className="mt-8">
-            <BookingLink
-              className={buttonVariants({ size: "lg", className: "rounded-none uppercase tracking-[0.2em]" })}
-            >
+            <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>
               {t("ctaBooking")}
             </BookingLink>
           </Reveal>
@@ -148,7 +131,7 @@ export default function HomePage() {
             />
           </Reveal>
           <Reveal className="mt-8 flex justify-center">
-            <Link href="/academy" className={buttonVariants({ className: "rounded-none uppercase tracking-[0.2em]" })}>
+            <Link href="/academy" className={buttonVariants()}>
               {t("allCoursesCta")}
             </Link>
           </Reveal>
@@ -172,10 +155,7 @@ export default function HomePage() {
             />
           </Reveal>
           <Reveal className="mt-8 flex justify-center">
-            <Link
-              href="/about"
-              className={buttonVariants({ variant: "outline", className: "rounded-none uppercase tracking-[0.2em]" })}
-            >
+            <Link href="/about" className={buttonVariants({ variant: "outline" })}>
               {t("readMoreCta")}
             </Link>
           </Reveal>
@@ -196,10 +176,7 @@ export default function HomePage() {
             ))}
           </div>
           <Reveal className="mt-12 flex justify-center">
-            <Link
-              href="/gallery"
-              className={buttonVariants({ variant: "outline", className: "rounded-none uppercase tracking-[0.2em]" })}
-            >
+            <Link href="/gallery" className={buttonVariants({ variant: "outline" })}>
               {t("fullGalleryCta")}
             </Link>
           </Reveal>
@@ -248,13 +225,7 @@ export default function HomePage() {
                   <dd>{hours.map((row) => `${row.day} ${row.hours}`).join(", ")}</dd>
                 </div>
               </dl>
-              <Link
-                href="/locations"
-                className={buttonVariants({
-                  variant: "outline",
-                  className: "mt-8 rounded-none uppercase tracking-[0.2em]",
-                })}
-              >
+              <Link href="/locations" className={buttonVariants({ variant: "outline", className: "mt-8" })}>
                 {t("directionsCta")}
               </Link>
             </div>
@@ -262,10 +233,7 @@ export default function HomePage() {
           <Reveal>
             <div>
               <SectionHeading eyebrow={t("contactEyebrow")} title={t("contactTitle")} />
-              <Link
-                href="/contact"
-                className={buttonVariants({ className: "mt-8 rounded-none uppercase tracking-[0.2em]" })}
-              >
+              <Link href="/contact" className={buttonVariants({ className: "mt-8" })}>
                 {t("contactPageCta")}
               </Link>
             </div>

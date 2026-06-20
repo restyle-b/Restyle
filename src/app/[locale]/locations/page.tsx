@@ -81,7 +81,7 @@ export default function LocationsPage() {
             <ContactActions className="mt-3" />
           </div>
 
-          <BookingLink className={buttonVariants({ size: "lg" })}>{t("bookingCta")}</BookingLink>
+          <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>{t("bookingCta")}</BookingLink>
         </div>
 
         <div className="overflow-hidden rounded-lg border border-line-dark">

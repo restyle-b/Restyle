@@ -34,7 +34,7 @@ export default function ServicesPage() {
       </div>
 
       <div className="mt-12">
-        <BookingLink className={buttonVariants({ size: "lg" })}>{t("bookingCta")}</BookingLink>
+        <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>{t("bookingCta")}</BookingLink>
       </div>
     </Container>
   );

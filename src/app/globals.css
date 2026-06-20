@@ -9,6 +9,7 @@
   --color-line-light: #e8e6e0;
   --color-accent: #e5e5e5; /* אפור בהיר */
   --color-accent-soft: #cfcfcf; /* אפור בהיר — hover */
+  --color-cream: #f0e9dc; /* בז'-קרם חם — משטחי כרטיס (בהשראת אפליקציית ReStyle) */
 
   --font-sans:
     var(--font-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -157,7 +158,8 @@ body {
   transform-origin: center;
   transition: transform var(--dur-micro) var(--ease-in-out);
 }
-.link-underline:hover::after {
+.link-underline:hover::after,
+.link-underline.is-active::after {
   transform: scaleX(1);
 }
 

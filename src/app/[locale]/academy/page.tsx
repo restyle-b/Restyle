@@ -53,7 +53,7 @@ export default function AcademyPage() {
       </div>
 
       <div className="mt-12">
-        <Link href="/contact" className={buttonVariants({ size: "lg" })}>
+        <Link href="/contact" className={buttonVariants({ size: "lg", variant: "light" })}>
           {t("ctaText")}
         </Link>
       </div>

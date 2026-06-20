@@ -13,7 +13,7 @@ export function FloatingContact() {
   const contactLinks = getContactLinks(tActions("whatsappMessage"), locale);
 
   return (
-    <div className="fixed bottom-4 end-4 z-[55] flex flex-col gap-3 print:hidden">
+    <div className="fixed bottom-20 end-4 z-[55] flex flex-col gap-3 print:hidden sm:bottom-4">
       <a
         href={contactLinks.whatsapp}
         target="_blank"

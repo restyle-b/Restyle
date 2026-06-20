@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
+  const pathname = usePathname();
   // scrolled = עברנו את ראש העמוד (מוסיף רקע מלא+צל); hidden = להסתיר בגלילה מטה.
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -54,20 +55,29 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label={t("mainAria")}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="link-underline text-sm text-neutral-300 transition-colors hover:text-white"
-            >
-              {t(link.key)}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "link-underline text-sm transition-colors hover:text-white",
+                  isActive ? "is-active text-white" : "text-neutral-300",
+                )}
+              >
+                {t(link.key)}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-4">
           <LocaleSwitcher className="hidden md:inline-flex" />
-          <BookingLink className={buttonVariants({ size: "sm", className: "hidden sm:inline-flex" })}>
+          <BookingLink
+            className={buttonVariants({ size: "sm", variant: "light", className: "hidden sm:inline-flex" })}
+          >
             {t("bookingCta")}
           </BookingLink>
           <MobileNav />
