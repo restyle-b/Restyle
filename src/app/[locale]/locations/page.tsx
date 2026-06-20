@@ -33,7 +33,7 @@ export default function LocationsPage() {
 
   return (
     <Container className="py-20">
-      <SectionHeading eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
+      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
 
       <div className="mt-12 grid items-start gap-12 lg:grid-cols-2">
         <div className="space-y-8 text-neutral-300">

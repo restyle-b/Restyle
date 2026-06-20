@@ -19,7 +19,7 @@ export default function PrivacyPage() {
   const t = useTranslations("privacy");
   return (
     <Container className="py-20">
-      <SectionHeading eyebrow={t("eyebrow")} title={t("title")} />
+      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
 
       <div className="mt-10 max-w-3xl space-y-8 text-neutral-300">
         <p>{t("intro")}</p>

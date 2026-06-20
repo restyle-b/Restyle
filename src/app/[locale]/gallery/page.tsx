@@ -20,7 +20,7 @@ export default function GalleryPage() {
   const t = useTranslations("gallery");
   return (
     <Container className="py-20">
-      <SectionHeading eyebrow={t("eyebrow")} title={t("title")} />
+      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
 
       <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         <div className="relative aspect-square overflow-hidden rounded-md">
