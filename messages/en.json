@@ -60,6 +60,7 @@
     "galleryEyebrow": "Selected Work",
     "galleryTitle": "Gallery",
     "workImageLabel": "Work photo",
+    "studioImageLabel": "Our studio",
     "fullGalleryCta": "Full Gallery",
     "testimonialsEyebrow": "What People Say",
     "testimonialsTitle": "Our Clients Speak",
@@ -140,7 +141,8 @@
     "metaDescription": "Selected work from the barbershop — haircuts, beard styling and coloring.",
     "eyebrow": "Selected Work",
     "title": "Gallery",
-    "workImageLabel": "Work photo"
+    "workImageLabel": "Work photo",
+    "studioImageLabel": "Our studio"
   },
   "locations": {
     "metaTitle": "Location & Hours",

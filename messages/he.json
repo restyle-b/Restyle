@@ -60,6 +60,7 @@
     "galleryEyebrow": "עבודות נבחרות",
     "galleryTitle": "גלריה",
     "workImageLabel": "תמונת עבודה",
+    "studioImageLabel": "הסטודיו שלנו",
     "fullGalleryCta": "לגלריה המלאה",
     "testimonialsEyebrow": "מה אומרים עלינו",
     "testimonialsTitle": "לקוחות מספרים",
@@ -140,7 +141,8 @@
     "metaDescription": "עבודות נבחרות מהמספרה — תספורות, עיצוב זקן וצבע.",
     "eyebrow": "עבודות נבחרות",
     "title": "גלריה",
-    "workImageLabel": "תמונת עבודה"
+    "workImageLabel": "תמונת עבודה",
+    "studioImageLabel": "הסטודיו שלנו"
   },
   "locations": {
     "metaTitle": "מיקום ושעות",

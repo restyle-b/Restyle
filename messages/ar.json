@@ -60,6 +60,7 @@
     "galleryEyebrow": "أعمال مختارة",
     "galleryTitle": "معرض الصور",
     "workImageLabel": "صورة عمل",
+    "studioImageLabel": "الاستوديو الخاص بنا",
     "fullGalleryCta": "المعرض الكامل",
     "testimonialsEyebrow": "ماذا يقولون عنا",
     "testimonialsTitle": "يتحدث عملاؤنا",
@@ -140,7 +141,8 @@
     "metaDescription": "أعمال مختارة من الصالون — قصات شعر، تصميم لحية وتلوين.",
     "eyebrow": "أعمال مختارة",
     "title": "معرض الصور",
-    "workImageLabel": "صورة عمل"
+    "workImageLabel": "صورة عمل",
+    "studioImageLabel": "الاستوديو الخاص بنا"
   },
   "locations": {
     "metaTitle": "الموقع وساعات العمل",

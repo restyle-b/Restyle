@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/container";
@@ -22,7 +23,16 @@ export default function GalleryPage() {
       <SectionHeading eyebrow={t("eyebrow")} title={t("title")} />
 
       <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 12 }).map((_, i) => (
+        <div className="relative aspect-square overflow-hidden rounded-md">
+          <Image
+            src="/images/gallery-studio-1.jpg"
+            alt={t("studioImageLabel")}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+            className="object-cover"
+          />
+        </div>
+        {Array.from({ length: 11 }).map((_, i) => (
           <ImagePlaceholder key={i} label={t("workImageLabel")} className="aspect-square rounded-md" />
         ))}
       </div>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
@@ -169,8 +170,19 @@ export default function HomePage() {
             <SectionHeading center eyebrow={t("galleryEyebrow")} title={t("galleryTitle")} />
           </Reveal>
           <div className="mt-16 grid grid-cols-2 gap-px sm:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Reveal key={i} direction="scale" delay={(i % 4) * 60}>
+            <Reveal direction="scale">
+              <div className="relative aspect-square overflow-hidden">
+                <Image
+                  src="/images/gallery-studio-1.jpg"
+                  alt={t("studioImageLabel")}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+            {Array.from({ length: 7 }).map((_, i) => (
+              <Reveal key={i} direction="scale" delay={((i + 1) % 4) * 60}>
                 <ImagePlaceholder label={t("workImageLabel")} className="aspect-square" />
               </Reveal>
             ))}
