@@ -50,8 +50,8 @@ CREATE POLICY "site_settings_select_public"
 DROP POLICY IF EXISTS "site_settings_write_admin" ON "site_settings";
 CREATE POLICY "site_settings_write_admin"
   ON "site_settings" FOR ALL
-  USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'ADMIN'))
-  WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'ADMIN'));
+  USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid()::text AND role = 'ADMIN'))
+  WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid()::text AND role = 'ADMIN'));
 
 DROP POLICY IF EXISTS "opening_hours_select_public" ON "opening_hours";
 CREATE POLICY "opening_hours_select_public"
@@ -61,5 +61,5 @@ CREATE POLICY "opening_hours_select_public"
 DROP POLICY IF EXISTS "opening_hours_write_admin" ON "opening_hours";
 CREATE POLICY "opening_hours_write_admin"
   ON "opening_hours" FOR ALL
-  USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'ADMIN'))
-  WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'ADMIN'));
+  USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid()::text AND role = 'ADMIN'))
+  WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid()::text AND role = 'ADMIN'));
