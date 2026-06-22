@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   description: "האזור האישי שלך באתר ReStyle.",
 };
 
+// העמוד תלוי ב-cookies()/Supabase לכל בקשה — אסור ל-Next לנסות לרנדר אותו
+// סטטית בזמן build (זה היה גורם לקריסת build כשמשתני הסביבה חסרים, עוד לפני
+// שה-cookies() נקראת ומסמנת לעמוד שהוא דינמי).
+export const dynamic = "force-dynamic";
+
 export default async function AccountPage() {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.auth.getUser();
