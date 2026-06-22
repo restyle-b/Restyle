@@ -23,7 +23,12 @@ export function ForgotPasswordForm() {
   } = useForm<RequestPasswordResetInput>({ resolver: zodResolver(requestPasswordResetSchema) });
 
   async function onSubmit(values: RequestPasswordResetInput) {
-    await requestPasswordReset(values);
+    try {
+      await requestPasswordReset(values);
+    } catch {
+      // requestPasswordReset לא חושף אם המייל קיים — לא חושפים גם פה
+      // אם הבקשה נכשלה ברמת התשתית; תמיד מציגים את אותה הודעת הצלחה.
+    }
     setStatus("success");
   }
 

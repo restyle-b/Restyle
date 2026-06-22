@@ -24,12 +24,16 @@ export function LoginForm() {
 
   async function onSubmit(values: SignInInput) {
     setServerError(null);
-    const result = await signIn(values);
-    if (result.ok) {
-      router.push(safeRedirectPath(searchParams.get("next"), "/account"));
-      router.refresh();
-    } else {
-      setServerError(result.error);
+    try {
+      const result = await signIn(values);
+      if (result.ok) {
+        router.push(safeRedirectPath(searchParams.get("next"), "/account"));
+        router.refresh();
+      } else {
+        setServerError(result.error);
+      }
+    } catch {
+      setServerError("אירעה תקלה, נסו שוב");
     }
   }
 

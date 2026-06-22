@@ -23,12 +23,16 @@ export function ResetPasswordForm() {
 
   async function onSubmit(values: UpdatePasswordInput) {
     setServerError(null);
-    const result = await updatePassword(values);
-    if (result.ok) {
-      router.push("/account");
-      router.refresh();
-    } else {
-      setServerError(result.error);
+    try {
+      const result = await updatePassword(values);
+      if (result.ok) {
+        router.push("/account");
+        router.refresh();
+      } else {
+        setServerError(result.error);
+      }
+    } catch {
+      setServerError("אירעה תקלה, נסו שוב");
     }
   }
 
