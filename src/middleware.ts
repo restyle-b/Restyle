@@ -9,16 +9,26 @@ const intlMiddleware = createMiddleware(routing);
 const PROTECTED_SEGMENTS = ["/account", "/admin"];
 const LOCALE_PREFIXES = ["/en", "/ar"];
 
+// נתיבים שחיים מחוץ לתיקיית [locale] (אינם מתורגמים) — אסור להעביר אותם
+// ל-next-intl, אחרת הוא ממפה אותם פנימית לנתיב עם locale (למשל "/admin" -> "/he/admin")
+// שלא קיים בפועל ב-App Router, וזה מחזיר 404.
+const NON_LOCALIZED_PREFIXES = ["/admin", "/auth"];
+
 function splitLocale(pathname: string) {
   const prefix = LOCALE_PREFIXES.find((p) => pathname === p || pathname.startsWith(`${p}/`));
   return { prefix: prefix ?? "", rest: prefix ? pathname.slice(prefix.length) || "/" : pathname };
 }
 
 export async function middleware(request: NextRequest) {
-  const intlResponse = intlMiddleware(request);
-  if (intlResponse.headers.get("location")) return intlResponse;
+  const pathname = request.nextUrl.pathname;
+  const isNonLocalized = NON_LOCALIZED_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
 
-  const { prefix, rest } = splitLocale(request.nextUrl.pathname);
+  const intlResponse = isNonLocalized ? NextResponse.next() : intlMiddleware(request);
+  if (!isNonLocalized && intlResponse.headers.get("location")) return intlResponse;
+
+  const { prefix, rest } = isNonLocalized ? { prefix: "", rest: pathname } : splitLocale(pathname);
   const isProtected = PROTECTED_SEGMENTS.some((p) => rest.startsWith(p));
 
   // אנטי-DoS + ביצועים: getUser() פונה לשרת ה-Auth של Supabase. בלי הסינון הזה
