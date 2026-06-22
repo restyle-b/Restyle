@@ -36,13 +36,13 @@ ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "users_select_own" ON public.users;
 CREATE POLICY "users_select_own"
   ON public.users FOR SELECT
-  USING (auth.uid() = id);
+  USING (auth.uid()::text = id);
 
 DROP POLICY IF EXISTS "users_update_own" ON public.users;
 CREATE POLICY "users_update_own"
   ON public.users FOR UPDATE
-  USING (auth.uid() = id)
-  WITH CHECK (auth.uid() = id);
+  USING (auth.uid()::text = id)
+  WITH CHECK (auth.uid()::text = id);
 
 -- אין מדיניות INSERT/DELETE ללקוח — יצירה רק דרך ה-trigger (SECURITY DEFINER),
 -- ומחיקה/ניהול אדמין רק דרך service-role key בצד שרת (Phase 8).
