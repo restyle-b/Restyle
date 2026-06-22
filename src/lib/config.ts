@@ -1,14 +1,12 @@
 /**
- * תצורת אתר Restyle.
- * קביעת תור מתבצעת באפליקציית Restyle — הקישורים כאן מפנים אליה.
- * החלף ב-URLs האמיתיים כשהאפליקציה תהיה זמינה (ראה docs/SETUP.md).
+ * תצורת אתר ReStyle.
+ * קביעת תור מתבצעת באפליקציית ReStyle — הקישורים כאן מפנים אליה.
  */
 export const siteConfig = {
-  name: "Restyle",
-  description: "מספרת Restyle — תספורת, עיצוב, אקדמיה ומוצרי טיפוח פרימיום.",
+  name: "ReStyle",
   url: "https://restyle.co.il",
 
-  /** קישורי קביעת תור — אפליקציית Restyle */
+  /** קישורי קביעת תור — אפליקציית ReStyle */
   booking: {
     appStore: "https://apps.apple.com/il/app/restyle/id6744821132?l=he",
     googlePlay: "https://play.google.com/store/apps/details?id=com.smtio.restyle",
@@ -21,18 +19,23 @@ export const siteConfig = {
   },
 
   contact: {
-    phone: "",
-    email: "",
-    address: "",
+    phone: "050-5961800",
+    email: "Restyle.Barbershop@outlook.com",
+    address: "לסקוב 4, תל אביב",
+    /** מספר ל-wa.me — בפורמט בינלאומי בלי + ובלי 0 מוביל */
+    whatsapp: "972505961800",
   },
+
+  /** תאריך עדכון אחרון — לעמודי הצהרת נגישות/פרטיות/תקנון (תאריך אינו טעון תרגום) */
+  lastUpdated: "18.06.2026",
 } as const;
 
-/** פריטי הניווט הראשי (ראה docs/DESIGN.md). */
+/** מפתחות פריטי הניווט הראשי — התוויות מגיעות מ-messages.nav (ראה docs/DESIGN.md). */
 export const navLinks = [
-  { href: "/about", label: "אודות" },
-  { href: "/services", label: "שירותים" },
-  { href: "/academy", label: "אקדמיה" },
-  { href: "/shop", label: "חנות" },
-  { href: "/locations", label: "מיקום ושעות" },
-  { href: "/contact", label: "צור קשר" },
+  { href: "/about", key: "about" },
+  { href: "/services", key: "services" },
+  { href: "/academy", key: "academy" },
+  { href: "/gallery", key: "gallery" },
+  { href: "/locations", key: "locations" },
+  { href: "/contact", key: "contact" },
 ] as const;

@@ -1,11 +1,29 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/config";
+import { routing } from "@/i18n/routing";
+import { getPathname } from "@/i18n/navigation";
 
-const routes = ["", "/about", "/services", "/gallery", "/contact"];
+const routes = [
+  "/",
+  "/about",
+  "/services",
+  "/academy",
+  "/gallery",
+  "/locations",
+  "/contact",
+  "/accessibility",
+  "/privacy",
+  "/terms",
+] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.map((route) => ({
-    url: `${siteConfig.url}${route}`,
+  return routes.map((href) => ({
+    url: `${siteConfig.url}${getPathname({ href, locale: routing.defaultLocale })}`,
     lastModified: new Date(),
+    alternates: {
+      languages: Object.fromEntries(
+        routing.locales.map((locale) => [locale, `${siteConfig.url}${getPathname({ href, locale })}`]),
+      ),
+    },
   }));
 }
