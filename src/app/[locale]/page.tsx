@@ -51,9 +51,9 @@ export default function HomePage() {
           </div>
         </Container>
 
-        {/* חיווי "גלול" — מספריים של ספר שנוסנות ומצביעות מטה (קישוטי, aria-hidden) */}
+        {/* חיווי "גלול" — מספריים של ספר: סבב כניסה חד-פעמי, ואז נסניס בלופ ומצביעות מטה (קישוטי, aria-hidden) */}
         <div className="pointer-events-none absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[90svh]">
-          <span className="text-accent/80" aria-hidden="true">
+          <span className="scissors-intro text-accent/80" aria-hidden="true">
             <svg
               width="30"
               height="30"
