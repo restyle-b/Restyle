@@ -7,9 +7,9 @@ export const signUpSchema = z.object({
   name: z.string().trim().min(2, "נדרש שם בן 2 תווים לפחות"),
   email,
   password,
-  // honeypot אנטי-ספאם — שדה מוסתר שמשתמש אנושי לא ימלא (לא מוגבל באורך כדי
-  // שמילוי שלו לא יחסום את הוולידציה — מטופל ב-server action בהתעלמות שקטה)
-  company: z.string().optional().or(z.literal("")),
+  // honeypot אנטי-ספאם — שדה מוסתר שמשתמש אנושי לא ימלא. מוגבל באורך (אנטי-DoS)
+  // אך מילוי לא תקין לא חוסם את הוולידציה — מטופל ב-server action בהתעלמות שקטה.
+  company: z.string().max(256).optional().or(z.literal("")),
 });
 export type SignUpInput = z.infer<typeof signUpSchema>;
 

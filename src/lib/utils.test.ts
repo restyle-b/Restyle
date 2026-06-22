@@ -24,6 +24,11 @@ describe("safeRedirectPath", () => {
     expect(safeRedirectPath("https://evil.com", "/login")).toBe("/login");
   });
 
+  it("חוסם עקיפת backslash", () => {
+    expect(safeRedirectPath("/\\evil.com", "/login")).toBe("/login");
+    expect(safeRedirectPath("/\\/evil.com", "/login")).toBe("/login");
+  });
+
   it("חוזר ל-fallback כשערך ריק/null", () => {
     expect(safeRedirectPath(null, "/login")).toBe("/login");
     expect(safeRedirectPath("", "/login")).toBe("/login");

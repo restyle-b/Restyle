@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { CutHeading } from "@/components/cut-heading";
 
 export function SectionHeading({
   eyebrow,
@@ -6,6 +7,7 @@ export function SectionHeading({
   description,
   light,
   center,
+  cut,
   className,
 }: {
   eyebrow?: string;
@@ -15,8 +17,14 @@ export function SectionHeading({
   light?: boolean;
   /** true למרכוז הכותרת (בהשראת בלוקים מלאי-רוחב ב-menspire.com) */
   center?: boolean;
+  /** true לחשיפת "גזירה" של הכותרת בכניסה לצפייה (מוטיב המספריים) */
+  cut?: boolean;
   className?: string;
 }) {
+  const titleClass = cn(
+    "font-display mt-3 text-3xl font-bold sm:text-4xl",
+    light ? "text-white" : "text-ink",
+  );
   return (
     <div className={cn("max-w-2xl", center && "mx-auto text-center", className)}>
       {eyebrow && (
@@ -29,14 +37,11 @@ export function SectionHeading({
           {eyebrow}
         </p>
       )}
-      <h2
-        className={cn(
-          "font-display mt-3 text-3xl font-bold sm:text-4xl",
-          light ? "text-white" : "text-ink",
-        )}
-      >
-        {title}
-      </h2>
+      {cut ? (
+        <CutHeading title={title} className={titleClass} />
+      ) : (
+        <h2 className={titleClass}>{title}</h2>
+      )}
       {description && (
         <p className={cn("mt-4 text-base", light ? "text-neutral-300" : "text-neutral-600")}>
           {description}
