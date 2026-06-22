@@ -1,0 +1,46 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { requireAdmin } from "@/lib/auth/require-admin";
+import { SignOutButton } from "@/components/auth/sign-out-button";
+
+export const metadata: Metadata = {
+  title: "ניהול | ReStyle",
+  robots: { index: false, follow: false },
+};
+
+// תלוי ב-cookies()/Supabase בכל בקשה — אסור רינדור סטטי בזמן build.
+export const dynamic = "force-dynamic";
+
+const NAV_LINKS = [
+  { href: "/admin", label: "דשבורד" },
+  { href: "/admin/settings", label: "הגדרות אתר" },
+] as const;
+
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  // הגנה כפולה — ה-middleware חוסם /admin למשתמש לא מחובר, אך בדיקת ה-role
+  // נעשית רק כאן (Prisma לא רץ ב-Edge runtime של ה-middleware).
+  await requireAdmin();
+
+  return (
+    <div dir="rtl" lang="he" className="min-h-screen bg-ink text-white">
+      <header className="border-b border-line-dark">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <nav className="flex items-center gap-6">
+            <span className="font-semibold">ניהול ReStyle</span>
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-neutral-300 hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <SignOutButton />
+        </div>
+      </header>
+      <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+    </div>
+  );
+}

@@ -92,6 +92,51 @@ docs/
 
 > כסף תמיד ב-**אגורות (integer)**. כל טבלה עם נתוני משתמש מקבלת **RLS**.
 
+### 5.1 Admin CMS — מודל נתונים (Phase 8, תוכנן 2026-06-22)
+כל התוכן הציבורי היום סטטי (`messages/*.json` + `services-data.ts`/`academy-data.ts`/
+`config.ts`) — מעבר ל-CMS דורש טבלאות תוכן חדשות. הוחלט: **עברית חובה בכל שדה
+מתורגם, אנגלית/ערבית אופציונליים** (ריק → fallback לעברית בתצוגה הציבורית).
+ממשק ה-Admin עצמו (`src/app/admin/*`) בעברית קבועה, **מחוץ** לניתוב `[locale]`.
+
+```prisma
+model SiteSettings { id Int @id @default(1)  phone String  email String  address String
+  whatsapp String  instagramUrl String?  facebookUrl String?  appStoreUrl String?
+  googlePlayUrl String?  updatedAt DateTime @updatedAt  updatedById String? }
+
+model OpeningHour { id Int @id @default(autoincrement())  dayOrder Int @unique
+  dayHe String  dayEn String?  dayAr String?  hoursHe String  hoursEn String?  hoursAr String? }
+
+model Service { id String @id @default(cuid())  slug String @unique  order Int @default(0)
+  nameHe String  nameEn String?  nameAr String?  descriptionHe String  descriptionEn String?
+  descriptionAr String?  active Boolean @default(true)  createdAt/updatedAt DateTime }
+
+model Course { /* כמו Service + durationHe/En/Ar, levelHe/En/Ar */ }
+
+model Testimonial { id String @id @default(cuid())  order Int @default(0)
+  nameHe/En/Ar String  quoteHe/En/Ar String  active Boolean @default(true) }
+
+model GalleryImage { id String @id @default(cuid())  order Int @default(0)
+  imageKey String /* מפתח ב-R2 */  altHe/En/Ar String  active Boolean @default(true) }
+
+// טקסטי שיווק/משפטי — key-value גמיש (namespace/key תואם ל-messages/he.json
+// הקיים), כדי שמיגרציית seed תהיה ישירה ובלי 100+ עמודות קשיחות.
+model ContentBlock { id String @id @default(cuid())  namespace String  key String
+  valueHe String @db.Text  valueEn String? @db.Text  valueAr String? @db.Text
+  updatedAt DateTime @updatedAt  updatedById String?  @@unique([namespace, key]) }
+```
+
+**RLS:** קריאה פתוחה (`anon` select — תוכן ציבורי), כתיבה רק ל-`ADMIN` — נבדק
+**גם** ב-RLS וגם ב-server action (defense in depth, כמו בשאר המערכת).
+
+**`requireAdmin()`** (חדש, `lib/auth/require-admin.ts`) — בודק session דרך
+Supabase + `role==='ADMIN'` ב-Prisma; **fail closed**. נקרא בתחילת כל admin
+server action, **בנוסף** לחסימת `/admin/*` ב-`middleware.ts` (לא להסתמך על
+שכבה אחת).
+
+**תתי-שלבים:** 8.1 תשתית+SiteSettings → 8.2 שירותים+קורסים → 8.3 המלצות+גלריה
+(R2 presigned upload) → 8.4 `ContentBlock` (seed מ-JSON) → 8.5 ניהול
+משתמשים/הרשאות (security סקיל ייעודי). פירוט מלא ב-`ROADMAP.md` Phase 8.
+
 ---
 
 ## 6. תשתית תשלומים (Tranzila / HYP בעתיד)

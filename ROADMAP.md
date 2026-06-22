@@ -138,13 +138,43 @@ security headers, rate limiting. typecheck/lint/test/build ירוקים בכל c
 - [ ] ⬜ קטלוג קורסים + עמוד קורס
 - [ ] ⬜ הרשמה/רכישת קורס + גישת תוכן למשתמש רשום
 
-## Phase 8 — ממשק ניהול (Admin) (🔀 הרחבה אופציונלית) ⬜
-- [ ] ⬜ דשבורד אדמין + נתוני מפתח
-- [ ] ⬜ ניהול מוצרים/מלאי
-- [ ] ⬜ ניהול הזמנות (עדכון סטטוס, חיפוש)
-- [ ] ⬜ ניהול קורסים/הרשמות
-- [ ] ⬜ ניהול תוכן וגלריה (העלאה ל-R2)
-- [ ] ⬜ ניהול משתמשים/הרשאות
+## Phase 8 — ממשק ניהול (Admin CMS לכל התוכן הקיים) 🔄
+תוכנן 2026-06-22 (בקשת המשתמש: "תכנן ממשק ניהול לכל התוכן שקיים באתר"). היקף
+שאושר: **CMS מלא** לכל התוכן (שירותים/קורסים/המלצות/גלריה/שעות/פרטי קשר/טקסטי
+שיווק/עמודים משפטיים). ריבוי-לשוני: **עברית חובה, אנגלית/ערבית אופציונליים**
+לכל שדה (ריק → fallback לעברית בתצוגה הציבורית). ממשק ה-Admin עצמו בעברית
+קבועה, מחוץ לניתוב `[locale]`. מודל הנתונים המלא + חוזה ה-actions + קריטריוני
+הקבלה מתועדים ב-`docs/ARCHITECTURE.md §5.1`. מחולק ל-5 תתי-שלבים:
+- [ ] 🔄 **Phase 8.1 — תשתית Admin + Site Settings** (build 2026-06-22):
+      - [x] ✅ מיגרציית Prisma (`SiteSettings`, `OpeningHour`) — `prisma/migrations/
+            20260622000000_admin_site_settings` (כולל RLS: select פתוח, write
+            ל-`ADMIN` בלבד). ⚠️ דורש הרצה ידנית ב-Supabase SQL Editor (כמו
+            המיגרציות הקודמות) + `prisma migrate resolve --applied ...`.
+      - [x] ✅ `requireAdmin()` (`lib/auth/require-admin.ts`) — session+role,
+            fail-closed. `middleware.ts` הורחב לחסום `/admin` (סשן בלבד —
+            Prisma לא רץ ב-Edge, בדיקת role נעשית ב-layout+כל action).
+      - [x] ✅ `src/app/admin/layout.tsx` (קורא ל-`requireAdmin()`) + דשבורד
+            מינימלי. ללא מסך login נפרד — נעשה שימוש בטופס ההתחברות הקיים
+            (`/login?next=/admin`).
+      - [x] ✅ CRUD לפרטי קשר/שעות פתיחה (`/admin/settings`) — server actions
+            עם zod + `requireAdmin()` בכל action בנפרד (defense in depth).
+      - [x] ✅ `npm run lint && tsc --noEmit && npm test && npm run build` ירוקים.
+      - [ ] ⬜ **נותר**: חיבור `/contact`+footer+home לקרוא מה-DB (fallback
+            ל-`siteConfig` אם ריק) — נדחה לצעד הבא (מספר קריאות, ~10 קבצים
+            תלויים ב-`siteConfig.contact`/`getContactLinks`), כדי לא לערבב
+            שינוי רחב בעמודים ציבוריים בלי בדיקה נפרדת.
+      - [ ] ⬜ **נותר**: הרצת `security`+`qa` סקילים פורמלית על קוד ה-admin
+            (התשתית בנויה לפי checklist האבטחה, אך לא רץ סקיל ייעודי עדיין).
+- [ ] ⬜ **Phase 8.2 — שירותים + קורסים**: CRUD מלא (`Service`/`Course`),
+      מחובר ל-`/services`/`/academy`/דף הבית.
+- [ ] ⬜ **Phase 8.3 — המלצות + גלריה**: CRUD (`Testimonial`/`GalleryImage`),
+      העלאת תמונות ל-R2 דרך presigned URL.
+- [ ] ⬜ **Phase 8.4 — טקסטי שיווק/משפטי (`ContentBlock`)**: seed מ-`messages/*.json`
+      הקיים, מסך עריכה per-namespace (home/about/accessibility/privacy/terms וכו').
+- [ ] ⬜ **Phase 8.5 — ניהול משתמשים/הרשאות**: תצוגת רשימה + שינוי `role` —
+      קריטי אבטחה, סקיל `security` ייעודי בנפרד לפני merge.
+- [ ] ⬜ ניהול מוצרים/מלאי, ניהול הזמנות, ניהול הרשמות לקורסים — ימתינו ל-Phase
+      4/6/7 (חנות/הזמנות/אקדמיה בפועל), לא רלוונטיים עד שאלו יבנו.
 
 ## Phase 9 — חיבור לאפליקציית Restyle (קביעת תור) ✅
 > אין ניהול תורים באתר — קיימת אפליקציית Restyle. ה-CTA "קביעת תור" מפנה אליה.

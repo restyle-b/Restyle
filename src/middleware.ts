@@ -6,7 +6,7 @@ import { getClientEnv } from "@/lib/env";
 
 const intlMiddleware = createMiddleware(routing);
 
-const PROTECTED_SEGMENTS = ["/account"];
+const PROTECTED_SEGMENTS = ["/account", "/admin"];
 const LOCALE_PREFIXES = ["/en", "/ar"];
 
 function splitLocale(pathname: string) {

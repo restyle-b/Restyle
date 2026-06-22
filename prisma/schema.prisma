@@ -27,3 +27,34 @@ model User {
 
   @@map("users")
 }
+
+// הגדרות אתר גלובליות — שורה אחת בלבד (id קבוע = 1). Phase 8.1.
+model SiteSettings {
+  id            Int      @id @default(1)
+  phone         String
+  email         String
+  address       String
+  whatsapp      String
+  instagramUrl  String?
+  facebookUrl   String?
+  appStoreUrl   String?
+  googlePlayUrl String?
+  updatedAt     DateTime @updatedAt
+  updatedById   String?
+
+  @@map("site_settings")
+}
+
+// שעות פתיחה — שורה אחת ליום. Phase 8.1.
+model OpeningHour {
+  id       Int     @id @default(autoincrement())
+  dayOrder Int     @unique
+  dayHe    String
+  dayEn    String?
+  dayAr    String?
+  hoursHe  String
+  hoursEn  String?
+  hoursAr  String?
+
+  @@map("opening_hours")
+}
