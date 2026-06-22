@@ -7,6 +7,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { Reveal } from "@/components/reveal";
 import { BookingLink } from "@/components/booking-link";
+import { ScissorsScrollIndicator } from "@/components/scissors-scroll-indicator";
 import { siteConfig } from "@/lib/config";
 import { serviceSlugs } from "@/lib/services-data";
 
@@ -51,43 +52,14 @@ export default function HomePage() {
           </div>
         </Container>
 
-        {/* חיווי "גלול" — מספריים של ספר: סבב כניסה חד-פעמי, ואז נסניס בלופ ומצביעות מטה (קישוטי, aria-hidden) */}
-        <div className="pointer-events-none absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[90svh]">
-          <span className="scissors-intro text-accent/80" aria-hidden="true">
-            <svg
-              width="30"
-              height="30"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <g className="scissors-blade scissors-blade-r">
-                <circle cx="15.5" cy="5" r="2.3" />
-                <path
-                  d="M12.9,10.2 C13.3,12 13.0,16 12.3,19.5 C12.15,20.2 11.85,20.6 11.6,21 C11.4,20.5 11.55,18 11.7,15 C11.85,12.5 11.6,10.6 11.1,10.1 C11.5,9.85 12.5,9.85 12.9,10.2 Z"
-                  fill="currentColor"
-                  stroke="none"
-                />
-              </g>
-              <g className="scissors-blade scissors-blade-l">
-                <circle cx="8.5" cy="5" r="2.3" />
-                <path
-                  d="M11.1,10.2 C10.7,12 11.0,16 11.7,19.5 C11.85,20.2 12.15,20.6 12.4,21 C12.6,20.5 12.45,18 12.3,15 C12.15,12.5 12.4,10.6 12.9,10.1 C12.5,9.85 11.5,9.85 11.1,10.2 Z"
-                  fill="currentColor"
-                  stroke="none"
-                />
-              </g>
-              <circle cx="12" cy="10" r="0.9" fill="currentColor" stroke="none" />
-            </svg>
-          </span>
+        {/* חיווי "גלול" — מספריים של ספר: כמה סבבי כניסה, ואז נסניס בלופ; לחיצה מסבבת וגוללת לסקציה הבאה */}
+        <div className="absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[90svh]">
+          <ScissorsScrollIndicator label={t("scrollDownLabel")} scrollTargetId="home-services" />
         </div>
       </section>
 
       {/* שירותים */}
-      <section className="bg-paper text-ink py-16 sm:py-24">
+      <section id="home-services" className="bg-paper text-ink py-16 sm:py-24">
         <Container>
           <Reveal>
             <SectionHeading center eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />

@@ -130,25 +130,45 @@ body {
   transform-origin: 50% 41.667%;
 }
 .scissors-blade-r {
-  animation: scissors-snip-r 2.6s var(--ease-in-out) 0.6s infinite;
+  animation: scissors-snip-r 2.6s var(--ease-in-out) 0.9s infinite;
 }
 .scissors-blade-l {
-  animation: scissors-snip-l 2.6s var(--ease-in-out) 0.6s infinite;
+  animation: scissors-snip-l 2.6s var(--ease-in-out) 0.9s infinite;
 }
 
-/* סיבוב כניסה חד-פעמי של האייקון כולו (סבב מלא), ורק אז מעבר ללופ הנסניס
-   של הלהבים (animation-delay 0.6s למעלה, תואם למשך הסבוב כאן). "both" שומר
-   על rotate(0) לפני הריצה ו-rotate(360) בסיומה — ויזואלית זהה ל-0, כך שאין קפיצה. */
+/* סיבוב כניסה חד-פעמי של האייקון כולו (כמה סבבים מלאים, לא אחד), ורק אז
+   מעבר ללופ הנסניס של הלהבים (animation-delay 0.9s למעלה, תואם למשך הסבוב כאן).
+   "both" שומר על rotate(0) לפני הריצה ו-rotate(1080) בסיומה — ויזואלית זהה ל-0,
+   כך שאין קפיצה. */
 .scissors-intro {
   display: inline-block;
-  animation: scissors-spin-in 0.6s var(--ease-out) both;
+  animation: scissors-spin-in 0.9s var(--ease-out) both;
 }
 @keyframes scissors-spin-in {
   from {
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(1080deg);
+  }
+}
+
+/* סבב נוסף בלחיצה על האייקון (כמה סבבים), על אלמנט-עטיפה נפרד מ-.scissors-intro
+   כדי לא "להתחרות" על אנימציית הכניסה שכבר הסתיימה (שתי אנימציות על property
+   transform של אותו אלמנט מתנגשות — האחרונה שמוגדרת בקובץ מנצחת, ומוחקת/מאתחלת
+   את הראשונה כשה-class מתחלף). ה-class מתווסף/מוסר ב-React לפי מצב לחיצה. */
+.scissors-click-spin-wrap {
+  display: inline-block;
+}
+.scissors-click-spin-wrap.is-spinning {
+  animation: scissors-click-spin 0.6s var(--ease-out);
+}
+@keyframes scissors-click-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(720deg);
   }
 }
 @keyframes scissors-snip-r {
