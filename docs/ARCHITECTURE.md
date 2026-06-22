@@ -208,6 +208,15 @@ HMR עוטף מודולים ב-`eval()`, וה-CSP (`script-src 'self' 'unsafe-in
   moderate (postcss, build-time בלבד, מתועד מסבב 3); אין סודות בהיסטוריית
   git; `prisma/schema.prisma` ללא שינוי מהותי; CI לא חושף סודות; אין
   `console.log`/debug שנשארו בקוד. ה-build המלא (28 נתיבים) ירוק.
+- **סבב 7 — סקירה ממצה של כל 67 קבצי `src/**/*.{ts,tsx}`** (בתגובה לשאלת
+  המשתמש "סרקת את כל הקוד?" — הסבבים הקודמים התמקדו בקבצים שהשתנו/קריטיים
+  ולא בכל העץ). נקראו שורה-שורה כל הקומפוננטות, ה-routes (`[locale]/*/page.tsx`),
+  `i18n/*`, `lib/config.ts`, `robots.ts`, `sitemap.ts`, `academy-data.ts`,
+  `services-data.ts`, `mobile-nav.tsx`, `utils.test.ts` ועוד. **לא נמצא אף
+  ממצא חדש** — כל עמודי התוכן הם presentational בלבד (תרגומים סטטיים, אין
+  קלט משתמש), `AccessibilityMenu`/`mobile-nav` מטפלים נכון ב-`localStorage`
+  (try/catch, ולידציה של ערכים), אין `dangerouslySetInnerHTML` נוסף מעבר
+  לזה שתועד ב-`[locale]/layout.tsx`. זהו הסבב הנקי שהמשתמש בקש להגיע אליו.
 
 ---
 
