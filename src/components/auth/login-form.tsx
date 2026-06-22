@@ -64,7 +64,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className={cn(buttonVariants({ size: "lg" }), "w-full")}
+        className={cn(buttonVariants({ size: "lg", variant: "light" }), "w-full")}
       >
         {isSubmitting ? "מתחבר..." : "התחברות"}
       </button>

@@ -1,18 +1,25 @@
 @import "tailwindcss";
 
-/* ── ערכת עיצוב Restyle (ראה docs/DESIGN.md) ── */
+/* ── ערכת עיצוב ReStyle (ראה docs/DESIGN.md) ── */
 @theme {
   --color-ink: #0e0e0e; /* רקע ראשי כהה */
   --color-ink-soft: #1a1a1a; /* רקע משני כהה */
   --color-paper: #fafaf8; /* רקע בהיר חמים */
   --color-line-dark: #2a2a2a;
   --color-line-light: #e8e6e0;
-  --color-accent: #c9a227; /* זהב מעושן */
-  --color-accent-soft: #b08d57; /* ברונזה */
+  --color-accent: #e5e5e5; /* אפור בהיר */
+  --color-accent-soft: #cfcfcf; /* אפור בהיר — hover */
+  --color-cream: #f0e9dc; /* בז'-קרם חם — משטחי כרטיס (בהשראת אפליקציית ReStyle) */
 
   --font-sans:
-    var(--font-assistant), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-heebo), var(--font-assistant), sans-serif;
+    var(--font-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-latin), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ערבית: Cairo לכותרות ולטקסט הרץ (Assistant אינו תומך בערבית) */
+html[lang="ar"] {
+  --font-sans: var(--font-arabic), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-arabic), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 html {
@@ -20,14 +27,698 @@ html {
 }
 
 body {
-  background-color: var(--color-ink);
-  color: #e5e5e5;
+  background-color: var(--page-bg);
+  color: var(--page-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-/* כותרות ראווה */
+/* ── מצב יום/לילה (Theme) — ראה docs/DESIGN.md §מצב יום/לילה ──
+   לילה = ברירת המחדל ההיסטורית של האתר (כהה). data-theme="day" מוסיף שכבת
+   override שמהפכת את משטחי-הברירת-מחדל הכהים לבהירים. כפתורים, חיווי הגלילה
+   וההירו מונעים ע"י CSS vars כדי שלא "יתהפכו" בטעות. המוטיב: לבן/אפור/שחור.
+   ברירת המחדל נקבעת לפי הגדרת המכשיר (prefers-color-scheme) דרך סקריפט ב-layout,
+   עם אפשרות החלפה ידנית (נשמרת ב-localStorage). */
+:root,
+[data-theme="night"] {
+  color-scheme: dark;
+  --page-bg: #0e0e0e;
+  --page-fg: #e5e5e5;
+  /* כפתורים — קבועים מול ה-theme (לא מתהפכים עם שכבת ה-override) */
+  --btn-primary-bg: #0e0e0e;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-bg-hover: #1a1a1a;
+  --btn-light-bg: #ffffff;
+  --btn-light-fg: #0e0e0e;
+  --btn-light-bg-hover: #fafaf8;
+  /* כותרת האתר (header) — שני מצבי גלילה */
+  --header-bg-top: rgb(14 14 14 / 0.5);
+  --header-bg-scrolled: rgb(14 14 14 / 0.95);
+  /* הירו — תמונת רקע בגווני אפור + overlay כהה */
+  --hero-img-filter: grayscale(1) contrast(1.05) brightness(0.62);
+  --hero-overlay: linear-gradient(
+    to bottom,
+    rgb(14 14 14 / 0.55),
+    rgb(14 14 14 / 0.72) 55%,
+    #0e0e0e
+  );
+  /* תמונות תוכן (גלריה/אודות) — אותה שפת גווני-אפור כמו ההירו, בעדינות */
+  --content-img-filter: grayscale(1) contrast(1.05) brightness(0.92);
+  /* חיווי הגלילה (מספריים) */
+  --cue-color: rgb(229 229 229 / 0.8);
+  --cue-color-hover: #e5e5e5;
+  /* רקע placeholder לתמונות (Ken Burns) */
+  --ph-from: #1a1a1a;
+  --ph-to: #0e0e0e;
+  /* הלוגו (PNG לבן-על-שקוף) — בלילה נשאר כמו שהוא */
+  --logo-filter: none;
+}
+[data-theme="day"] {
+  color-scheme: light;
+  --page-bg: #fafaf8;
+  --page-fg: #1a1a1a;
+  --btn-primary-bg: #0e0e0e;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-bg-hover: #2a2a2a;
+  /* "light" יושב על משטח-קונטרסט שהפך בהיר ביום → הופך לכפתור כהה */
+  --btn-light-bg: #0e0e0e;
+  --btn-light-fg: #ffffff;
+  --btn-light-bg-hover: #2a2a2a;
+  --header-bg-top: rgb(250 250 248 / 0.55);
+  --header-bg-scrolled: rgb(255 255 255 / 0.9);
+  --hero-img-filter: grayscale(1) contrast(1) brightness(1.12);
+  --hero-overlay: linear-gradient(
+    to bottom,
+    rgb(250 250 248 / 0.82),
+    rgb(250 250 248 / 0.6) 50%,
+    #fafaf8
+  );
+  --content-img-filter: grayscale(1) contrast(1) brightness(1.04);
+  --cue-color: rgb(90 90 90 / 0.9);
+  --cue-color-hover: #2a2a2a;
+  --ph-from: #ece8e0;
+  --ph-to: #d8d3c8;
+  /* הלוגו לבן-על-שקוף הופך לשחור על רקעים שהפכו בהירים ביום */
+  --logo-filter: invert(1);
+}
+
+/* שכבת ה-override של מצב יום — מהפכת את הטוקנים הכהים (text-white/bg-ink/...)
+   לערכים בהירים. לא מוגדרת ב-@layer ולכן גוברת על ה-utilities של Tailwind.
+   כפתורים אינם מושפעים (משתמשים ב-var ולא ב-bg-ink/text-white). */
+[data-theme="day"] .bg-ink {
+  background-color: #ffffff;
+}
+[data-theme="day"] .bg-ink-soft {
+  background-color: #f3f1ec;
+}
+[data-theme="day"] .text-white {
+  color: #14110f;
+}
+[data-theme="day"] .text-neutral-300 {
+  color: #4a4a4a;
+}
+[data-theme="day"] .text-neutral-400 {
+  color: #6a6a6a;
+}
+[data-theme="day"] .border-line-dark {
+  border-color: #e6e3db;
+}
+[data-theme="day"] .text-accent {
+  color: #6f6f6f;
+}
+
+/* עוזרי theme — מונעים ע"י ה-vars שלמעלה (מתחלפים בין יום/לילה) */
+.hero-img {
+  filter: var(--hero-img-filter);
+}
+.content-img {
+  filter: var(--content-img-filter);
+}
+.logo-mark {
+  filter: var(--logo-filter);
+}
+.hero-overlay {
+  background: var(--hero-overlay);
+}
+.header-top {
+  background-color: var(--header-bg-top);
+}
+.header-scrolled {
+  background-color: var(--header-bg-scrolled);
+}
+.scissors-cue {
+  color: var(--cue-color);
+}
+.scissors-cue:hover {
+  color: var(--cue-color-hover);
+}
+.placeholder-bg {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--ph-from),
+    var(--ph-to)
+  );
+}
+
+/* כותרות ראווה — sans נקי. ה-tracking נקבע ע"י utility בכל כותרת בנפרד. */
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: 0.01em;
+}
+
+/* ── מערכת תנועה (Motion system) — ראה docs/DESIGN.md ו-.claude/skills/ui-ux ── */
+:root {
+  /* easing: כניסות (expo-out, יוקרתי) ו-hover (דו-כיווני חלק) */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* סקאלת משך */
+  --dur-micro: 0.18s;
+  --dur-element: 0.5s;
+  --dur-section: 0.8s;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ken Burns עדין לרקע ה-Hero — זום איטי הלוך-ושוב */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+/* ריחוף עדין — לחיווי "גלול" ב-Hero */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* utility classes לכניסה בטעינה (Hero וכו').
+   animation-fill-mode: both — האלמנט מחזיק את מצב 0% בזמן ה-delay ואת 100% בסוף,
+   כך שתחת reduced-motion (משך ~0) הוא נשאר במצב הסופי הגלוי. */
+.animate-fade-up {
+  animation: fade-up var(--dur-section) var(--ease-out) both;
+}
+.animate-fade-in {
+  animation: fade-in var(--dur-section) var(--ease-out) both;
+}
+.animate-scale-in {
+  animation: scale-in var(--dur-section) var(--ease-out) both;
+}
+.animate-hero-zoom {
+  animation: hero-zoom 22s var(--ease-in-out) infinite alternate;
+}
+.animate-float {
+  animation: float 2.4s var(--ease-in-out) infinite;
+}
+
+/* מספריים "נוסנות" — חיווי "גלול" ב-Hero.
+   כל להב מסתובב סביב נקודת הציר המשותפת (ה"בורג", קואורדינטה 12,10 ב-viewBox 24x24).
+   transform-box: view-box מאפשר להגדיר origin כאחוז מה-viewBox, ולא מה-bounding box
+   של כל <g> (שמתבדל בין הלהבים). מצב המנוחה (0deg) הוא גם הלהבים סגורים ומצביעים מטה —
+   כך שתחת prefers-reduced-motion (שמאפס משכי אנימציה גלובלית) האייקון "נופל" למצב הזה ונשאר קריא. */
+.scissors-blade {
+  transform-box: view-box;
+  transform-origin: 50% 41.667%;
+}
+.scissors-blade-r {
+  animation: scissors-snip-r 2.6s var(--ease-in-out) 1.6s infinite;
+}
+.scissors-blade-l {
+  animation: scissors-snip-l 2.6s var(--ease-in-out) 1.6s infinite;
+}
+
+/* סיבוב כניסה חד-פעמי של האייקון כולו (20 סבבים מלאים), ורק אז מעבר ללופ
+   הנסניס של הלהבים (animation-delay 1.6s למעלה, תואם למשך הסבוב כאן). משך
+   ארוך יותר (1.6s) כדי ש-20 סבבים יישארו קריאים כתנועה (לא בלר) — ה-easing
+   expo-out מאיץ בתחילת התנועה ומאט בהדרגה לכיוון המנוחה, כמו ספינר שמתייצב.
+   "both" שומר על rotate(0) לפני הריצה ו-rotate(7200) בסיומה — ויזואלית זהה
+   ל-0, כך שאין קפיצה. */
+.scissors-intro {
+  display: inline-block;
+  animation: scissors-spin-in 1.6s var(--ease-out) both;
+}
+@keyframes scissors-spin-in {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(7200deg);
+  }
+}
+
+/* סבב נוסף בלחיצה על האייקון (כמה סבבים), על אלמנט-עטיפה נפרד מ-.scissors-intro
+   כדי לא "להתחרות" על אנימציית הכניסה שכבר הסתיימה (שתי אנימציות על property
+   transform של אותו אלמנט מתנגשות — האחרונה שמוגדרת בקובץ מנצחת, ומוחקת/מאתחלת
+   את הראשונה כשה-class מתחלף). ה-class מתווסף/מוסר ב-React לפי מצב לחיצה. */
+.scissors-click-spin-wrap {
+  display: inline-block;
+}
+.scissors-click-spin-wrap.is-spinning {
+  animation: scissors-click-spin 0.6s var(--ease-out);
+}
+@keyframes scissors-click-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(720deg);
+  }
+}
+@keyframes scissors-snip-r {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15%,
+  35% {
+    transform: rotate(10deg);
+  }
+}
+@keyframes scissors-snip-l {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15%,
+  35% {
+    transform: rotate(-10deg);
+  }
+}
+
+/* ── מפריד "קו גזירה" — מוטיב המספריים כשפה ויזואלית בין סקציות ──
+   מספריים נוסעות לאורך קו מקווקו ו"גוזרות" אותו, עם הבזק אור (cut-line__glow)
+   שחולף בעקבותיהן — אותה שפת מתכת-פרימיום כמו .btn-shine. רק transform+opacity
+   (GPU). הנסיעה (--cut-travel) נמדדת ב-JS ומקבלת סימן לפי כיוון. מופעל כש-class
+   is-cutting מתווסף בכניסה לאזור הצפייה. במנוחה: המספריים בתחילת הקו, הקו שלם. */
+.cut-line {
+  position: relative;
+  height: 2rem;
+  overflow: hidden;
+}
+.cut-line__track {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 0;
+  border-top: 1.5px dashed currentColor;
+  opacity: 0.5;
+}
+.cut-line__glow {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0;
+  width: 70px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    currentColor,
+    transparent
+  );
+  filter: blur(0.5px);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+.cut-line__scissors {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0;
+  transform: translate(-50%, -50%);
+}
+.cut-line.is-cutting .cut-line__scissors {
+  animation: cut-travel 2.4s var(--ease-in-out) forwards;
+}
+.cut-line.is-cutting .cut-line__glow {
+  animation: cut-glow 2.4s var(--ease-in-out) forwards;
+}
+.cut-line.is-cutting .cut-blade-r {
+  animation: scissors-snip-r 0.5s var(--ease-in-out) infinite;
+}
+.cut-line.is-cutting .cut-blade-l {
+  animation: scissors-snip-l 0.5s var(--ease-in-out) infinite;
+}
+@keyframes cut-travel {
+  from {
+    transform: translate(-50%, -50%);
+  }
+  to {
+    transform: translate(calc(-50% + var(--cut-travel, 0px)), -50%);
+  }
+}
+@keyframes cut-glow {
+  0% {
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  88% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--cut-travel, 0px)), -50%);
+    opacity: 0;
+  }
+}
+
+/* ── כותרת "נחתכת" — חשיפת clip-path בכניסה לצפייה (ראה cut-heading.tsx) ──
+   הטקסט נחשף כ-wipe מהצד הלוגי. clip-path הוא מאפיין composite (לא reflow) ועובד
+   גם בכותרות רב-שורתיות. הכיווניות (מאיזה צד מתחילה החשיפה) נקבעת לפי [dir].
+   מצב הבסיס (ללא is-cut) חתוך-מוסתר; בכניסה / reduced-motion → חשוף מלא. */
+.cut-title {
+  display: inline-block;
+  overflow: hidden;
+}
+.cut-title__text {
+  display: inline-block;
+}
+.cut-title:not(.is-cut) .cut-title__text {
+  clip-path: inset(0 0 0 100%);
+}
+:where([dir="ltr"]) .cut-title:not(.is-cut) .cut-title__text {
+  clip-path: inset(0 100% 0 0);
+}
+.cut-title.is-cut .cut-title__text {
+  animation: cut-reveal-rtl 0.7s var(--ease-out) both;
+}
+:where([dir="ltr"]) .cut-title.is-cut .cut-title__text {
+  animation: cut-reveal-ltr 0.7s var(--ease-out) both;
+}
+@keyframes cut-reveal-rtl {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes cut-reveal-ltr {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ── מעבר בין עמודים — "וילון גזירה" (ראה [locale]/template.tsx) ──
+   שני פאנלים כהים מכסים את המסך ונפתחים מהמרכז (top מעלה / bottom מטה) עם מספריים
+   שגוזרות בתפר. רץ בכל ניווט (template נטען מחדש). רק transform/opacity (GPU).
+   מצב הבסיס = פתוח (פאנלים מחוץ למסך), כך שתחת prefers-reduced-motion (משך ~0)
+   אין כיסוי כלל. pointer-events:none — לא חוסם אינטראקציה גם בזמן הכיסוי הקצר. */
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: hidden;
+  pointer-events: none;
+}
+.page-curtain__panel {
+  position: absolute;
+  inset-inline: 0;
+  height: 51%;
+  background-color: var(--color-ink);
+}
+.page-curtain__panel--top {
+  top: 0;
+  transform: translateY(-101%);
+  animation: curtain-top 0.62s var(--ease-out);
+}
+.page-curtain__panel--bottom {
+  bottom: 0;
+  transform: translateY(101%);
+  animation: curtain-bottom 0.62s var(--ease-out);
+}
+.page-curtain__scissors {
+  position: absolute;
+  inset-inline-start: 50%;
+  top: 50%;
+  color: var(--color-accent);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: curtain-scissors 0.62s var(--ease-out);
+}
+.page-curtain .curtain-blade-r {
+  animation: scissors-snip-r 0.26s var(--ease-in-out) 2;
+}
+.page-curtain .curtain-blade-l {
+  animation: scissors-snip-l 0.26s var(--ease-in-out) 2;
+}
+@keyframes curtain-top {
+  0%,
+  32% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-101%);
+  }
+}
+@keyframes curtain-bottom {
+  0%,
+  32% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(101%);
+  }
+}
+@keyframes curtain-scissors {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6) rotate(-120deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  32% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+}
+
+/* טבעות פולסציה — מבטא תשומת-לב עדין (למשל "פנוי עכשיו" על כפתור צף).
+   רק transform+opacity, ::before/::after כדי לא להוסיף DOM. */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::before,
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid currentColor;
+  animation: pulse-ring 2.4s var(--ease-out) infinite;
+  pointer-events: none;
+}
+.pulse-ring::after {
+  animation-delay: 1.2s;
+}
+
+/* כתם glow רך — תוסיף עומק לסקציות כהות. דקורטיבי בלבד (aria-hidden, ללא pointer-events) */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(229 229 229 / 0.16), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* קו הדגשה זוהר — מחבר תווית לפרט בתמונה (סטייל feature-callout) */
+.feature-glow-line {
+  position: absolute;
+  background: linear-gradient(90deg, rgb(229 229 229 / 0.9), rgb(229 229 229 / 0));
+  height: 1px;
+  box-shadow: 0 0 6px 1px rgb(229 229 229 / 0.6);
+  pointer-events: none;
+}
+.feature-glow-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px 2px rgb(229 229 229 / 0.8);
+  pointer-events: none;
+}
+
+/* הבזק אור אלכסוני שחולף על כפתור ב-hover — תחושת מתכת פרימיום */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgb(255 255 255 / 0.5) 50%,
+    transparent 75%
+  );
+  transform: translateX(-150%);
+  transition: transform 0.75s var(--ease-out);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(150%);
+}
+
+/* קו תחתון שנמתח ב-hover (origin מרכזי — ניטרלי לכיוון RTL/LTR) */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -4px;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--dur-micro) var(--ease-in-out);
+}
+.link-underline:hover::after,
+.link-underline.is-active::after {
+  transform: scaleX(1);
+}
+
+/* ── נגישות ── */
+
+/* מצב focus גלוי לניווט מקלדת */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* קישור "דלג לתוכן" — מוסתר עד שמתמקדים בו */
+.skip-to-content {
+  position: fixed;
+  top: -120px;
+  right: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background-color: var(--color-accent);
+  color: #000;
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+.skip-to-content:focus {
+  top: 1rem;
+}
+
+/* אפשרויות תפריט הנגישות (מחלקות על <html>) */
+html.a11y-grayscale {
+  filter: grayscale(100%);
+}
+
+html.a11y-contrast,
+html.a11y-contrast body {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+html.a11y-contrast h1,
+html.a11y-contrast h2,
+html.a11y-contrast h3,
+html.a11y-contrast h4,
+html.a11y-contrast p,
+html.a11y-contrast span,
+html.a11y-contrast li,
+html.a11y-contrast dt,
+html.a11y-contrast dd,
+html.a11y-contrast figcaption,
+html.a11y-contrast blockquote {
+  color: #fff !important;
+}
+html.a11y-contrast a,
+html.a11y-contrast a * {
+  color: #ff0 !important;
+}
+html.a11y-contrast .bg-paper,
+html.a11y-contrast .bg-white,
+html.a11y-contrast [class*="bg-ink"] {
+  background-color: #000 !important;
+}
+
+html.a11y-links a {
+  text-decoration: underline !important;
+}
+
+html.a11y-readable,
+html.a11y-readable body,
+html.a11y-readable * {
+  font-family: Arial, "Segoe UI", sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+html.a11y-no-motion,
+html.a11y-no-motion *,
+html.a11y-no-motion *::before,
+html.a11y-no-motion *::after {
+  animation-duration: 0.001s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0.001s !important;
+  scroll-behavior: auto !important;
+}
+
+html.a11y-big-cursor,
+html.a11y-big-cursor * {
+  cursor:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M5 2l14 7-6 2-2 6z' fill='%23fff' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E")
+      4 4,
+    auto !important;
+}
+
+/* כיבוד העדפת מערכת — אם המשתמש ביקש פחות תנועה, מאפסים אנימציות ומעברים.
+   משך זעיר (לא none) כדי שאנימציות עם fill-mode עדיין "מסתיימות" מיד במצב הגלוי
+   הסופי — כך שום תוכן לא נשאר מוסתר. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
