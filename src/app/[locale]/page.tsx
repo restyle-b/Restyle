@@ -51,20 +51,28 @@ export default function HomePage() {
           </div>
         </Container>
 
-        {/* חיווי "גלול" — מזמין לגלול מטה (קישוטי, aria-hidden) */}
+        {/* חיווי "גלול" — מספריים של ספר שנוסנות ומצביעות מטה (קישוטי, aria-hidden) */}
         <div className="pointer-events-none absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[90svh]">
-          <span className="animate-float text-accent/80" aria-hidden="true">
+          <span className="text-accent/80" aria-hidden="true">
             <svg
-              width="28"
-              height="28"
+              width="30"
+              height="30"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.5"
+              strokeWidth="1.6"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M12 5v14M19 12l-7 7-7-7" />
+              <g className="scissors-blade scissors-blade-r">
+                <circle cx="16" cy="5" r="2.6" />
+                <path d="M12 10 14 21" />
+              </g>
+              <g className="scissors-blade scissors-blade-l">
+                <circle cx="8" cy="5" r="2.6" />
+                <path d="M12 10 10 21" />
+              </g>
+              <circle cx="12" cy="10" r="0.9" fill="currentColor" stroke="none" />
             </svg>
           </span>
         </div>

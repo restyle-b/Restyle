@@ -120,6 +120,44 @@ body {
   animation: float 2.4s var(--ease-in-out) infinite;
 }
 
+/* מספריים "נוסנות" — חיווי "גלול" ב-Hero.
+   כל להב מסתובב סביב נקודת הציר המשותפת (ה"בורג", קואורדינטה 12,10 ב-viewBox 24x24).
+   transform-box: view-box מאפשר להגדיר origin כאחוז מה-viewBox, ולא מה-bounding box
+   של כל <g> (שמתבדל בין הלהבים). מצב המנוחה (0deg) הוא גם הלהבים סגורים ומצביעים מטה —
+   כך שתחת prefers-reduced-motion (שמאפס משכי אנימציה גלובלית) האייקון "נופל" למצב הזה ונשאר קריא. */
+.scissors-blade {
+  transform-box: view-box;
+  transform-origin: 50% 41.667%;
+}
+.scissors-blade-r {
+  animation: scissors-snip-r 2.6s var(--ease-in-out) infinite;
+}
+.scissors-blade-l {
+  animation: scissors-snip-l 2.6s var(--ease-in-out) infinite;
+}
+@keyframes scissors-snip-r {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15%,
+  35% {
+    transform: rotate(10deg);
+  }
+}
+@keyframes scissors-snip-l {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15%,
+  35% {
+    transform: rotate(-10deg);
+  }
+}
+
 /* טבעות פולסציה — מבטא תשומת-לב עדין (למשל "פנוי עכשיו" על כפתור צף).
    רק transform+opacity, ::before/::after כדי לא להוסיף DOM. */
 @keyframes pulse-ring {
