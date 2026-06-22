@@ -36,7 +36,10 @@ export async function submitContactForm(
     return { ok: false, error: t("rateLimited") };
   }
 
-  const { name, email, phone, message } = parsed.data;
+  const { email, phone, message } = parsed.data;
+  // הגנת עומק: שולל תווי CR/LF משם המשתמש לפני הטמעה ב-subject, כדי לחסום
+  // email header injection אם ספק ה-API (Resend) לא יסנן זאת בעצמו.
+  const name = parsed.data.name.replace(/[\r\n]/g, " ");
 
   // Resend לא הוקם עדיין (ראה ROADMAP). לא רושמים PII ללוג הפרודקשן —
   // פרטי ההודעה נחשפים בלוג רק בפיתוח, לצורך דיבוג מקומי.
