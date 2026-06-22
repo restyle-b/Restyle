@@ -13,7 +13,7 @@ export function Wordmark({ className }: { className?: string }) {
       width={574}
       height={172}
       priority
-      className={cn("w-auto", className)}
+      className={cn("logo-mark w-auto", className)}
     />
   );
 }

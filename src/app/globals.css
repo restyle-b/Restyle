@@ -70,6 +70,8 @@ body {
   /* רקע placeholder לתמונות (Ken Burns) */
   --ph-from: #1a1a1a;
   --ph-to: #0e0e0e;
+  /* הלוגו (PNG לבן-על-שקוף) — בלילה נשאר כמו שהוא */
+  --logo-filter: none;
 }
 [data-theme="day"] {
   color-scheme: light;
@@ -96,6 +98,8 @@ body {
   --cue-color-hover: #2a2a2a;
   --ph-from: #ece8e0;
   --ph-to: #d8d3c8;
+  /* הלוגו לבן-על-שקוף הופך לשחור על רקעים שהפכו בהירים ביום */
+  --logo-filter: invert(1);
 }
 
 /* שכבת ה-override של מצב יום — מהפכת את הטוקנים הכהים (text-white/bg-ink/...)
@@ -129,6 +133,9 @@ body {
 }
 .content-img {
   filter: var(--content-img-filter);
+}
+.logo-mark {
+  filter: var(--logo-filter);
 }
 .hero-overlay {
   background: var(--hero-overlay);
