@@ -22,12 +22,19 @@ export function RegisterForm() {
 
   async function onSubmit(values: SignUpInput) {
     setServerError(null);
-    const result = await signUp(values);
-    if (result.ok) {
-      setStatus("success");
-    } else {
+    try {
+      const result = await signUp(values);
+      if (result.ok) {
+        setStatus("success");
+      } else {
+        setStatus("error");
+        setServerError(result.error);
+      }
+    } catch {
+      // חריגה לא צפויה (לדוגמה ניתוק רשת) — חובה להציג הודעה, אחרת הכפתור
+      // חוזר ל-idle בלי שום משוב למשתמש.
       setStatus("error");
-      setServerError(result.error);
+      setServerError("אירעה תקלה, נסו שוב");
     }
   }
 
