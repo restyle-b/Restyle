@@ -92,6 +92,51 @@ docs/
 
 > כסף תמיד ב-**אגורות (integer)**. כל טבלה עם נתוני משתמש מקבלת **RLS**.
 
+### 5.1 Admin CMS — מודל נתונים (Phase 8, תוכנן 2026-06-22)
+כל התוכן הציבורי היום סטטי (`messages/*.json` + `services-data.ts`/`academy-data.ts`/
+`config.ts`) — מעבר ל-CMS דורש טבלאות תוכן חדשות. הוחלט: **עברית חובה בכל שדה
+מתורגם, אנגלית/ערבית אופציונליים** (ריק → fallback לעברית בתצוגה הציבורית).
+ממשק ה-Admin עצמו (`src/app/admin/*`) בעברית קבועה, **מחוץ** לניתוב `[locale]`.
+
+```prisma
+model SiteSettings { id Int @id @default(1)  phone String  email String  address String
+  whatsapp String  instagramUrl String?  facebookUrl String?  appStoreUrl String?
+  googlePlayUrl String?  updatedAt DateTime @updatedAt  updatedById String? }
+
+model OpeningHour { id Int @id @default(autoincrement())  dayOrder Int @unique
+  dayHe String  dayEn String?  dayAr String?  hoursHe String  hoursEn String?  hoursAr String? }
+
+model Service { id String @id @default(cuid())  slug String @unique  order Int @default(0)
+  nameHe String  nameEn String?  nameAr String?  descriptionHe String  descriptionEn String?
+  descriptionAr String?  active Boolean @default(true)  createdAt/updatedAt DateTime }
+
+model Course { /* כמו Service + durationHe/En/Ar, levelHe/En/Ar */ }
+
+model Testimonial { id String @id @default(cuid())  order Int @default(0)
+  nameHe/En/Ar String  quoteHe/En/Ar String  active Boolean @default(true) }
+
+model GalleryImage { id String @id @default(cuid())  order Int @default(0)
+  imageKey String /* מפתח ב-R2 */  altHe/En/Ar String  active Boolean @default(true) }
+
+// טקסטי שיווק/משפטי — key-value גמיש (namespace/key תואם ל-messages/he.json
+// הקיים), כדי שמיגרציית seed תהיה ישירה ובלי 100+ עמודות קשיחות.
+model ContentBlock { id String @id @default(cuid())  namespace String  key String
+  valueHe String @db.Text  valueEn String? @db.Text  valueAr String? @db.Text
+  updatedAt DateTime @updatedAt  updatedById String?  @@unique([namespace, key]) }
+```
+
+**RLS:** קריאה פתוחה (`anon` select — תוכן ציבורי), כתיבה רק ל-`ADMIN` — נבדק
+**גם** ב-RLS וגם ב-server action (defense in depth, כמו בשאר המערכת).
+
+**`requireAdmin()`** (חדש, `lib/auth/require-admin.ts`) — בודק session דרך
+Supabase + `role==='ADMIN'` ב-Prisma; **fail closed**. נקרא בתחילת כל admin
+server action, **בנוסף** לחסימת `/admin/*` ב-`middleware.ts` (לא להסתמך על
+שכבה אחת).
+
+**תתי-שלבים:** 8.1 תשתית+SiteSettings → 8.2 שירותים+קורסים → 8.3 המלצות+גלריה
+(R2 presigned upload) → 8.4 `ContentBlock` (seed מ-JSON) → 8.5 ניהול
+משתמשים/הרשאות (security סקיל ייעודי). פירוט מלא ב-`ROADMAP.md` Phase 8.
+
 ---
 
 ## 6. תשתית תשלומים (Tranzila / HYP בעתיד)
@@ -185,6 +230,38 @@ HMR עוטף מודולים ב-`eval()`, וה-CSP (`script-src 'self' 'unsafe-in
 כבר עם `rel="noopener noreferrer"`. הוסר LOW יחיד: נוסף **focus trap** מלא
 (Tab/Shift+Tab לא בורחים מהדיאלוג) לפי דפוס WAI-ARIA Dialog — מונע מצב שבו
 משתמש מקלדת/קורא מסך "נתקע" בתוכן חבוי מתחת לתפריט הפתוח.
+
+### 7.7 סבב Pentest חמישי + שישי (נקי) — 2026-06-22
+לאחר מיזוג PR #3 לפרודקשן, הופעל סקיל security לסבבי בדיקה חדשים על כל הקוד שנוסף
+מאז סבב 4 (i18n routing, theme יום/לילה, אנימציות גזירה/מספריים, account
+`force-dynamic`, מיזוג ה-PR עצמו).
+- **סבב 5 — 2 ממצאי LOW תוקנו:**
+  - `signUpSchema.name` (auth-schema.ts) היה בלי הגבלת אורך עליונה — קלט לא-חסום
+    שמאוחסן ב-`user_metadata` של Supabase (וקטור מינורי ל-storage abuse/DoS).
+    תוקן: `.max(100)`.
+  - `submitContactForm` (server/actions/contact.ts) בנה את ה-subject של מייל
+    ע"י הטמעת `name` שמגיע מהמשתמש ללא סינון תווי בקרה — הגנת-עומק תיאורטית
+    מול email header injection אם ספק ה-API (Resend) לא יסנן זאת בעצמו. תוקן:
+    הוסרו תווי `\r`/`\n` מ-`name` לפני ההטמעה ב-subject.
+  - נבדקו ונמצאו תקינים: theme-toggle/cut-line-divider/scroll-feature/cut-heading/
+    template.tsx/scissors-scroll-indicator (כולם דקורטיביים/בלי קלט משתמש),
+    middleware.ts, rate-limit.ts, auth callback route, `safeRedirectPath`,
+    contact-links.ts (כל הקלטים ל-iframe/wa.me/waze הם מ-`siteConfig` קבוע,
+    לא מהמשתמש, ומקודדים כראוי), commit המיזוג עצמו (no-op בתוכן, וידוא שלא
+    חזרו קבצים ישנים/לא-מתוקנים מענף הבסיס).
+- **סבב 6 — נקי.** לא נמצאו ממצאים נוספים: `npm audit` עדיין מראה רק את אותו
+  moderate (postcss, build-time בלבד, מתועד מסבב 3); אין סודות בהיסטוריית
+  git; `prisma/schema.prisma` ללא שינוי מהותי; CI לא חושף סודות; אין
+  `console.log`/debug שנשארו בקוד. ה-build המלא (28 נתיבים) ירוק.
+- **סבב 7 — סקירה ממצה של כל 67 קבצי `src/**/*.{ts,tsx}`** (בתגובה לשאלת
+  המשתמש "סרקת את כל הקוד?" — הסבבים הקודמים התמקדו בקבצים שהשתנו/קריטיים
+  ולא בכל העץ). נקראו שורה-שורה כל הקומפוננטות, ה-routes (`[locale]/*/page.tsx`),
+  `i18n/*`, `lib/config.ts`, `robots.ts`, `sitemap.ts`, `academy-data.ts`,
+  `services-data.ts`, `mobile-nav.tsx`, `utils.test.ts` ועוד. **לא נמצא אף
+  ממצא חדש** — כל עמודי התוכן הם presentational בלבד (תרגומים סטטיים, אין
+  קלט משתמש), `AccessibilityMenu`/`mobile-nav` מטפלים נכון ב-`localStorage`
+  (try/catch, ולידציה של ערכים), אין `dangerouslySetInnerHTML` נוסף מעבר
+  לזה שתועד ב-`[locale]/layout.tsx`. זהו הסבב הנקי שהמשתמש בקש להגיע אליו.
 
 ---
 

@@ -7,7 +7,15 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // עמודי auth/אזור אישי — אין ערך SEO ואין סיבה לחשוף לזחלנים
-      disallow: ["/account", "/login", "/register", "/forgot-password", "/reset-password", "/auth/"],
+      disallow: [
+        "/account",
+        "/login",
+        "/register",
+        "/forgot-password",
+        "/reset-password",
+        "/auth/",
+        "/admin",
+      ],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
   };
