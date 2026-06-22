@@ -4,7 +4,7 @@ const email = z.string().trim().min(1, "נדרשת כתובת אימייל").ema
 const password = z.string().min(8, "הסיסמה צריכה להיות באורך 8 תווים לפחות");
 
 export const signUpSchema = z.object({
-  name: z.string().trim().min(2, "נדרש שם בן 2 תווים לפחות"),
+  name: z.string().trim().min(2, "נדרש שם בן 2 תווים לפחות").max(100),
   email,
   password,
   // honeypot אנטי-ספאם — שדה מוסתר שמשתמש אנושי לא ימלא. מוגבל באורך (אנטי-DoS)

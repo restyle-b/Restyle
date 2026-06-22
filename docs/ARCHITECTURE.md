@@ -186,6 +186,29 @@ HMR עוטף מודולים ב-`eval()`, וה-CSP (`script-src 'self' 'unsafe-in
 (Tab/Shift+Tab לא בורחים מהדיאלוג) לפי דפוס WAI-ARIA Dialog — מונע מצב שבו
 משתמש מקלדת/קורא מסך "נתקע" בתוכן חבוי מתחת לתפריט הפתוח.
 
+### 7.7 סבב Pentest חמישי + שישי (נקי) — 2026-06-22
+לאחר מיזוג PR #3 לפרודקשן, הופעל סקיל security לסבבי בדיקה חדשים על כל הקוד שנוסף
+מאז סבב 4 (i18n routing, theme יום/לילה, אנימציות גזירה/מספריים, account
+`force-dynamic`, מיזוג ה-PR עצמו).
+- **סבב 5 — 2 ממצאי LOW תוקנו:**
+  - `signUpSchema.name` (auth-schema.ts) היה בלי הגבלת אורך עליונה — קלט לא-חסום
+    שמאוחסן ב-`user_metadata` של Supabase (וקטור מינורי ל-storage abuse/DoS).
+    תוקן: `.max(100)`.
+  - `submitContactForm` (server/actions/contact.ts) בנה את ה-subject של מייל
+    ע"י הטמעת `name` שמגיע מהמשתמש ללא סינון תווי בקרה — הגנת-עומק תיאורטית
+    מול email header injection אם ספק ה-API (Resend) לא יסנן זאת בעצמו. תוקן:
+    הוסרו תווי `\r`/`\n` מ-`name` לפני ההטמעה ב-subject.
+  - נבדקו ונמצאו תקינים: theme-toggle/cut-line-divider/scroll-feature/cut-heading/
+    template.tsx/scissors-scroll-indicator (כולם דקורטיביים/בלי קלט משתמש),
+    middleware.ts, rate-limit.ts, auth callback route, `safeRedirectPath`,
+    contact-links.ts (כל הקלטים ל-iframe/wa.me/waze הם מ-`siteConfig` קבוע,
+    לא מהמשתמש, ומקודדים כראוי), commit המיזוג עצמו (no-op בתוכן, וידוא שלא
+    חזרו קבצים ישנים/לא-מתוקנים מענף הבסיס).
+- **סבב 6 — נקי.** לא נמצאו ממצאים נוספים: `npm audit` עדיין מראה רק את אותו
+  moderate (postcss, build-time בלבד, מתועד מסבב 3); אין סודות בהיסטוריית
+  git; `prisma/schema.prisma` ללא שינוי מהותי; CI לא חושף סודות; אין
+  `console.log`/debug שנשארו בקוד. ה-build המלא (28 נתיבים) ירוק.
+
 ---
 
 ## 8. בדיקות ו-CI
