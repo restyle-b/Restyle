@@ -63,7 +63,7 @@ export default function HomePage() {
       <section id="home-services" className="bg-paper text-ink py-16 sm:py-24">
         <Container>
           <Reveal>
-            <SectionHeading center eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
+            <SectionHeading center cut eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
           </Reveal>
           {/* מפריד "קו גזירה" — מוטיב המספריים גוזר לאורך הקו בכניסה לצפייה */}
           <CutLineDivider tone="light" className="mx-auto mt-10 max-w-md" />
@@ -122,6 +122,7 @@ export default function HomePage() {
           <Reveal>
             <SectionHeading
               center
+              cut
               eyebrow={t("academyEyebrow")}
               title={t("academyTitle")}
               description={t("academyDescription")}
@@ -174,6 +175,7 @@ export default function HomePage() {
             <SectionHeading
               light
               center
+              cut
               eyebrow={t("aboutEyebrow")}
               title={t("aboutTitle")}
               description={t("aboutDescription")}
@@ -192,7 +194,7 @@ export default function HomePage() {
       <section className="bg-paper text-ink py-16 sm:py-24">
         <Container>
           <Reveal>
-            <SectionHeading center eyebrow={t("galleryEyebrow")} title={t("galleryTitle")} />
+            <SectionHeading center cut eyebrow={t("galleryEyebrow")} title={t("galleryTitle")} />
           </Reveal>
           <div className="mt-16 grid grid-cols-2 gap-px sm:grid-cols-4">
             <Reveal direction="scale">
@@ -228,6 +230,7 @@ export default function HomePage() {
             <SectionHeading
               center
               light
+              cut
               eyebrow={t("testimonialsEyebrow")}
               title={t("testimonialsTitle")}
             />
@@ -255,7 +258,7 @@ export default function HomePage() {
         <Container className="grid gap-12 lg:grid-cols-2">
           <Reveal>
             <div>
-              <SectionHeading eyebrow={t("locationsEyebrow")} title={t("locationsTitle")} />
+              <SectionHeading cut eyebrow={t("locationsEyebrow")} title={t("locationsTitle")} />
               <dl className="mt-8 space-y-3 text-neutral-700">
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("addressLabel")}</dt>
@@ -280,7 +283,7 @@ export default function HomePage() {
           </Reveal>
           <Reveal>
             <div>
-              <SectionHeading eyebrow={t("contactEyebrow")} title={t("contactTitle")} />
+              <SectionHeading cut eyebrow={t("contactEyebrow")} title={t("contactTitle")} />
               <Link href="/contact" className={buttonVariants({ className: "mt-8" })}>
                 {t("contactPageCta")}
               </Link>

@@ -273,6 +273,126 @@ body {
   }
 }
 
+/* ── כותרת "נחתכת" — חשיפת clip-path בכניסה לצפייה (ראה cut-heading.tsx) ──
+   הטקסט נחשף כ-wipe מהצד הלוגי. clip-path הוא מאפיין composite (לא reflow) ועובד
+   גם בכותרות רב-שורתיות. הכיווניות (מאיזה צד מתחילה החשיפה) נקבעת לפי [dir].
+   מצב הבסיס (ללא is-cut) חתוך-מוסתר; בכניסה / reduced-motion → חשוף מלא. */
+.cut-title {
+  display: inline-block;
+  overflow: hidden;
+}
+.cut-title__text {
+  display: inline-block;
+}
+.cut-title:not(.is-cut) .cut-title__text {
+  clip-path: inset(0 0 0 100%);
+}
+:where([dir="ltr"]) .cut-title:not(.is-cut) .cut-title__text {
+  clip-path: inset(0 100% 0 0);
+}
+.cut-title.is-cut .cut-title__text {
+  animation: cut-reveal-rtl 0.7s var(--ease-out) both;
+}
+:where([dir="ltr"]) .cut-title.is-cut .cut-title__text {
+  animation: cut-reveal-ltr 0.7s var(--ease-out) both;
+}
+@keyframes cut-reveal-rtl {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes cut-reveal-ltr {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ── מעבר בין עמודים — "וילון גזירה" (ראה [locale]/template.tsx) ──
+   שני פאנלים כהים מכסים את המסך ונפתחים מהמרכז (top מעלה / bottom מטה) עם מספריים
+   שגוזרות בתפר. רץ בכל ניווט (template נטען מחדש). רק transform/opacity (GPU).
+   מצב הבסיס = פתוח (פאנלים מחוץ למסך), כך שתחת prefers-reduced-motion (משך ~0)
+   אין כיסוי כלל. pointer-events:none — לא חוסם אינטראקציה גם בזמן הכיסוי הקצר. */
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: hidden;
+  pointer-events: none;
+}
+.page-curtain__panel {
+  position: absolute;
+  inset-inline: 0;
+  height: 51%;
+  background-color: var(--color-ink);
+}
+.page-curtain__panel--top {
+  top: 0;
+  transform: translateY(-101%);
+  animation: curtain-top 0.62s var(--ease-out);
+}
+.page-curtain__panel--bottom {
+  bottom: 0;
+  transform: translateY(101%);
+  animation: curtain-bottom 0.62s var(--ease-out);
+}
+.page-curtain__scissors {
+  position: absolute;
+  inset-inline-start: 50%;
+  top: 50%;
+  color: var(--color-accent);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: curtain-scissors 0.62s var(--ease-out);
+}
+.page-curtain .curtain-blade-r {
+  animation: scissors-snip-r 0.26s var(--ease-in-out) 2;
+}
+.page-curtain .curtain-blade-l {
+  animation: scissors-snip-l 0.26s var(--ease-in-out) 2;
+}
+@keyframes curtain-top {
+  0%,
+  32% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-101%);
+  }
+}
+@keyframes curtain-bottom {
+  0%,
+  32% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(101%);
+  }
+}
+@keyframes curtain-scissors {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6) rotate(-120deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  32% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+}
+
 /* טבעות פולסציה — מבטא תשומת-לב עדין (למשל "פנוי עכשיו" על כפתור צף).
    רק transform+opacity, ::before/::after כדי לא להוסיף DOM. */
 @keyframes pulse-ring {
