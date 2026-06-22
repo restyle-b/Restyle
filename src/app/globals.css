@@ -62,6 +62,8 @@ body {
     rgb(14 14 14 / 0.72) 55%,
     #0e0e0e
   );
+  /* תמונות תוכן (גלריה/אודות) — אותה שפת גווני-אפור כמו ההירו, בעדינות */
+  --content-img-filter: grayscale(1) contrast(1.05) brightness(0.92);
   /* חיווי הגלילה (מספריים) */
   --cue-color: rgb(229 229 229 / 0.8);
   --cue-color-hover: #e5e5e5;
@@ -89,6 +91,7 @@ body {
     rgb(250 250 248 / 0.6) 50%,
     #fafaf8
   );
+  --content-img-filter: grayscale(1) contrast(1) brightness(1.04);
   --cue-color: rgb(90 90 90 / 0.9);
   --cue-color-hover: #2a2a2a;
   --ph-from: #ece8e0;
@@ -123,6 +126,9 @@ body {
 /* עוזרי theme — מונעים ע"י ה-vars שלמעלה (מתחלפים בין יום/לילה) */
 .hero-img {
   filter: var(--hero-img-filter);
+}
+.content-img {
+  filter: var(--content-img-filter);
 }
 .hero-overlay {
   background: var(--hero-overlay);

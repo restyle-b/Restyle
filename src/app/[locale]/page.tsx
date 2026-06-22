@@ -147,7 +147,7 @@ export default function HomePage() {
               alt={t("aboutImageLabel")}
               fill
               sizes="100vw"
-              className="object-cover"
+              className="object-cover content-img"
             />
             {/* קווי הדגשה זוהרים לפרטי הסטודיו — סטייל feature-callout, מוסתר במובייל כדי לא להעמיס */}
             <div className="pointer-events-none absolute inset-0 hidden sm:block">
@@ -205,7 +205,7 @@ export default function HomePage() {
                   alt={t("studioImageLabel")}
                   fill
                   sizes="(min-width: 1024px) 25vw, 50vw"
-                  className="object-cover"
+                  className="object-cover content-img"
                 />
               </div>
             </Reveal>
