@@ -196,6 +196,83 @@ body {
   }
 }
 
+/* ── מפריד "קו גזירה" — מוטיב המספריים כשפה ויזואלית בין סקציות ──
+   מספריים נוסעות לאורך קו מקווקו ו"גוזרות" אותו, עם הבזק אור (cut-line__glow)
+   שחולף בעקבותיהן — אותה שפת מתכת-פרימיום כמו .btn-shine. רק transform+opacity
+   (GPU). הנסיעה (--cut-travel) נמדדת ב-JS ומקבלת סימן לפי כיוון. מופעל כש-class
+   is-cutting מתווסף בכניסה לאזור הצפייה. במנוחה: המספריים בתחילת הקו, הקו שלם. */
+.cut-line {
+  position: relative;
+  height: 2rem;
+  overflow: hidden;
+}
+.cut-line__track {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 0;
+  border-top: 1.5px dashed currentColor;
+  opacity: 0.5;
+}
+.cut-line__glow {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0;
+  width: 70px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    currentColor,
+    transparent
+  );
+  filter: blur(0.5px);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+.cut-line__scissors {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0;
+  transform: translate(-50%, -50%);
+}
+.cut-line.is-cutting .cut-line__scissors {
+  animation: cut-travel 2.4s var(--ease-in-out) forwards;
+}
+.cut-line.is-cutting .cut-line__glow {
+  animation: cut-glow 2.4s var(--ease-in-out) forwards;
+}
+.cut-line.is-cutting .cut-blade-r {
+  animation: scissors-snip-r 0.5s var(--ease-in-out) infinite;
+}
+.cut-line.is-cutting .cut-blade-l {
+  animation: scissors-snip-l 0.5s var(--ease-in-out) infinite;
+}
+@keyframes cut-travel {
+  from {
+    transform: translate(-50%, -50%);
+  }
+  to {
+    transform: translate(calc(-50% + var(--cut-travel, 0px)), -50%);
+  }
+}
+@keyframes cut-glow {
+  0% {
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  88% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--cut-travel, 0px)), -50%);
+    opacity: 0;
+  }
+}
+
 /* טבעות פולסציה — מבטא תשומת-לב עדין (למשל "פנוי עכשיו" על כפתור צף).
    רק transform+opacity, ::before/::after כדי לא להוסיף DOM. */
 @keyframes pulse-ring {

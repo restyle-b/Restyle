@@ -8,6 +8,7 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 import { Reveal } from "@/components/reveal";
 import { BookingLink } from "@/components/booking-link";
 import { ScissorsScrollIndicator } from "@/components/scissors-scroll-indicator";
+import { CutLineDivider } from "@/components/cut-line-divider";
 import { siteConfig } from "@/lib/config";
 import { serviceSlugs } from "@/lib/services-data";
 
@@ -53,7 +54,7 @@ export default function HomePage() {
         </Container>
 
         {/* חיווי "גלול" — מספריים של ספר: כמה סבבי כניסה, ואז נסניס בלופ; לחיצה מסבבת וגוללת לסקציה הבאה */}
-        <div className="absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[90svh]">
+        <div className="absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[88svh]">
           <ScissorsScrollIndicator label={t("scrollDownLabel")} scrollTargetId="home-services" />
         </div>
       </section>
@@ -64,7 +65,9 @@ export default function HomePage() {
           <Reveal>
             <SectionHeading center eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
           </Reveal>
-          <div className="border-line-light mt-16 grid gap-px overflow-hidden border sm:grid-cols-2 lg:grid-cols-3">
+          {/* מפריד "קו גזירה" — מוטיב המספריים גוזר לאורך הקו בכניסה לצפייה */}
+          <CutLineDivider tone="light" className="mx-auto mt-10 max-w-md" />
+          <div className="border-line-light mt-6 grid gap-px overflow-hidden border sm:grid-cols-2 lg:grid-cols-3">
             {serviceSlugs.map((slug, i) => (
               <Reveal key={slug} delay={i * 70}>
                 <div className="border-line-light bg-cream h-full p-8 transition-colors hover:bg-white sm:border-l">
@@ -229,7 +232,9 @@ export default function HomePage() {
               title={t("testimonialsTitle")}
             />
           </Reveal>
-          <div className="mt-16 grid gap-px sm:grid-cols-3">
+          {/* מפריד "קו גזירה" על רקע כהה — מוטיב המספריים */}
+          <CutLineDivider tone="dark" className="mx-auto mt-10 max-w-md" />
+          <div className="mt-6 grid gap-px sm:grid-cols-3">
             {testimonials.map((item, i) => (
               <Reveal key={item.name} delay={i * 80}>
                 <figure className="border-line-dark h-full border-t px-6 py-8 text-center">
