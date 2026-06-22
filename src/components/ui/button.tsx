@@ -13,9 +13,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "btn-shine bg-ink text-white shadow-sm hover:-translate-y-0.5 hover:bg-ink-soft hover:shadow-lg",
+          "btn-shine bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)] shadow-sm hover:-translate-y-0.5 hover:bg-[var(--btn-primary-bg-hover)] hover:shadow-lg",
         light:
-          "btn-shine bg-white text-ink shadow-sm hover:-translate-y-0.5 hover:bg-paper hover:shadow-lg",
+          "btn-shine bg-[var(--btn-light-bg)] text-[var(--btn-light-fg)] shadow-sm hover:-translate-y-0.5 hover:bg-[var(--btn-light-bg-hover)] hover:shadow-lg",
         outline:
           "border border-current/30 text-current hover:-translate-y-0.5 hover:border-current hover:bg-current/10",
         ghost: "text-current hover:bg-current/10",

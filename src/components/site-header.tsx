@@ -9,6 +9,7 @@ import { BookingLink } from "@/components/booking-link";
 import { Wordmark } from "@/components/wordmark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { MobileNav } from "@/components/mobile-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { navLinks } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
@@ -44,8 +45,8 @@ export function SiteHeader() {
       className={cn(
         "sticky top-0 z-50 border-b backdrop-blur transition-[transform,background-color,border-color,box-shadow] duration-300 ease-out",
         scrolled
-          ? "border-line-dark bg-ink/95 shadow-lg shadow-black/20"
-          : "border-transparent bg-ink/50",
+          ? "border-line-dark header-scrolled shadow-lg shadow-black/20"
+          : "header-top border-transparent",
         hidden && "-translate-y-full",
       )}
     >
@@ -74,6 +75,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle
+            dayLabel={t("themeDay")}
+            nightLabel={t("themeNight")}
+            ariaLabel={t("themeToggleAria")}
+          />
           <LocaleSwitcher className="hidden md:inline-flex" />
           <BookingLink className={buttonVariants({ size: "sm", variant: "light" })}>
             {t("bookingCta")}

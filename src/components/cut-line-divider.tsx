@@ -63,7 +63,8 @@ export function CutLineDivider({
       aria-hidden="true"
       className={cn(
         "cut-line",
-        tone === "dark" ? "text-accent/70" : "text-ink/35",
+        // צבע יורש מצבע הטקסט של הסקציה (שמתהפך יום/לילה) — tone רק מכוון עוצמה
+        tone === "dark" ? "text-current/70" : "text-current/45",
         cutting && "is-cutting",
         className,
       )}

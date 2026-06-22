@@ -15,7 +15,10 @@
     "footerAria": "ניווט תחתון",
     "bookingCta": "קביעת תור",
     "openAria": "פתיחת תפריט",
-    "closeAria": "סגירת תפריט"
+    "closeAria": "סגירת תפריט",
+    "themeDay": "יום",
+    "themeNight": "לילה",
+    "themeToggleAria": "מצב תצוגה יום או לילה"
   },
   "footer": {
     "navHeading": "ניווט",

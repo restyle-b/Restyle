@@ -28,7 +28,7 @@ export function ScissorsScrollIndicator({
       type="button"
       onClick={handleClick}
       aria-label={label}
-      className="focus-visible:ring-accent focus-visible:ring-offset-ink text-accent/80 hover:text-accent rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+      className="focus-visible:ring-accent focus-visible:ring-offset-ink scissors-cue rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
     >
       <span className="scissors-intro">
         <span

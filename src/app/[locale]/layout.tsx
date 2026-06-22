@@ -82,8 +82,16 @@ export default async function RootLayout({
       lang={locale}
       dir={locale === "en" ? "ltr" : "rtl"}
       className={`${assistant.variable} ${cairo.variable}`}
+      suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col">
+        {/* קביעת מצב יום/לילה לפני ה-paint הראשון — מונע "הבזק" של מצב שגוי.
+            ברירת מחדל לפי הגדרת המכשיר (prefers-color-scheme), עם override ידני מ-localStorage. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='day'&&t!=='night'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='night';}})();`,
+          }}
+        />
         <NextIntlClientProvider>
           <SkipToContent />
           <ScrollProgress />

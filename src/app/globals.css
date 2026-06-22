@@ -27,10 +27,124 @@ html {
 }
 
 body {
-  background-color: var(--color-ink);
-  color: #e5e5e5;
+  background-color: var(--page-bg);
+  color: var(--page-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── מצב יום/לילה (Theme) — ראה docs/DESIGN.md §מצב יום/לילה ──
+   לילה = ברירת המחדל ההיסטורית של האתר (כהה). data-theme="day" מוסיף שכבת
+   override שמהפכת את משטחי-הברירת-מחדל הכהים לבהירים. כפתורים, חיווי הגלילה
+   וההירו מונעים ע"י CSS vars כדי שלא "יתהפכו" בטעות. המוטיב: לבן/אפור/שחור.
+   ברירת המחדל נקבעת לפי הגדרת המכשיר (prefers-color-scheme) דרך סקריפט ב-layout,
+   עם אפשרות החלפה ידנית (נשמרת ב-localStorage). */
+:root,
+[data-theme="night"] {
+  color-scheme: dark;
+  --page-bg: #0e0e0e;
+  --page-fg: #e5e5e5;
+  /* כפתורים — קבועים מול ה-theme (לא מתהפכים עם שכבת ה-override) */
+  --btn-primary-bg: #0e0e0e;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-bg-hover: #1a1a1a;
+  --btn-light-bg: #ffffff;
+  --btn-light-fg: #0e0e0e;
+  --btn-light-bg-hover: #fafaf8;
+  /* כותרת האתר (header) — שני מצבי גלילה */
+  --header-bg-top: rgb(14 14 14 / 0.5);
+  --header-bg-scrolled: rgb(14 14 14 / 0.95);
+  /* הירו — תמונת רקע בגווני אפור + overlay כהה */
+  --hero-img-filter: grayscale(1) contrast(1.05) brightness(0.62);
+  --hero-overlay: linear-gradient(
+    to bottom,
+    rgb(14 14 14 / 0.55),
+    rgb(14 14 14 / 0.72) 55%,
+    #0e0e0e
+  );
+  /* חיווי הגלילה (מספריים) */
+  --cue-color: rgb(229 229 229 / 0.8);
+  --cue-color-hover: #e5e5e5;
+  /* רקע placeholder לתמונות (Ken Burns) */
+  --ph-from: #1a1a1a;
+  --ph-to: #0e0e0e;
+}
+[data-theme="day"] {
+  color-scheme: light;
+  --page-bg: #fafaf8;
+  --page-fg: #1a1a1a;
+  --btn-primary-bg: #0e0e0e;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-bg-hover: #2a2a2a;
+  /* "light" יושב על משטח-קונטרסט שהפך בהיר ביום → הופך לכפתור כהה */
+  --btn-light-bg: #0e0e0e;
+  --btn-light-fg: #ffffff;
+  --btn-light-bg-hover: #2a2a2a;
+  --header-bg-top: rgb(250 250 248 / 0.55);
+  --header-bg-scrolled: rgb(255 255 255 / 0.9);
+  --hero-img-filter: grayscale(1) contrast(1) brightness(1.12);
+  --hero-overlay: linear-gradient(
+    to bottom,
+    rgb(250 250 248 / 0.82),
+    rgb(250 250 248 / 0.6) 50%,
+    #fafaf8
+  );
+  --cue-color: rgb(90 90 90 / 0.9);
+  --cue-color-hover: #2a2a2a;
+  --ph-from: #ece8e0;
+  --ph-to: #d8d3c8;
+}
+
+/* שכבת ה-override של מצב יום — מהפכת את הטוקנים הכהים (text-white/bg-ink/...)
+   לערכים בהירים. לא מוגדרת ב-@layer ולכן גוברת על ה-utilities של Tailwind.
+   כפתורים אינם מושפעים (משתמשים ב-var ולא ב-bg-ink/text-white). */
+[data-theme="day"] .bg-ink {
+  background-color: #ffffff;
+}
+[data-theme="day"] .bg-ink-soft {
+  background-color: #f3f1ec;
+}
+[data-theme="day"] .text-white {
+  color: #14110f;
+}
+[data-theme="day"] .text-neutral-300 {
+  color: #4a4a4a;
+}
+[data-theme="day"] .text-neutral-400 {
+  color: #6a6a6a;
+}
+[data-theme="day"] .border-line-dark {
+  border-color: #e6e3db;
+}
+[data-theme="day"] .text-accent {
+  color: #6f6f6f;
+}
+
+/* עוזרי theme — מונעים ע"י ה-vars שלמעלה (מתחלפים בין יום/לילה) */
+.hero-img {
+  filter: var(--hero-img-filter);
+}
+.hero-overlay {
+  background: var(--hero-overlay);
+}
+.header-top {
+  background-color: var(--header-bg-top);
+}
+.header-scrolled {
+  background-color: var(--header-bg-scrolled);
+}
+.scissors-cue {
+  color: var(--cue-color);
+}
+.scissors-cue:hover {
+  color: var(--cue-color-hover);
+}
+.placeholder-bg {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--ph-from),
+    var(--ph-to)
+  );
 }
 
 /* כותרות ראווה — sans נקי. ה-tracking נקבע ע"י utility בכל כותרת בנפרד. */

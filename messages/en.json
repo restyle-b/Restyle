@@ -15,7 +15,10 @@
     "footerAria": "Footer navigation",
     "bookingCta": "Book Now",
     "openAria": "Open menu",
-    "closeAria": "Close menu"
+    "closeAria": "Close menu",
+    "themeDay": "Day",
+    "themeNight": "Night",
+    "themeToggleAria": "Day or night display mode"
   },
   "footer": {
     "navHeading": "Navigation",

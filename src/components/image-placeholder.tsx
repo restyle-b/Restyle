@@ -12,7 +12,7 @@ export function ImagePlaceholder({ label, className }: { label: string; classNam
       className={cn("group relative overflow-hidden bg-ink", className)}
     >
       {/* שכבת הרקע — זום איטי (Ken Burns) ב-hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-ink-soft to-ink transition-transform duration-[1200ms] ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
+      <div className="placeholder-bg absolute inset-0 transition-transform duration-[1200ms] ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
       {/* הבהרה עדינה של ה-accent ב-hover */}
       <div className="absolute inset-0 bg-accent/0 transition-colors duration-500 group-hover:bg-accent/5 motion-reduce:transition-none" />
       <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-neutral-500">

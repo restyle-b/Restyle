@@ -15,7 +15,10 @@
     "footerAria": "تنقل التذييل",
     "bookingCta": "حجز موعد",
     "openAria": "فتح القائمة",
-    "closeAria": "إغلاق القائمة"
+    "closeAria": "إغلاق القائمة",
+    "themeDay": "نهار",
+    "themeNight": "ليل",
+    "themeToggleAria": "وضع العرض نهاري أو ليلي"
   },
   "footer": {
     "navHeading": "التنقل",

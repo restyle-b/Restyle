@@ -26,12 +26,13 @@ export default function HomePage() {
         בטבעיות בזמן הגלילה.
       */}
       <section className="relative flex min-h-[100svh] items-start sm:min-h-[170vh]">
-        <div
-          className="animate-hero-zoom fixed inset-0 -z-10 bg-cover bg-center"
-          style={{ backgroundImage: "url(/images/hero-bg.jpg)" }}
-        >
-          <div className="bg-ink/55 absolute inset-0" />
-          <div className="from-ink/90 via-ink/70 to-ink absolute inset-0 bg-gradient-to-b" />
+        <div className="fixed inset-0 -z-10">
+          <div
+            className="animate-hero-zoom hero-img absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url(/images/hero-bg.jpg)" }}
+          />
+          {/* overlay מתחלף יום/לילה (CSS var) — שומר על קריאות הטקסט בשני המצבים */}
+          <div className="hero-overlay absolute inset-0" />
         </div>
         <Container className="relative z-10 py-24 pt-[calc(4rem+6rem)]">
           <p className="animate-fade-up font-display text-accent text-sm tracking-[0.3em] uppercase">
