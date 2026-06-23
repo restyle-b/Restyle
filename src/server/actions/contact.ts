@@ -30,9 +30,9 @@ export async function submitContactForm(
     return { ok: true };
   }
 
-  // rate limiting לפי IP — מניעת ספאם/הפצצת מיילים (5 בקשות לדקה)
+  // rate limiting לפי IP — מניעת ספאם/הפצצת מיילים (בקשה אחת לדקה)
   const ip = await getClientIp();
-  if (!rateLimit(`contact:${ip}`, 5, 60_000).ok) {
+  if (!rateLimit(`contact:${ip}`, 1, 60_000).ok) {
     return { ok: false, error: t("rateLimited") };
   }
 
@@ -41,28 +41,38 @@ export async function submitContactForm(
   // email header injection אם ספק ה-API (Resend) לא יסנן זאת בעצמו.
   const name = parsed.data.name.replace(/[\r\n]/g, " ");
 
-  // Resend לא הוקם עדיין (ראה ROADMAP). לא רושמים PII ללוג הפרודקשן —
+  // Brevo לא הוקם עדיין (ראה ROADMAP). לא רושמים PII ללוג הפרודקשן —
   // פרטי ההודעה נחשפים בלוג רק בפיתוח, לצורך דיבוג מקומי.
-  if (!process.env.RESEND_API_KEY) {
+  if (!process.env.BREVO_API_KEY) {
     if (process.env.NODE_ENV === "development") {
       console.info("[contact] (dev) התקבלה הודעת צור קשר:", { name, email, phone, message });
     } else {
-      console.info("[contact] התקבלה הודעת צור קשר אך Resend לא מוגדר — ההודעה לא נשלחה");
+      console.info("[contact] התקבלה הודעת צור קשר אך Brevo לא מוגדר — ההודעה לא נשלחה");
     }
     return { ok: true };
   }
 
-  const { Resend } = await import("resend");
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  const { error } = await resend.emails.send({
-    from: "ReStyle Website <onboarding@resend.dev>",
-    to: process.env.CONTACT_NOTIFICATION_EMAIL ?? "Restyle.Barbershop@outlook.com",
-    replyTo: email,
-    subject: `הודעה חדשה מאתר ReStyle — ${name}`,
-    text: `שם: ${name}\nאימייל: ${email}\nטלפון: ${phone || "-"}\n\n${message}`,
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "api-key": process.env.BREVO_API_KEY,
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      sender: {
+        name: "ReStyle Website",
+        email: process.env.BREVO_SENDER_EMAIL ?? "noreply@restyle.co.il",
+      },
+      to: [{ email: process.env.CONTACT_NOTIFICATION_EMAIL ?? "Restyle.Barbershop@outlook.com" }],
+      replyTo: { email },
+      subject: `הודעה חדשה מאתר ReStyle — ${name}`,
+      textContent: `שם: ${name}\nאימייל: ${email}\nטלפון: ${phone || "-"}\n\n${message}`,
+    }),
   });
 
-  if (error) {
+  if (!response.ok) {
+    console.error("[contact] שליחת מייל דרך Brevo נכשלה", response.status);
     return { ok: false, error: t("sendFailed") };
   }
 

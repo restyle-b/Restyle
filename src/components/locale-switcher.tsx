@@ -5,6 +5,10 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
+/**
+ * Segmented control תואם ל-`<ThemeToggle>` (pill מעוגל, אופציה פעילה ממולאת) —
+ * כדי שלא יעמוד לידו `<select>` גנרי של הדפדפן שמבליט חוסר עקביות עיצובית.
+ */
 export function LocaleSwitcher({ className }: { className?: string }) {
   const t = useTranslations("localeSwitcher");
   const locale = useLocale() as Locale;
@@ -12,20 +16,34 @@ export function LocaleSwitcher({ className }: { className?: string }) {
   const router = useRouter();
 
   return (
-    <select
+    <div
+      role="group"
       aria-label={t("label")}
-      value={locale}
-      onChange={(e) => router.replace(pathname, { locale: e.target.value as Locale })}
       className={cn(
-        "rounded-md border border-line-dark bg-ink-soft px-2 py-1 text-sm text-neutral-300",
+        "border-current/30 text-current inline-flex items-center rounded-full border p-0.5",
         className,
       )}
     >
-      {routing.locales.map((loc) => (
-        <option key={loc} value={loc}>
-          {t(loc)}
-        </option>
-      ))}
-    </select>
+      {routing.locales.map((loc) => {
+        const isActive = loc === locale;
+        return (
+          <button
+            key={loc}
+            type="button"
+            onClick={() => router.replace(pathname, { locale: loc })}
+            aria-pressed={isActive}
+            title={t(loc)}
+            className={cn(
+              "rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wide transition-colors",
+              isActive
+                ? "bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]"
+                : "opacity-65 hover:opacity-100",
+            )}
+          >
+            {loc}
+          </button>
+        );
+      })}
+    </div>
   );
 }

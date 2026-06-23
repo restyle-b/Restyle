@@ -177,7 +177,7 @@
     "dataUseHeading": "Purpose of Use",
     "dataUseBody": "The information is used solely to respond to your inquiry and get back to you. We do not use it for marketing purposes and do not pass it on to third parties for advertising purposes.",
     "dataSharingHeading": "Sharing Information with Service Providers",
-    "dataSharingBody": "To operate the site, we rely on standard infrastructure providers: a website hosting service (Vercel) and an email delivery service (Resend), through which your inquiry message is sent to us. These providers process the information solely to provide their service.",
+    "dataSharingBody": "To operate the site, we rely on standard infrastructure providers: a website hosting service (Vercel) and an email delivery service (Brevo), through which your inquiry message is sent to us. These providers process the information solely to provide their service.",
     "cookiesHeading": "Accessibility Settings & Cookies",
     "cookiesBody": "Accessibility menu settings are saved only in your browser's local storage (localStorage), are not sent to us, and do not identify you. As of now, the site does not use tracking cookies or analytics tools. If such a tool is added in the future, this policy will be updated accordingly.",
     "securityHeading": "Data Security",

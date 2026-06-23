@@ -68,6 +68,15 @@ menspire), לפי צילומי מסך שספק המשתמש: מונוכרום ש
 - כל קריאה ל-`buttonVariants` באתר נבדקה ידנית מול הרקע בפועל של הסקציה שבה היא
   מוצגת (body כהה כברירת מחדל, לעומת סקציות `bg-paper`/`bg-cream` בהירות) כדי
   לבחור `primary` או `light` בהתאם — לא Find&Replace גלובלי.
+- **Segmented control (pill קבוצתי)** — `role="group"` עגול עם `border-current/30`,
+  ואופציה פעילה ממולאת ב-`--btn-primary-bg`/`--btn-primary-fg`; לא-פעילה
+  ב-`opacity-65 hover:opacity-100`. דפוס אחד המשמש גם ל-`ThemeToggle` (יום/לילה)
+  וגם ל-`LocaleSwitcher` (he/en/ar) — כדי ששני הבקרים הסמוכים בכותרת ייראו כמשפחה
+  אחת, ולא בקרה מעוצבת לצד `<select>` גנרי של הדפדפן (תוקן 2026-06-23, ראה
+  Session Log ב-`ROADMAP.md`).
+- **כפתורי אייקון עגולים** (hamburger/close בתפריט המובייל, נגישות, WhatsApp) —
+  כולם `rounded-full`, לעולם לא `rounded-md`/`rounded-lg`, כדי להישאר עקביים עם
+  שפת ה-pill של שאר הכפתורים באתר.
 
 ## טיפוגרפיה
 - **כותרות וגוף טקסט:** **Assistant** (עברית/אנגלית) ו-**Cairo** (ערבית — Assistant לא תומך בה). מינימליסטי-נקי בהשראת orhayoon.com — אין גופן סריף נפרד לכותרות; היררכיה לפי משקל/גודל בלבד.

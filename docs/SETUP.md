@@ -52,11 +52,15 @@
 
 ---
 
-## 5. 🟡 Resend (שליחת מיילים)
+## 5. 🟡 Brevo (שליחת מיילים)
 נדרש מ-Phase 2 (טופס צור קשר) ו-Phase 6 (אישורי הזמנה).
-1. צור חשבון ב-https://resend.com.
-2. **API Keys → Create** → `RESEND_API_KEY` (🔒).
-3. (פרודקשן) אימות דומיין שליחה (DNS records) — אנחה.
+1. צור חשבון ב-https://www.brevo.com.
+2. **SMTP & API → API Keys → Generate a new API key** → `BREVO_API_KEY` (🔒).
+3. (פרודקשן) אימות דומיין שליחה (SPF/DKIM, Senders, Domains & Dedicated IPs) —
+   אז `BREVO_SENDER_EMAIL` יכול להיות כתובת בדומיין האמיתי (לדוגמה
+   `noreply@restyle.co.il`); בלעדיו Brevo עלול לחסום/לסמן כספאם.
+4. תוכנית חינמית: 300 מיילים ביום (~9,000/חודש) — ראה השוואת ספקים
+   ב-Session Log של `ROADMAP.md` (2026-06-23).
 
 ---
 
@@ -91,8 +95,10 @@ R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=             # 🔒
 R2_BUCKET=restyle-media
 
-# Resend (Phase 2+)
-RESEND_API_KEY=                   # 🔒
+# Brevo (Phase 2+)
+BREVO_API_KEY=                    # 🔒
+BREVO_SENDER_EMAIL=
+CONTACT_NOTIFICATION_EMAIL=
 
 # Payments (עתידי)
 PAYMENT_PROVIDER=mock

@@ -18,7 +18,7 @@
               Supabase        Cloudflare R2   PaymentProvider
            (Postgres+Auth)    (תמונות/קבצים)  (Tranzila/HYP בעתיד)
                     │
-                  Resend (מיילים)
+                  Brevo (מיילים)
 ```
 
 ---
@@ -36,7 +36,7 @@
 | אחסון קבצים | **Cloudflare R2** | S3-compatible, **ללא דמי egress**, זול ל-CDN תמונות |
 | תמונות | **next/image** + R2/CDN | אופטימיזציה אוטומטית, WebP, lazy load |
 | תשלומים | **PaymentProvider interface** | הפשטה; חיבור Tranzila/HYP בעתיד בלי לשכתב |
-| מיילים | **Resend** | API פשוט, תבניות, deliverability טוב |
+| מיילים | **Brevo** | תוכנית חינמית נדיבה יותר (300/יום מ-100/יום ב-Resend), API פשוט |
 | בדיקות | **Vitest + Playwright** | יחידה מהירה + E2E אמין |
 | אירוח | **Vercel** | אינטגרציה native ל-Next.js, CDN גלובלי, SSL, preview deploys |
 
@@ -52,7 +52,7 @@
   אזור EU (פרנקפורט) — קרוב לישראל, תואם פרטיות.
 - **תמונות/קבצים → Cloudflare R2:** S3-compatible **ללא דמי egress** (יתרון עצום
   לאתר עתיר תמונות), מוגש דרך CDN של Cloudflare. העלאות דרך presigned URLs.
-- **מיילים → Resend.** **תשלומים → Tranzila/HYP** (hosted, לא עוברים דרך השרת שלנו).
+- **מיילים → Brevo.** **תשלומים → Tranzila/HYP** (hosted, לא עוברים דרך השרת שלנו).
 
 **עלות התחלתית:** נמוכה מאוד (רוב השירותים free/low tier) וגדלה לינארית עם התנועה.
 **חלופות שנשקלו:** VPS (Hetzner) — זול אך דורש DevOps ידני; AWS — חזק אך מורכב/יקר
