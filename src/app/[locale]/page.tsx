@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
@@ -10,14 +10,22 @@ import { BookingLink } from "@/components/booking-link";
 import { ScissorsScrollIndicator } from "@/components/scissors-scroll-indicator";
 import { CutLineDivider } from "@/components/cut-line-divider";
 import { siteConfig } from "@/lib/config";
-import { serviceSlugs } from "@/lib/services-data";
+import { getServices } from "@/lib/content/get-services";
+import { getTestimonials } from "@/lib/content/get-testimonials";
+import { getGalleryImages } from "@/lib/content/get-gallery";
 
-export default function HomePage() {
-  const t = useTranslations("home");
-  const tServices = useTranslations("servicesData");
-  const tRoot = useTranslations();
-  const testimonials = tRoot.raw("testimonialsData.items") as { name: string; quote: string }[];
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+  const tRoot = await getTranslations({ locale });
   const hours = tRoot.raw("hours") as { day: string; hours: string }[];
+  const services = await getServices(locale);
+  const testimonials = await getTestimonials(locale);
+  const galleryImages = await getGalleryImages(locale);
   return (
     <>
       {/*
@@ -69,15 +77,13 @@ export default function HomePage() {
           {/* מפריד "קו גזירה" — מוטיב המספריים גוזר לאורך הקו בכניסה לצפייה */}
           <CutLineDivider tone="light" className="mx-auto mt-10 max-w-md" />
           <div className="border-line-light mt-6 grid gap-px overflow-hidden border sm:grid-cols-2 lg:grid-cols-3">
-            {serviceSlugs.map((slug, i) => (
-              <Reveal key={slug} delay={i * 70}>
+            {services.map((service, i) => (
+              <Reveal key={service.slug} delay={i * 70}>
                 <div className="border-line-light bg-cream h-full p-8 transition-colors hover:bg-white sm:border-l">
                   <h3 className="font-display text-lg font-bold tracking-wide uppercase">
-                    {tServices(`${slug}.name`)}
+                    {service.name}
                   </h3>
-                  <p className="mt-3 text-sm text-neutral-600">
-                    {tServices(`${slug}.description`)}
-                  </p>
+                  <p className="mt-3 text-sm text-neutral-600">{service.description}</p>
                 </div>
               </Reveal>
             ))}
@@ -209,11 +215,26 @@ export default function HomePage() {
                 />
               </div>
             </Reveal>
-            {Array.from({ length: 7 }).map((_, i) => (
-              <Reveal key={i} direction="scale" delay={((i + 1) % 4) * 60}>
-                <ImagePlaceholder label={t("workImageLabel")} className="aspect-square" />
-              </Reveal>
-            ))}
+            {galleryImages.length > 0
+              ? galleryImages.slice(0, 7).map((image, i) => (
+                  <Reveal key={image.id} direction="scale" delay={((i + 1) % 4) * 60}>
+                    <div className="relative aspect-square overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- כתובת חיצונית
+                          שמוזנת ע"י Admin; אין remotePatterns ל-next/image (מניעת SSRF). */}
+                      <img
+                        src={image.imageUrl}
+                        alt={image.alt}
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover content-img"
+                      />
+                    </div>
+                  </Reveal>
+                ))
+              : Array.from({ length: 7 }).map((_, i) => (
+                  <Reveal key={i} direction="scale" delay={((i + 1) % 4) * 60}>
+                    <ImagePlaceholder label={t("workImageLabel")} className="aspect-square" />
+                  </Reveal>
+                ))}
           </div>
           <Reveal className="mt-12 flex justify-center">
             <Link href="/gallery" className={buttonVariants({ variant: "outline" })}>
@@ -240,7 +261,7 @@ export default function HomePage() {
           <CutLineDivider tone="dark" className="mx-auto mt-10 max-w-md" />
           <div className="mt-6 grid gap-px sm:grid-cols-3">
             {testimonials.map((item, i) => (
-              <Reveal key={item.name} delay={i * 80}>
+              <Reveal key={item.id} delay={i * 80}>
                 <figure className="border-line-dark h-full border-t px-6 py-8 text-center">
                   <span className="font-display text-accent text-4xl">&rdquo;</span>
                   <blockquote className="mt-2 text-neutral-300">{item.quote}</blockquote>

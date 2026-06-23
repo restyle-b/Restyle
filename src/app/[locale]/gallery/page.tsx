@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { getGalleryImages } from "@/lib/content/get-gallery";
 
 export async function generateMetadata({
   params,
@@ -16,8 +16,15 @@ export async function generateMetadata({
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
-export default function GalleryPage() {
-  const t = useTranslations("gallery");
+export default async function GalleryPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "gallery" });
+  const images = await getGalleryImages(locale);
+
   return (
     <Container className="py-20">
       <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
@@ -32,9 +39,23 @@ export default function GalleryPage() {
             className="object-cover content-img"
           />
         </div>
-        {Array.from({ length: 11 }).map((_, i) => (
-          <ImagePlaceholder key={i} label={t("workImageLabel")} className="aspect-square rounded-md" />
-        ))}
+        {images.length > 0
+          ? images.map((image) => (
+              <div key={image.id} className="relative aspect-square overflow-hidden rounded-md">
+                {/* eslint-disable-next-line @next/next/no-img-element -- כתובת חיצונית
+                    שמוזנת ע"י Admin; אין remotePatterns ל-next/image (מניעת SSRF, ראה
+                    docs/ARCHITECTURE.md §7), אז מוצגת ב-<img> רגיל. */}
+                <img
+                  src={image.imageUrl}
+                  alt={image.alt}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover content-img"
+                />
+              </div>
+            ))
+          : Array.from({ length: 11 }).map((_, i) => (
+              <ImagePlaceholder key={i} label={t("workImageLabel")} className="aspect-square rounded-md" />
+            ))}
       </div>
     </Container>
   );
