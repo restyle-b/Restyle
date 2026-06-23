@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
-import { serviceSlugs } from "@/lib/services-data";
+import { getServices } from "@/lib/content/get-services";
 
 export async function generateMetadata({
   params,
@@ -17,18 +16,23 @@ export async function generateMetadata({
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
-export default function ServicesPage() {
-  const t = useTranslations("services");
-  const tServices = useTranslations("servicesData");
+export default async function ServicesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "services" });
+  const services = await getServices(locale);
   return (
     <Container className="py-20">
       <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
 
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {serviceSlugs.map((slug) => (
-          <div key={slug} className="rounded-lg border border-line-dark bg-ink-soft p-6">
-            <h2 className="font-display text-lg font-bold text-white">{tServices(`${slug}.name`)}</h2>
-            <p className="mt-2 text-sm text-neutral-400">{tServices(`${slug}.description`)}</p>
+        {services.map((service) => (
+          <div key={service.slug} className="rounded-lg border border-line-dark bg-ink-soft p-6">
+            <h2 className="font-display text-lg font-bold text-white">{service.name}</h2>
+            <p className="mt-2 text-sm text-neutral-400">{service.description}</p>
           </div>
         ))}
       </div>

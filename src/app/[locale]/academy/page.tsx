@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { ImagePlaceholder } from "@/components/image-placeholder";
 import { ScrollFeature } from "@/components/scroll-feature";
 import { buttonVariants } from "@/components/ui/button";
-import { courseSlugs } from "@/lib/academy-data";
+import { getCourses } from "@/lib/content/get-courses";
 
 export async function generateMetadata({
   params,
@@ -19,9 +18,14 @@ export async function generateMetadata({
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
-export default function AcademyPage() {
-  const t = useTranslations("academy");
-  const tCourses = useTranslations("academyData");
+export default async function AcademyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "academy" });
+  const courses = await getCourses(locale);
   return (
     <div className="relative overflow-hidden">
       <div className="glow-orb start-0 -top-20 h-80 w-80" aria-hidden="true" />
@@ -43,19 +47,17 @@ export default function AcademyPage() {
         </div>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2">
-          {courseSlugs.map((slug) => (
-            <div key={slug} className="border-line-dark bg-ink-soft rounded-lg border p-6">
+          {courses.map((course) => (
+            <div key={course.slug} className="border-line-dark bg-ink-soft rounded-lg border p-6">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="font-display text-lg font-bold text-white">
-                  {tCourses(`${slug}.name`)}
-                </h2>
+                <h2 className="font-display text-lg font-bold text-white">{course.name}</h2>
                 <span className="border-accent/40 text-accent shrink-0 rounded-full border px-3 py-1 text-xs">
-                  {tCourses(`${slug}.level`)}
+                  {course.level}
                 </span>
               </div>
-              <p className="mt-3 text-sm text-neutral-400">{tCourses(`${slug}.description`)}</p>
+              <p className="mt-3 text-sm text-neutral-400">{course.description}</p>
               <p className="mt-4 text-xs tracking-wide text-neutral-500 uppercase">
-                {t("durationLabel", { duration: tCourses(`${slug}.duration`) })}
+                {t("durationLabel", { duration: course.duration })}
               </p>
             </div>
           ))}

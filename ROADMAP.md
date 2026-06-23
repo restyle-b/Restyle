@@ -165,12 +165,53 @@ security headers, rate limiting. typecheck/lint/test/build ירוקים בכל c
             שינוי רחב בעמודים ציבוריים בלי בדיקה נפרדת.
       - [ ] ⬜ **נותר**: הרצת `security`+`qa` סקילים פורמלית על קוד ה-admin
             (התשתית בנויה לפי checklist האבטחה, אך לא רץ סקיל ייעודי עדיין).
-- [ ] ⬜ **Phase 8.2 — שירותים + קורסים**: CRUD מלא (`Service`/`Course`),
-      מחובר ל-`/services`/`/academy`/דף הבית.
-- [ ] ⬜ **Phase 8.3 — המלצות + גלריה**: CRUD (`Testimonial`/`GalleryImage`),
-      העלאת תמונות ל-R2 דרך presigned URL.
-- [ ] ⬜ **Phase 8.4 — טקסטי שיווק/משפטי (`ContentBlock`)**: seed מ-`messages/*.json`
-      הקיים, מסך עריכה per-namespace (home/about/accessibility/privacy/terms וכו').
+- [ ] 🔄 **Phase 8.2+8.3+8.4 — שירותים/קורסים/המלצות/גלריה/טקסטי שיווק-משפטי**
+      (build 2026-06-23, יחד לפי בקשת המשתמש):
+      - [x] ✅ מיגרציית Prisma אחת ל-5 המודלים (`Service`/`Course`/`Testimonial`/
+            `GalleryImage`/`ContentBlock`) — `prisma/migrations/
+            20260623000000_admin_content_cms` (כולל RLS לכל טבלה + seed
+            `INSERT ... ON CONFLICT DO NOTHING` מתוך התוכן הסטטי הקיים
+            ב-`messages/*.json`/`services-data`/`academy-data`). ⚠️ **דורש
+            הרצה ידנית ב-Supabase SQL Editor** (כמו המיגרציות הקודמות) +
+            `npx prisma migrate resolve --applied 20260623000000_admin_content_cms`.
+      - [x] ✅ **ארכיטקטורת עריכת טקסט גלובלית** (Phase 8.4): `ContentBlock`
+            ממוזג ב-`src/i18n/request.ts` לתוך `messages/*.json` לפני שנמסר
+            ל-next-intl — כך שכל `t()`/`useTranslations` קיים בכל האתר מקבל
+            אוטומטית טקסט מעודכן מה-Admin בלי לשנות קומפוננטות. namespaces
+            ערוכים: `home`/`about`/`accessibility`/`privacy`/`terms`
+            (`lib/content/editable-namespaces.ts`). נכשל בשקט לטקסט הסטטי אם
+            ה-DB ריק/לא נגיש.
+      - [x] ✅ `lib/content/get-{services,courses,testimonials,gallery}.ts` —
+            קריאה מה-DB (`unstable_cache` + tag), עם fallback לתוכן הסטטי
+            הקיים אם ריק/לא נגיש (גלריה: fallback ל-placeholders קיימים, לא
+            לתוכן סטטי כי לא היה כזה).
+      - [x] ✅ חיבור עמודים ציבוריים ל-DB: `/services`, `/academy`, `/gallery`,
+            דף הבית (שירותים/המלצות/תמונות גלריה) — כולם `async` עם
+            `getTranslations`/`getServices`/וכו', fallback לסטטי לפי העיקרון
+            הקיים.
+      - [x] ✅ Server actions ל-admin: `services.ts`/`courses.ts`/
+            `testimonials.ts`/`gallery.ts`/`content.ts` — `requireAdmin()` +
+            zod בכל action, `revalidateTag`+`revalidatePath` (כל locale)
+            לאחר שמירה.
+      - [x] ✅ מסכי Admin: `/admin/services`, `/admin/courses`,
+            `/admin/testimonials`, `/admin/gallery` (רשימת שדות עם
+            הוספה/הסרה דרך `useFieldArray`), `/admin/content` (אינדקס
+            namespaces) + `/admin/content/[namespace]` (עריכת כל פסקה/שדה,
+            כולל ברירת מחדל מ-`messages/*.json` אם ה-DB עדיין ריק).
+      - [x] ✅ תמונת גלריה: `imageUrl` (URL ישיר, http/https בלבד ע"י zod) —
+            **סטייה מ-`docs/ARCHITECTURE.md §5.1`** (תוכנן `imageKey`/R2):
+            R2 עדיין לא חובר (אין אישורים, ראה `docs/SETUP.md §4`). תמונה
+            מוצגת ב-`<img>` רגיל (לא `next/image`) — `remotePatterns` ריק
+            במכוון (מניעת SSRF, §7), אז אין אפשרות להציג URL חיצוני שרירותי
+            דרך `next/image` בלי allowlist. מיגרציה ל-R2 upload — Phase 8.3b
+            עתידי.
+      - [x] ✅ `npm run lint && tsc --noEmit && npm test && npm run build` ירוקים.
+      - [ ] ⬜ **נותר**: הרצת המיגרציה הידנית בפועל ב-Supabase + QA מול DB חי
+            (כרגע נבדק רק fallback-to-static, כי המיגרציה לא רצה עדיין).
+      - [ ] ⬜ **נותר**: עדכון `docs/ARCHITECTURE.md §5.1` עם הסטייה (imageUrl)
+            וארכיטקטורת המיזוג ב-`request.ts`.
+      - [ ] ⬜ **נותר**: הרצת סקיל `security` פורמלית (checklist מלא) על קוד
+            ה-admin/CRUD החדש.
 - [ ] ⬜ **Phase 8.5 — ניהול משתמשים/הרשאות**: תצוגת רשימה + שינוי `role` —
       קריטי אבטחה, סקיל `security` ייעודי בנפרד לפני merge.
 - [ ] ⬜ ניהול מוצרים/מלאי, ניהול הזמנות, ניהול הרשמות לקורסים — ימתינו ל-Phase
@@ -299,3 +340,4 @@ security headers, rate limiting. typecheck/lint/test/build ירוקים בכל c
 | 2026-06-22 | **סבבי Pentest 5+6** (בקשת המשתמש: "תעשה סבבי אבטחה כחוקר סייבר עד שתגיע לסבב שלא תמצא כלום"), על כל הקוד שנוסף מאז סבב 4 (i18n, theme יום/לילה, אנימציות, account `force-dynamic`, מיזוג PR #3). **סבב 5 — 2 LOW תוקנו**: (1) `signUpSchema.name` בלי הגבלת אורך עליונה → נוסף `.max(100)`; (2) subject מייל בטופס צור קשר הוטמע עם `name` לא-מסונן → נוספה הסרת תווי `\r`/`\n` (הגנת-עומק מול email header injection). נבדקו ונמצאו תקינים: כל קומפוננטות התנועה/theme החדשות (דקורטיביות, בלי קלט משתמש), middleware, rate-limit, auth callback, `safeRedirectPath`, contact-links (קלט קבוע מ-siteConfig בלבד), ותוכן המיזוג עצמו (no-op, אין החזרת קוד ישן). **סבב 6 — נקי**, לא נמצא דבר (npm audit זהה לסבב 3, אין סודות בהיסטוריה, אין debug שנשאר). typecheck/lint/test/build ✅. תועד `docs/ARCHITECTURE.md §7.7`. נדחף. | שאר הפריטים הפתוחים ללא שינוי (כולל הגדרת Production Branch ב-Vercel, שעדיין ממתינה לפעולת המשתמש). |
 | 2026-06-22 | **מיזוג PR #3 ל-production** (בקשת המשתמש "Deploy to prod", מאומתת ב-`AskUserQuestion` כ"למזג את PR #3 לענף הבסיס", ולאחר גילוי קונפליקטים — "Fix everything"). PR #3 (`claude/continue-previous-session-fqebtt` → `claude/salon-website-platform-yaa9ya`, 82 commits) היה ב-`mergeable_state: dirty` — ענף הבסיס לא קיבל את כל ההתפתחות (i18n, theme, נגישות וכו') מאז שנפתח ה-PR. בדיקת מיזוג מקומית (`git merge --no-commit`) חשפה קונפליקטים אמיתיים ב-5 קבצים: `site-header.tsx`/`site-footer.tsx`/`booking-link.tsx` (גרסת הבסיס היא הישנה/קדם-i18n; גרסת הענף היא superset מלא — i18n, Wordmark, ThemeToggle, MobileNav, LocaleSwitcher), ו-`src/app/page.tsx`/`src/app/services/page.tsx` (קבצים ישנים שנמחקו בענף לטובת ניתוב `[locale]`, אך תוקנו/נשארו בבסיס). נפתרו כולם בכיוון גרסת הענף (כולל מחיקת שני הקבצים הישנים). מיזוג בסיס לתוך הענף הופק כ-no-op בתוכן (כל מה שבבסיס כבר נכלל בענף) — נדרש רק להצמיד את ההיסטוריה. **QA לפני push**: typecheck/lint/test(7)/build (28 נתיבים) ✅. נדחף (`e93d579`), PR #3 הוצא מ-draft, ה-Vercel preview check עבר ל-`success`/"Deployment has completed", ו-PR #3 מוּזג ל-`claude/salon-website-platform-yaa9ya` (merge commit `6b7cc6d`) — מפעיל אוטומטית deploy ל-production (ענף הבסיס מחובר ל-Vercel production). אותר בהמשך: ה-deploy בפועל עלה רק ל-Preview — בריפו אין ענף `main`/`master`, ו-Vercel "Production Branch" כברירת מחדל מצביע ל-`main` שלא קיים, כך שאף ענף לא מוגדר כ-Production. **דורש פעולת משתמש** בדשבורד Vercel (Settings → Git → Production Branch → `claude/salon-website-platform-yaa9ya`) — לא ניתן לתקן מתוך הסשן (אין טוקן/גישת API ל-Vercel). | המשתמש לעדכן את Production Branch ב-Vercel ולאשר שה-deploy עלה לפרודקשן בפועל; שאר הפריטים הפתוחים ללא שינוי. |
 | 2026-06-22 | **סבב Pentest 7 — סקירה ממצה של כל 67 קבצי `src/`** (בתגובה לשאלת המשתמש "סרקת את כל הקוד?" — הודאה כנה שסבבים 5-6 התמקדו בקבצים שהשתנו/קריטיים ולא בכל העץ, ומחויבות לסגור את הפער). נקראו שורה-שורה כל קובץ `*.ts`/`*.tsx` תחת `src/` שלא נקרא בסבבים קודמים: כל קומפוננטות ה-UI הדקורטיביות (`reveal`/`scroll-progress`/`section-heading`/`skip-to-content`/`button`/`container`/`image-placeholder`), `accessibility-menu.tsx` (טעינת `localStorage` עם try/catch וולידציה של ערכים — תקין), `contact-form.tsx`/`contact-actions.tsx`/`floating-contact.tsx` (קלט עובר תמיד דרך zod בשרת, honeypot תקין), `mobile-nav.tsx` (focus trap נגיש, תקין), כל קבצי `i18n/*`, `lib/config.ts`/`academy-data.ts`/`services-data.ts`, `app/robots.ts`/`sitemap.ts`, וכל 13 עמודי ה-routes (`about`/`academy`/`accessibility`/`contact`/`forgot-password`/`gallery`/`login`/`page`/`privacy`/`register`/`reset-password`/`services`/`terms`) — כולם presentational, ללא קלט משתמש לא-מסונן. **לא נמצא אף ממצא חדש** — זהו הסבב הנקי-באמת (לאחר כיסוי מלא) שהמשתמש בקש להגיע אליו. תועד `docs/ARCHITECTURE.md §7.7` (סבב 7). | שאר הפריטים הפתוחים ללא שינוי (כולל הגדרת Production Branch ב-Vercel, שעדיין ממתינה לפעולת המשתמש). |
+| 2026-06-23 | **Phase 8.2+8.3+8.4 — CMS לשירותים/קורסים/המלצות/גלריה/טקסטי שיווק-משפטי, הכל יחד** (בקשת המשתמש: "תמשיך בroadmap עם כל מה שקשור לניהול, רציתי שיהיה אפשר גם לערוך את המלל בכל עמוד ובכל פסקה"; אישר ב-`AskUserQuestion` "הכל בבת אחת (8.2+8.3+8.4)" ו-UX "טופס per-עמוד עם רשימת שדות"). **מודל נתונים**: 5 מודלים חדשים ב-Prisma (`Service`/`Course`/`Testimonial`/`GalleryImage`/`ContentBlock`) + מיגרציית SQL אחת (`prisma/migrations/20260623000000_admin_content_cms`, RLS לכל טבלה + seed `INSERT...ON CONFLICT DO NOTHING` מתוך התוכן הסטטי הקיים — 119 שורות). **ארכיטקטורת המפתח**: `ContentBlock` ממוזג שקוף ב-`src/i18n/request.ts` לתוך אובייקט ה-messages לפני שנמסר ל-next-intl — כל `t()`/`useTranslations` קיים בכל האתר מקבל אוטומטית טקסט מעודכן מה-Admin בלי לשנות קומפוננטות, עם fallback שקט לטקסט הסטטי אם ה-DB ריק/לא נגיש. `lib/content/get-{services,courses,testimonials,gallery}.ts` — קריאה עם `unstable_cache`+tag, fallback דומה. עמודים ציבוריים (`/services`,`/academy`,`/gallery`, דף הבית) הומרו ל-`async` וחוברו ל-DB. נבנו server actions (`requireAdmin`+zod בכל action, `revalidateTag`+`revalidatePath` לכל locale) ומסכי Admin מלאים: `/admin/services`, `/admin/courses`, `/admin/testimonials`, `/admin/gallery` (רשימות עם הוספה/הסרה דרך `useFieldArray`), `/admin/content` (אינדקס namespaces) + `/admin/content/[namespace]` (עריכת כל פסקה/שדה, fallback לשדות ברירת-מחדל מ-`messages/*.json` אם ה-DB עדיין ריק). **סטייה מתועדת**: תמונת גלריה היא `imageUrl` (URL ישיר, http/https בלבד ע"י zod) ולא `imageKey`/R2 כמתוכנן ב-`ARCHITECTURE.md §5.1` — R2 עדיין לא חובר (אין אישורים); מוצגת ב-`<img>` רגיל כי `remotePatterns` ריק במכוון (מניעת SSRF). תוקנו 2 באגים שנתגלו בריצת lint/build: שימוש שגוי ב-`useTranslations` (client hook) בתוך `HomePage` שהפך ל-`async` (הוחלף ב-`getTranslations`), וייצוא לא-תקין של מערך קבוע מקובץ `"use server"` (`EDITABLE_NAMESPACES` הוסר מ-`content.ts`, יובא ישירות מ-`editable-namespaces.ts`). **QA**: `npm run lint && tsc --noEmit && npm test && npm run build` ירוקים (52 נתיבים, fallback-to-static עובד תקין כשה-DB לא נגיש). **לא בוצע עדיין**: הרצת המיגרציה הידנית בפועל ב-Supabase + QA מול DB חי; עדכון `docs/ARCHITECTURE.md §5.1`; סקיל `security` פורמלי מלא. | להריץ את המיגרציה ב-Supabase SQL Editor + `prisma migrate resolve --applied 20260623000000_admin_content_cms`; להריץ סקיל `security` על קוד ה-admin/CRUD; QA מול DB חי; לעדכן `docs/ARCHITECTURE.md`; backport ל-`claude/salon-website-platform-yaa9ya` לפי ההוראה הקבועה "תמרגג אליו הכל" אחרי אישור המשתמש. |

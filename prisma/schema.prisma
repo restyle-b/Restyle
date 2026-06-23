@@ -58,3 +58,97 @@ model OpeningHour {
 
   @@map("opening_hours")
 }
+
+// שירותי המספרה — מוצג ב-/services ובדף הבית. Phase 8.2.
+model Service {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  order         Int      @default(0)
+  nameHe        String
+  nameEn        String?
+  nameAr        String?
+  descriptionHe String   @db.Text
+  descriptionEn String?  @db.Text
+  descriptionAr String?  @db.Text
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("services")
+}
+
+// קורסי האקדמיה — מוצג ב-/academy. Phase 8.2.
+model Course {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  order         Int      @default(0)
+  nameHe        String
+  nameEn        String?
+  nameAr        String?
+  descriptionHe String   @db.Text
+  descriptionEn String?  @db.Text
+  descriptionAr String?  @db.Text
+  durationHe    String
+  durationEn    String?
+  durationAr    String?
+  levelHe       String
+  levelEn       String?
+  levelAr       String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("courses")
+}
+
+// המלצות לקוחות — מוצג בדף הבית. Phase 8.3.
+model Testimonial {
+  id        String   @id @default(cuid())
+  order     Int      @default(0)
+  nameHe    String
+  nameEn    String?
+  nameAr    String?
+  quoteHe   String   @db.Text
+  quoteEn   String?  @db.Text
+  quoteAr   String?  @db.Text
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+// תמונות גלריה — מוצג ב-/gallery ובדף הבית. Phase 8.3.
+// ⚠️ imageUrl (לא imageKey/R2): העלאת R2 presigned עדיין לא חוברה (חסרים
+// אישורי R2 — ראה docs/SETUP.md §4). כרגע מנהל מדביק כתובת URL ישירה
+// (לדוגמה תמונה שהועלתה ידנית/CDN חיצוני). מיגרציה ל-R2 upload — Phase 8.3b עתידי.
+model GalleryImage {
+  id        String   @id @default(cuid())
+  order     Int      @default(0)
+  imageUrl  String
+  altHe     String
+  altEn     String?
+  altAr     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("gallery_images")
+}
+
+// טקסטי שיווק/משפטי — key-value גמיש (namespace/key תואם למבנה messages/he.json),
+// ממוזג ל-messages ב-src/i18n/request.ts כך שכל t()/useTranslations קיים מקבל
+// אוטומטית עדכון מה-CMS בלי לשנות קומפוננטות. Phase 8.4.
+model ContentBlock {
+  id          String   @id @default(cuid())
+  namespace   String
+  key         String
+  valueHe     String   @db.Text
+  valueEn     String?  @db.Text
+  valueAr     String?  @db.Text
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+
+  @@unique([namespace, key])
+  @@map("content_blocks")
+}
