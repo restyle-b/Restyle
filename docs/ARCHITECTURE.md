@@ -200,13 +200,14 @@ interface PaymentProvider {
   **אין כיום קוד כזה**, אז ה-policies לא ההגנה הפעילה בפועל.
 - **ההגנה האקטיבית האמיתית על כל גישה דרך `db` (Prisma) היא בדיקת ההרשאה בקוד עצמו**
   (`requireAdmin()`, `supabase.auth.getUser()`) — לא RLS. אל תניחו ש-RLS "מכסה" קוד שמשתמש ב-`db`.
-- **באג שקט קשור**: trigger `prevent_role_change` (§7.1) בודק
+- **באג שקט קשור (כיום לא רלוונטי בפועל)**: trigger `prevent_role_change` (§7.1) בודק
   `current_setting('request.jwt.claims', true)` — GUC שמוזרק רק ע"י PostgREST, **לא קיים בחיבור
-  Prisma**. לכן כל `db.user.update({data:{role:...}})` עתידי (Phase 8.5, ניהול הרשאות מה-Admin UI)
-  **ייכשל בשקט בלי שגיאה** — ה-trigger "חושב" שזה לא `service_role` ומאפס את ה-role לערך הישן.
-  `scripts/promote-business-admin.sql` כבר עוקף את זה בכוונה (`ALTER TABLE ... DISABLE/ENABLE
-  TRIGGER` בתוך טרנזקציה) — **חובה ליישם פתרון דומה (או client נפרד עם service-role key מול
-  PostgREST) לפני בניית Phase 8.5**, אחרת שינוי role מה-UI לא יעבוד.
+  Prisma**. לכן כל `db.user.update({data:{role:...}})` דרך קוד **ייכשל בשקט בלי שגיאה** — ה-trigger
+  "חושב" שזה לא `service_role` ומאפס את ה-role לערך הישן. `scripts/promote-business-admin.sql`
+  כבר עוקף את זה בכוונה (`ALTER TABLE ... DISABLE/ENABLE TRIGGER` בתוך טרנזקציה). **Phase 8.5
+  (ניהול הרשאות מה-Admin UI) בוטל לפי בקשת המשתמש (2026-06-23, ראה `ROADMAP.md`) — admin יחיד
+  (העסק), מוענק ידנית בלבד דרך הסקריפט.** אם ההחלטה תתהפך בעתיד, יש לפתור את הבאג הזה לפני בניית
+  UI לשינוי role.
 
 ### 7.1 ממצאי Pentest שטופלו (2026-06-18)
 - **הסלמת הרשאות (HIGH):** ה-policy `users_update_own` איפשרה למשתמש לעדכן `role` לעצמו דרך
