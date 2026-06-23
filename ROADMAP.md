@@ -10,29 +10,34 @@
 
 ## 🚦 להתחיל מכאן בסשן הבא — קריטי!
 
-**מצב (עודכן 2026-06-18):** מסלול הבסיס (אתר תדמית, ללא חנות/הרשמה) **מושלם פונקציונלית**:
-i18n (he/en/ar), ווידג'ט נגישות, תפריט מובייל מסך-מלא, טיפוגרפיה ופלטת צבעים סופית
-(אפור בהיר שטוח, ללא מרקם), לחצני יצירת קשר צפים, 4 סבבי pentest (HIGH→LOW תוקנו),
-security headers, rate limiting. typecheck/lint/test/build ירוקים בכל commit. נדחף ל-PR #3
-(draft, Vercel preview ירוק). Phase 3-8 (auth/חנות/תשלומים/אקדמיה/אדמין) **כבר מומשו בקוד
-ורצים בפרודקשן**, אבל שייכים ל"הרחבה אופציונלית" (חלופה ב') — **אל תמשיך לפתח אותם בלי
-אישור מפורש מהמשתמש שהלקוח בחר בהרחבה**.
+**מצב (עודכן 2026-06-23):** האתר בפרודקשן (`claude/salon-website-platform-yaa9ya`, Vercel),
+DB מחובר עם **כל 5 המיגרציות רצות ורשומות** ב-`_prisma_migrations` (אומת ישירות ב-DB). מיילים
+עוברים דרך **Brevo** (לא Resend) — גם טופס צור קשר וגם אימות הרשמה (Supabase Auth SMTP custom),
+נבדק end-to-end. Admin CMS (Phase 8.2-8.4) בנוי ועבר סקיל `security` פורמלי (0 Critical/High/Medium).
+**Phase 8.5 בוטל לפי בקשת המשתמש** — לא יבנה UI לניהול הרשאות; admin יחיד מוענק ידנית
+דרך `scripts/promote-business-admin.sql`. סקירת אבטחה מקיפה על כל הריפו בוצעה (ראה Session Log
+2026-06-23) — 0 Critical, ממצאים שנותרו תועדו ב-`docs/ARCHITECTURE.md` §7.0. CI רץ בפועל על כל
+push (תוקן — קודם לא רץ כלל בגלל branch לא קיים ב-config).
 
-### משימות פתוחות שדורשות פעולת המשתמש (לא חוסמות פיתוח קוד):
-1. **להריץ ידנית ב-Supabase SQL Editor**: `prisma/migrations/20260618120000_prevent_role_escalation`
-   (trigger שמונע הסלמת הרשאות עצמית בטבלת `users`) — קריטי לפני שחרור admin/auth לפרודקשן.
-2. להחליט אם לשדרג rate-limiting מ-in-memory ל-Vercel KV/Upstash לפני תנועה אמיתית.
-3. תמונות אמיתיות (Hero/גלריה/אקדמיה/אודות) — כרגע placeholders.
-4. שם רכז נגישות אמיתי בעמוד `/accessibility` (כרגע placeholder).
-5. Lighthouse audit + בדיקת קונטרסט WCAG AA מלאה על כל שימושי ה-accent.
-6. החלטה על מיזוג PR #3 ל-main, ועל הגירת Next.js מ-15.5.x ל-16.x בעתיד.
-7. דובר שפת-אם לבדוק את תרגומי en/ar (נעשו ע"י Claude).
+### משימות פתוחות שדורשות פעולת המשתמש:
+1. תמונות אמיתיות (Hero/גלריה/אקדמיה/אודות) — כרגע placeholders.
+2. שם רכז נגישות אמיתי בעמוד `/accessibility` (כרגע "צוות ReStyle" — placeholder).
+3. דומיין משלך — חוסם 2 דברים: deliverability מיילים (Brevo שולח מ-`@outlook.com`, נכנס לספאם
+   ב-iCloud, מתועד) ו-Apple Sign-In (דורש דומיין מאומת + Apple Developer בתשלום).
+4. דובר שפת-אם לבדוק את תרגומי en/ar (נעשו ע"י Claude).
+5. הגדרת Production Branch ב-Vercel — לאשר שה-deploy עולה לפרודקשן בפועל (לא רק Preview).
 
 ### צ'קליסט פתיחה לסשן הבא:
-1. `git status` ו-`git log -1` — לאשר שה-branch (`claude/continue-previous-session-fqebtt`) מסונכרן.
-2. `npm run typecheck && npm run lint && npm test && npm run build` — לאשר שהכל ירוק לפני שינוי נוסף.
+1. `git status` ו-`git log -1` — לאשר שה-branch מסונכרן עם `origin/claude/salon-website-platform-yaa9ya`.
+2. `npm run typecheck && npm test && npm run build` — לאשר שהכל ירוק לפני שינוי נוסף (`npm run lint`
+   נכשל מסיבה סביבתית בworktree — קונפליקט lockfiles, לא קשור לקוד).
 3. לקרוא את ה-Session Log האחרון בתחתית הקובץ למצב המדויק שהושאר.
-4. אין כרגע אבני-דרך חסומות מבחינת DB/env — `.env.local` (לא ב-git) קיים ב-container; אם container חדש מאפס, יש לבקש מהמשתמש להזין מחדש לפי `docs/SETUP.md`. **TCP ל-Postgres חסום ב-sandbox בכל container (רק HTTPS עובד)** — `prisma migrate status/dev` נתקע ב-timeout גם עם `DATABASE_URL` תקין; המיגרציות הממתינות (סעיף 1 למעלה, + `admin_site_settings`/`admin_content_cms`) דורשות הרצה ידנית ב-Supabase SQL Editor, אין דרך לעקוף זאת מה-sandbox.
+4. אם `.env.local` חסר ב-container חדש — לבקש מהמשתמש להזין מחדש לפי `docs/SETUP.md`.
+   `prisma migrate status/dev` עדיין נתקע ב-timeout מה-sandbox (אומת שוב 2026-06-23) — אבל
+   ה-TCP handshake הגולמי **מצליח** (`nc -zv` מחזיר success), כך שזו לא חסימת TCP גסה כמו
+   שתועד בעבר; ההסבר המעודכן: proxy/firewall של ה-sandbox עוצר אחרי ה-handshake, לא לפניו.
+   המיגרציות עצמן כבר רצו (ראה למעלה) — אין יותר צורך ב-`prisma migrate` כרגיל, רק אם תיווסף
+   מיגרציה חדשה (אז שוב: SQL ידני ב-Supabase SQL Editor + `prisma migrate resolve --applied`).
 
 ---
 
