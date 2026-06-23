@@ -120,11 +120,14 @@ body {
 [data-theme="day"] .text-neutral-400 {
   color: #6a6a6a;
 }
+[data-theme="day"] .text-neutral-500 {
+  color: #636363;
+}
 [data-theme="day"] .border-line-dark {
   border-color: #e6e3db;
 }
 [data-theme="day"] .text-accent {
-  color: #6f6f6f;
+  color: #636363;
 }
 
 /* עוזרי theme — מונעים ע"י ה-vars שלמעלה (מתחלפים בין יום/לילה) */

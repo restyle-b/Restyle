@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
+  const locale = useLocale();
+  const isRtl = locale !== "en";
   const pathname = usePathname();
   // scrolled = עברנו את ראש העמוד (מוסיף רקע מלא+צל); hidden = להסתיר בגלילה מטה.
   const [scrolled, setScrolled] = useState(false);
@@ -50,7 +52,15 @@ export function SiteHeader() {
         hidden && "-translate-y-full",
       )}
     >
-      <Container className="relative flex h-16 items-center justify-between">
+      <Container
+        className={cn(
+          "relative flex h-16 items-center justify-between",
+          // במובייל בלבד: היגיון ה-RTL/LTR הפוך מהותית (בקשת המשתמש) —
+          // הלוגו והכפתורים מתחלפים בצד שלהם בין עברית/ערבית לאנגלית.
+          // ב-md+ הסדר הרגיל (לפי dir של הדף) חוזר לתוקף.
+          isRtl ? "max-md:[direction:ltr]" : "max-md:[direction:rtl]",
+        )}
+      >
         <Link href="/" className="text-white" aria-label={t("homeAria")}>
           <Wordmark className="h-8" />
         </Link>
