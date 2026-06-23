@@ -208,8 +208,8 @@ security headers, rate limiting. typecheck/lint/test/build ירוקים בכל c
       - [x] ✅ `npm run lint && tsc --noEmit && npm test && npm run build` ירוקים.
       - [ ] ⬜ **נותר**: הרצת המיגרציה הידנית בפועל ב-Supabase + QA מול DB חי
             (כרגע נבדק רק fallback-to-static, כי המיגרציה לא רצה עדיין).
-      - [ ] ⬜ **נותר**: עדכון `docs/ARCHITECTURE.md §5.1` עם הסטייה (imageUrl)
-            וארכיטקטורת המיזוג ב-`request.ts`.
+      - [x] ✅ עדכון `docs/ARCHITECTURE.md §5.1` עם הסטייה (`imageUrl`)
+            וארכיטקטורת המיזוג ב-`request.ts` + שכבת `get-*.ts` (2026-06-23).
       - [ ] ⬜ **נותר**: הרצת סקיל `security` פורמלית (checklist מלא) על קוד
             ה-admin/CRUD החדש.
 - [ ] ⬜ **Phase 8.5 — ניהול משתמשים/הרשאות**: תצוגת רשימה + שינוי `role` —
