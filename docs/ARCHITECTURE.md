@@ -191,6 +191,23 @@ interface PaymentProvider {
 - ולידציית zod על כל קלט; Prisma פרמטרי (אנטי-injection); סניטציית XSS.
 - תאימות פרטיות (חוק הגנת הפרטיות הישראלי): מדיניות פרטיות, מינימיזציה, זכות מחיקה.
 
+### 7.0 ⚠️ RLS מול Prisma — מגבלה ארכיטקטונית קריטית לדעת (תועד 2026-06-23)
+**`DATABASE_URL` (Prisma) מתחבר כ-role `postgres.<project-ref>` (Supabase pooler), שעוקף RLS
+לחלוטין.** RLS חל רק על חיבורים שעוברים דרך PostgREST עם JWT אמיתי (`anon`/`authenticated`) —
+לא על חיבור Postgres ישיר. המשמעות:
+- כל ה-policies שמוגדרים במיגרציות (services/courses/testimonials/gallery_images/content_blocks/
+  users) הם **הגנת-עומק תיאורטית** למקרה עתידי של קריאה ישירה מ-client (`supabase-js` מהדפדפן) —
+  **אין כיום קוד כזה**, אז ה-policies לא ההגנה הפעילה בפועל.
+- **ההגנה האקטיבית האמיתית על כל גישה דרך `db` (Prisma) היא בדיקת ההרשאה בקוד עצמו**
+  (`requireAdmin()`, `supabase.auth.getUser()`) — לא RLS. אל תניחו ש-RLS "מכסה" קוד שמשתמש ב-`db`.
+- **באג שקט קשור**: trigger `prevent_role_change` (§7.1) בודק
+  `current_setting('request.jwt.claims', true)` — GUC שמוזרק רק ע"י PostgREST, **לא קיים בחיבור
+  Prisma**. לכן כל `db.user.update({data:{role:...}})` עתידי (Phase 8.5, ניהול הרשאות מה-Admin UI)
+  **ייכשל בשקט בלי שגיאה** — ה-trigger "חושב" שזה לא `service_role` ומאפס את ה-role לערך הישן.
+  `scripts/promote-business-admin.sql` כבר עוקף את זה בכוונה (`ALTER TABLE ... DISABLE/ENABLE
+  TRIGGER` בתוך טרנזקציה) — **חובה ליישם פתרון דומה (או client נפרד עם service-role key מול
+  PostgREST) לפני בניית Phase 8.5**, אחרת שינוי role מה-UI לא יעבוד.
+
 ### 7.1 ממצאי Pentest שטופלו (2026-06-18)
 - **הסלמת הרשאות (HIGH):** ה-policy `users_update_own` איפשרה למשתמש לעדכן `role` לעצמו דרך
   PostgREST. נוסף trigger `prevent_role_change` (migration `20260618120000`) שמאפס שינוי `role`

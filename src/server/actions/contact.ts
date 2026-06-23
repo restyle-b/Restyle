@@ -38,7 +38,7 @@ export async function submitContactForm(
 
   const { email, phone, message } = parsed.data;
   // הגנת עומק: שולל תווי CR/LF משם המשתמש לפני הטמעה ב-subject, כדי לחסום
-  // email header injection אם ספק ה-API (Resend) לא יסנן זאת בעצמו.
+  // email header injection אם ספק ה-API (Brevo) לא יסנן זאת בעצמו.
   const name = parsed.data.name.replace(/[\r\n]/g, " ");
 
   // Brevo לא הוקם עדיין (ראה ROADMAP). לא רושמים PII ללוג הפרודקשן —

@@ -2,8 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [claude/salon-website-platform-yaa9ya]
   pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   verify:
