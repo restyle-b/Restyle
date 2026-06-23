@@ -92,10 +92,11 @@ docs/
 
 > כסף תמיד ב-**אגורות (integer)**. כל טבלה עם נתוני משתמש מקבלת **RLS**.
 
-### 5.1 Admin CMS — מודל נתונים (Phase 8, תוכנן 2026-06-22)
-כל התוכן הציבורי היום סטטי (`messages/*.json` + `services-data.ts`/`academy-data.ts`/
-`config.ts`) — מעבר ל-CMS דורש טבלאות תוכן חדשות. הוחלט: **עברית חובה בכל שדה
-מתורגם, אנגלית/ערבית אופציונליים** (ריק → fallback לעברית בתצוגה הציבורית).
+### 5.1 Admin CMS — מודל נתונים (Phase 8, מומש 2026-06-23)
+כל התוכן הציבורי היה סטטי (`messages/*.json` + `services-data.ts`/`academy-data.ts`/
+`config.ts`) — הוחלף ב-CMS עם טבלאות תוכן חדשות. **עברית חובה בכל שדה
+מתורגם, אנגלית/ערבית אופציונליים** (ריק → fallback לעברית בתצוגה הציבורית, ע"י
+helper `pick(locale, he, en, ar)` החזרי ב-`get-*.ts`).
 ממשק ה-Admin עצמו (`src/app/admin/*`) בעברית קבועה, **מחוץ** לניתוב `[locale]`.
 
 ```prisma
@@ -116,7 +117,7 @@ model Testimonial { id String @id @default(cuid())  order Int @default(0)
   nameHe/En/Ar String  quoteHe/En/Ar String  active Boolean @default(true) }
 
 model GalleryImage { id String @id @default(cuid())  order Int @default(0)
-  imageKey String /* מפתח ב-R2 */  altHe/En/Ar String  active Boolean @default(true) }
+  imageUrl String  altHe/En/Ar String  active Boolean @default(true) }
 
 // טקסטי שיווק/משפטי — key-value גמיש (namespace/key תואם ל-messages/he.json
 // הקיים), כדי שמיגרציית seed תהיה ישירה ובלי 100+ עמודות קשיחות.
@@ -125,17 +126,44 @@ model ContentBlock { id String @id @default(cuid())  namespace String  key Strin
   updatedAt DateTime @updatedAt  updatedById String?  @@unique([namespace, key]) }
 ```
 
+**סטיה מהתכנון המקורי — `imageUrl` במקום `imageKey`:** R2 (presigned upload)
+עדיין לא חובר בפועל. עד שיחובר, `GalleryImage.imageUrl` הוא URL מלא שמוזן
+ידנית ב-Admin (מאומת http/https-בלבד ע"י zod). מוצג ב-`<img>` רגיל (לא
+`next/image`) כי `next.config.ts` משאיר `remotePatterns: []` למניעת SSRF —
+ברגע ש-R2 יחובר, יש להחליף לשדה `imageKey` + presigned URL + `next/image` עם
+`remotePatterns` מצומצם לדומיין ה-bucket בלבד.
+
+**מנגנון מיזוג טקסטים (`ContentBlock`) — `src/i18n/request.ts`:** זו נקודת
+ה-bottleneck היחידה. `getRequestConfig` קורא את ה-JSON הסטטי
+(`messages/<locale>.json`), ואז קורא `getContentOverrides()` (קאש עם תג
+`content-blocks`, `unstable_cache`) ומבצע `mergeContentOverrides` (deep-merge
+לפי `namespace.key` עם fallback לעברית כשאין En/Ar). כך **כל** קריאות
+`t()`/`useTranslations()` הקיימות באתר משקפות אוטומטית עריכות מה-Admin בלי
+לשנות אף קומפוננטה ציבורית. דפים שעברו ל-DB-backed תוכן דינמי (שירותים,
+אקדמיה, גלריה, המלצות) עברו בנפרד ל-Server Component `async` עם
+`getTranslations` מ-`next-intl/server` (לא `useTranslations` — hook קליינט
+שלא ניתן להריץ בתוך async component).
+
+**שכבת קריאה ציבורית (`src/lib/content/get-*.ts`):** קובץ נפרד לכל ישות
+(`get-services.ts`/`get-courses.ts`/`get-testimonials.ts`/`get-gallery.ts`),
+כל אחד מייצא תג קאש (`SERVICES_TAG` וכו') ופונקציית `get*(locale)`: קוראת
+מה-DB דרך Prisma תחת `unstable_cache`, ואם אין שורות (DB לא זמין/לפני
+מיגרציה/טבלה ריקה) — **falls back** לדאטה הסטטי הקיים (`services-data.ts`
+וכו'), per ההחלטה הארכיטקטונית שבסיס 5.1.
+
 **RLS:** קריאה פתוחה (`anon` select — תוכן ציבורי), כתיבה רק ל-`ADMIN` — נבדק
 **גם** ב-RLS וגם ב-server action (defense in depth, כמו בשאר המערכת).
 
-**`requireAdmin()`** (חדש, `lib/auth/require-admin.ts`) — בודק session דרך
+**`requireAdmin()`** (`lib/auth/require-admin.ts`) — בודק session דרך
 Supabase + `role==='ADMIN'` ב-Prisma; **fail closed**. נקרא בתחילת כל admin
-server action, **בנוסף** לחסימת `/admin/*` ב-`middleware.ts` (לא להסתמך על
-שכבה אחת).
+server action (`src/server/actions/admin/*.ts`), **בנוסף** לחסימת `/admin/*`
+ב-`middleware.ts` (לא להסתמך על שכבה אחת). כל action מבצע `revalidateTag` +
+`revalidatePath` per-locale אחרי כתיבה.
 
-**תתי-שלבים:** 8.1 תשתית+SiteSettings → 8.2 שירותים+קורסים → 8.3 המלצות+גלריה
-(R2 presigned upload) → 8.4 `ContentBlock` (seed מ-JSON) → 8.5 ניהול
-משתמשים/הרשאות (security סקיל ייעודי). פירוט מלא ב-`ROADMAP.md` Phase 8.
+**תתי-שלבים שמומשו:** 8.1 תשתית+SiteSettings → 8.2 שירותים+קורסים → 8.3
+המלצות+גלריה (URL ישיר, ללא R2 עדיין) → 8.4 `ContentBlock` (seed מ-JSON,
+מיגרציה ידנית טרם הורצה ב-Supabase). נותר: 8.5 ניהול משתמשים/הרשאות (security
+סקיל ייעודי), חיבור R2 בפועל. פירוט מלא ב-`ROADMAP.md` Phase 8.
 
 ---
 
