@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Sparkles } from "@react-three/drei";
-import { Suspense, type RefObject, useRef } from "react";
+import { Suspense, type RefObject } from "react";
 import { ScissorsModel } from "./ScissorsModel";
 import { HairStrands } from "./HairStrands";
 
@@ -12,46 +12,6 @@ function ScrollCamera({ scrollProgress }: { scrollProgress: RefObject<number> })
     camera.position.z = 6.5 - scrollProgress.current * 1.8;
     camera.lookAt(0, 0, 0);
   });
-  return null;
-}
-
-/**
- * Opening "snip": uses the actual WebGL scissor test (gl.setScissor /
- * setScissorTest) to clip rendering to a horizontal band that expands from a
- * thin line to the full canvas on load — the scene reveals as if cut open,
- * fitting for a scissors demo. Skipped for prefers-reduced-motion.
- */
-function CutReveal() {
-  const { gl, size } = useThree();
-  const start = useRef<number | null>(null);
-  const done = useRef(false);
-  const reducedMotion = useRef(
-    typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
-  );
-
-  useFrame(({ clock }) => {
-    if (done.current) return;
-    if (reducedMotion.current) {
-      gl.setScissorTest(false);
-      done.current = true;
-      return;
-    }
-    if (start.current === null) start.current = clock.elapsedTime;
-
-    const t = Math.min((clock.elapsedTime - start.current) / 1.1, 1);
-    const eased = 1 - Math.pow(1 - t, 3);
-    const revealHeight = Math.max(1, Math.round(size.height * eased));
-
-    gl.setScissorTest(true);
-    gl.setScissor(0, (size.height - revealHeight) / 2, size.width, revealHeight);
-
-    if (t >= 1) {
-      gl.setScissorTest(false);
-      done.current = true;
-    }
-  });
-
   return null;
 }
 
@@ -83,7 +43,6 @@ export function ScissorsScene({ scrollProgress }: { scrollProgress: RefObject<nu
       <Sparkles count={60} scale={[14, 9, 10]} size={4} speed={0.05} opacity={0.18} color="#ffffff" />
 
       <ScrollCamera scrollProgress={scrollProgress} />
-      <CutReveal />
     </Canvas>
   );
 }
