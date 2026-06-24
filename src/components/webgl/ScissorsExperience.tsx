@@ -19,7 +19,7 @@ export function ScissorsExperience() {
           <p className="mt-3 text-sm text-white/60">Scroll to set the blades in motion</p>
         </div>
         <p className="text-[10px] text-white/30">
-          3D model: &ldquo;Scissors&rdquo; by sirkitree (poly.pizza), CC-BY 3.0 · HDRI: Studio Small 03 (polyhaven.com), CC0
+          HDRI: Studio Small 03 (polyhaven.com), CC0
         </p>
       </div>
     </div>

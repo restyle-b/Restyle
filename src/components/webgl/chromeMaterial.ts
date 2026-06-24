@@ -17,10 +17,10 @@ export function createChromeMaterial(tint: THREE.ColorRepresentation = "#e9ebee"
   const material = new THREE.MeshPhysicalMaterial({
     color: new THREE.Color(tint),
     metalness: 1,
-    roughness: 0.22,
-    clearcoat: 0.65,
-    clearcoatRoughness: 0.18,
-    envMapIntensity: 1.6,
+    roughness: 0.18,
+    clearcoat: 0.75,
+    clearcoatRoughness: 0.12,
+    envMapIntensity: 1.8,
   });
 
   material.onBeforeCompile = (shader) => {
@@ -62,9 +62,9 @@ export function createChromeMaterial(tint: THREE.ColorRepresentation = "#e9ebee"
         // slow highlight band sweeping across the blade — brushed silver
         // cooling to chrome and back.
         float band = sin(vViewPosition.y * 2.2 + uTime * 0.4) * 0.5 + 0.5;
-        vec3 cold = vec3(0.78, 0.84, 0.92);
-        vec3 warm = vec3(0.95, 0.93, 0.88);
-        gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * mix(warm, cold, band), 0.18);
+        vec3 cold = vec3(0.92, 0.96, 1.02);
+        vec3 warm = vec3(1.04, 1.02, 0.98);
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * mix(warm, cold, band), 0.12);
       }
       #include <dithering_fragment>`,
     );

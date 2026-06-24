@@ -23,12 +23,12 @@ export function ScissorsScene({ scrollProgress }: { scrollProgress: RefObject<nu
       camera={{ position: [0, 0, 6.5], fov: 35 }}
     >
       <color attach="background" args={["#050505"]} />
-      <fogExp2 attach="fog" args={["#050505", 0.1]} />
+      <fogExp2 attach="fog" args={["#050505", 0.06]} />
 
-      <ambientLight intensity={0.25} />
-      <spotLight position={[4, 5, 4]} angle={0.4} penumbra={0.6} intensity={3.2} color="#dfe6f0" />
-      <spotLight position={[-4, -2, 3]} angle={0.5} penumbra={0.8} intensity={1.6} color="#f4ecd8" />
-      <pointLight position={[0, 0, 5]} intensity={0.8} color="#ffffff" />
+      <ambientLight intensity={0.22} />
+      <spotLight position={[4, 5, 4]} angle={0.4} penumbra={0.6} intensity={3.6} color="#eef3fa" />
+      <spotLight position={[-4, -2, 3]} angle={0.5} penumbra={0.8} intensity={1.9} color="#fbf6e8" />
+      <pointLight position={[0, 0, 5]} intensity={0.9} color="#ffffff" />
 
       <Suspense fallback={null}>
         <Environment files="/hdri/studio_small_03_1k.hdr" />
