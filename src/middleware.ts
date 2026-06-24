@@ -12,7 +12,7 @@ const LOCALE_PREFIXES = ["/en", "/ar"];
 // נתיבים שחיים מחוץ לתיקיית [locale] (אינם מתורגמים) — אסור להעביר אותם
 // ל-next-intl, אחרת הוא ממפה אותם פנימית לנתיב עם locale (למשל "/admin" -> "/he/admin")
 // שלא קיים בפועל ב-App Router, וזה מחזיר 404.
-const NON_LOCALIZED_PREFIXES = ["/admin", "/auth"];
+const NON_LOCALIZED_PREFIXES = ["/admin", "/auth", "/webgl-demo"];
 
 function splitLocale(pathname: string) {
   const prefix = LOCALE_PREFIXES.find((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -86,6 +86,6 @@ export const config = {
   // לא להריץ את ה-middleware על נכסים סטטיים וקבצי SEO (robots.txt/sitemap.xml),
   // אחרת next-intl מנסה לפרש אותם כנתיב locale ומחזיר 404.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|hdr)$).*)",
   ],
 };
