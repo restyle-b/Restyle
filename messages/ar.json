@@ -25,6 +25,12 @@
   },
   "footer": {
     "navHeading": "التنقل",
+    "accountHeading": "حسابي",
+    "accountAria": "روابط الحساب",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "myOrders": "طلباتي",
+    "orderLookup": "تتبع الطلب",
     "bookingHeading": "حجز موعد",
     "bookingText": "يتم حجز المواعيد من خلال تطبيق ريستايل.",
     "downloadApp": "لتحميل التطبيق ←",
@@ -59,6 +65,11 @@
     "academyTitle": "تعلّموا المهنة من الأفضل",
     "academyDescription": "دورات مهنية في تصفيف الشعر وتصميم اللحية، من البداية وحتى مستوى الخبير — بإشراف فريقنا المتميز.",
     "allCoursesCta": "جميع الدورات",
+    "shopEyebrow": "متجرنا",
+    "shopTitle": "منتجات مختارة",
+    "shopDescription": "منتجات العناية التي نستخدمها ونثق بها — متوفرة الآن لتأخذها معك.",
+    "shopCta": "زيارة المتجر",
+    "shopOutOfStock": "نفدت الكمية",
     "aboutImageLabel": "صورة الاستوديو",
     "studioFeatureLighting": "إضاءة مهنية",
     "studioFeatureChairs": "كراسي متميزة",
@@ -363,7 +374,9 @@
     "outOfStock": "نفدت الكمية",
     "viewProduct": "عرض المنتج",
     "allCategories": "الكل",
-    "priceLabel": "السعر"
+    "priceLabel": "السعر",
+    "backToShop": "العودة إلى المتجر",
+    "inStock": "متوفر · توصيل سريع"
   },
   "cart": {
     "title": "سلة التسوق",

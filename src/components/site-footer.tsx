@@ -12,7 +12,7 @@ export function SiteFooter() {
 
   return (
     <footer className="border-t border-line-dark bg-ink-soft">
-      <Container className="grid gap-10 py-14 md:grid-cols-3">
+      <Container className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <Wordmark className="h-9" />
           <p className="mt-3 max-w-xs text-sm text-neutral-400">{tLayout("description")}</p>
@@ -31,6 +31,32 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+          </ul>
+        </nav>
+
+        <nav aria-label={tFooter("accountAria")}>
+          <h3 className="text-sm font-semibold text-white">{tFooter("accountHeading")}</h3>
+          <ul className="mt-4 space-y-2">
+            <li>
+              <Link href="/login" className="text-sm text-neutral-400 transition-colors hover:text-white">
+                {tFooter("login")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/register" className="text-sm text-neutral-400 transition-colors hover:text-white">
+                {tFooter("register")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/account/orders" className="text-sm text-neutral-400 transition-colors hover:text-white">
+                {tFooter("myOrders")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/orders/lookup" className="text-sm text-neutral-400 transition-colors hover:text-white">
+                {tFooter("orderLookup")}
+              </Link>
+            </li>
           </ul>
         </nav>
 

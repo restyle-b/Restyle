@@ -25,6 +25,12 @@
   },
   "footer": {
     "navHeading": "ניווט",
+    "accountHeading": "אזור אישי",
+    "accountAria": "קישורי חשבון",
+    "login": "התחברות",
+    "register": "הרשמה",
+    "myOrders": "ההזמנות שלי",
+    "orderLookup": "מעקב הזמנה",
     "bookingHeading": "קביעת תור",
     "bookingText": "קביעת תור מתבצעת באפליקציית ReStyle.",
     "downloadApp": "להורדת האפליקציה ←",
@@ -59,6 +65,11 @@
     "academyTitle": "למדו את המקצוע מהמיטב",
     "academyDescription": "קורסים מקצועיים בעיצוב שיער ועיצוב זקן, מההתחלה ועד רמת מומחה — בהדרכת הצוות המוביל שלנו.",
     "allCoursesCta": "לכל הקורסים",
+    "shopEyebrow": "החנות שלנו",
+    "shopTitle": "מוצרים נבחרים",
+    "shopDescription": "מוצרי הטיפוח שאנחנו עובדים ומאמינים בהם — עכשיו זמינים גם לבית.",
+    "shopCta": "לחנות המלאה",
+    "shopOutOfStock": "אזל המלאי",
     "aboutImageLabel": "תמונת הסטודיו",
     "studioFeatureLighting": "תאורה מקצועית",
     "studioFeatureChairs": "כיסאות פרימיום",
@@ -363,7 +374,9 @@
     "outOfStock": "אזל המלאי",
     "viewProduct": "צפייה במוצר",
     "allCategories": "הכל",
-    "priceLabel": "מחיר"
+    "priceLabel": "מחיר",
+    "backToShop": "חזרה לחנות",
+    "inStock": "במלאי · אספקה מהירה"
   },
   "cart": {
     "title": "עגלת קניות",

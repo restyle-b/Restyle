@@ -34,17 +34,19 @@ export default async function ShopPage({
   ]);
 
   return (
-    <Container className="py-20">
-      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
+    <Container className="py-20 sm:py-28">
+      <div className="mx-auto max-w-2xl text-center">
+        <SectionHeading center light eyebrow={t("eyebrow")} title={t("title")} />
+      </div>
 
-      <div className="mt-8 flex flex-wrap gap-2">
+      <div className="mt-10 flex flex-wrap justify-center gap-2">
         <Link
           href="/shop"
           className={cn(
-            "rounded-full border px-4 py-1.5 text-sm transition-colors",
+            "rounded-full border px-5 py-2 text-sm tracking-wide transition-colors",
             !category
               ? "border-accent bg-accent text-ink"
-              : "border-line-dark text-neutral-300 hover:bg-ink",
+              : "border-line-dark text-neutral-300 hover:border-accent/60 hover:text-white",
           )}
         >
           {t("allCategories")}
@@ -54,10 +56,10 @@ export default async function ShopPage({
             key={c.slug}
             href={{ pathname: "/shop", query: { category: c.slug } }}
             className={cn(
-              "rounded-full border px-4 py-1.5 text-sm transition-colors",
+              "rounded-full border px-5 py-2 text-sm tracking-wide transition-colors",
               category === c.slug
                 ? "border-accent bg-accent text-ink"
-                : "border-line-dark text-neutral-300 hover:bg-ink",
+                : "border-line-dark text-neutral-300 hover:border-accent/60 hover:text-white",
             )}
           >
             {c.name}
@@ -66,7 +68,7 @@ export default async function ShopPage({
       </div>
 
       {products.length > 0 ? (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-3 xl:grid-cols-4">
           {products.map((product) => (
             <ProductCard
               key={product.id}
@@ -77,7 +79,7 @@ export default async function ShopPage({
           ))}
         </div>
       ) : (
-        <p className="mt-12 text-center text-neutral-400">{t("emptyState")}</p>
+        <p className="mt-16 text-center text-neutral-400">{t("emptyState")}</p>
       )}
     </Container>
   );

@@ -25,6 +25,12 @@
   },
   "footer": {
     "navHeading": "Navigation",
+    "accountHeading": "My Account",
+    "accountAria": "Account links",
+    "login": "Log in",
+    "register": "Sign up",
+    "myOrders": "My orders",
+    "orderLookup": "Track order",
     "bookingHeading": "Book Now",
     "bookingText": "Booking is done through the ReStyle app.",
     "downloadApp": "Download the app ←",
@@ -59,6 +65,11 @@
     "academyTitle": "Learn the craft from the best",
     "academyDescription": "Professional courses in hairstyling and beard design, from beginner to expert level — led by our top team.",
     "allCoursesCta": "All Courses",
+    "shopEyebrow": "Our Shop",
+    "shopTitle": "Selected Products",
+    "shopDescription": "The grooming products we use and believe in — now available to take home.",
+    "shopCta": "Visit the shop",
+    "shopOutOfStock": "Out of stock",
     "aboutImageLabel": "Studio photo",
     "studioFeatureLighting": "Professional lighting",
     "studioFeatureChairs": "Premium chairs",
@@ -363,7 +374,9 @@
     "outOfStock": "Out of stock",
     "viewProduct": "View product",
     "allCategories": "All",
-    "priceLabel": "Price"
+    "priceLabel": "Price",
+    "backToShop": "Back to shop",
+    "inStock": "In stock · fast delivery"
   },
   "cart": {
     "title": "Shopping Cart",
