@@ -442,5 +442,56 @@
       "title": "الطلب غير موجود",
       "description": "لم نتمكن من العثور على طلب بهذا الرقم."
     }
+  },
+  "orders": {
+    "title": "طلباتي",
+    "inProgressTitle": "قيد التنفيذ",
+    "completedTitle": "مكتملة",
+    "emptyState": "ليس لديك أي طلبات بعد.",
+    "viewDetails": "عرض التفاصيل",
+    "backToAccount": "العودة إلى حسابي",
+    "backToOrders": "العودة إلى طلباتي",
+    "status": {
+      "PENDING": "بانتظار الدفع",
+      "PAID": "تم الدفع",
+      "FULFILLED": "جاهز/تم الشحن",
+      "COMPLETED": "مكتمل",
+      "CANCELLED": "ملغى",
+      "FAILED": "فشل"
+    },
+    "detail": {
+      "title": "تفاصيل الطلب",
+      "orderNumberLabel": "رقم الطلب",
+      "statusLabel": "الحالة",
+      "itemsTitle": "المنتجات",
+      "quantityLabel": "الكمية",
+      "subtotalLabel": "المجموع الفرعي",
+      "shippingLabel": "التوصيل",
+      "totalLabel": "الإجمالي",
+      "deliveryMethodLabel": "طريقة الاستلام",
+      "addressTitle": "عنوان التوصيل",
+      "paymentStatusLabel": "حالة الدفع",
+      "paymentStatus": {
+        "PENDING": "بانتظار",
+        "SUCCEEDED": "تم الدفع بنجاح",
+        "FAILED": "فشل",
+        "REFUNDED": "تم الاسترداد",
+        "PARTIALLY_REFUNDED": "استرداد جزئي"
+      }
+    },
+    "lookup": {
+      "title": "تحقق من حالة الطلب",
+      "description": "أدخل رقم الطلب وكود التتبع الذي استلمته بالبريد الإلكتروني.",
+      "orderNumberLabel": "رقم الطلب",
+      "tokenLabel": "كود التتبع",
+      "submit": "تحقق",
+      "submitting": "جارٍ التحقق...",
+      "notFound": "لم يتم العثور على طلب مطابق لهذه التفاصيل.",
+      "errors": {
+        "orderNumberRequired": "يرجى إدخال رقم الطلب",
+        "tokenRequired": "يرجى إدخال كود التتبع",
+        "rateLimited": "عدد محاولات كبير جدًا. حاول مرة أخرى بعد دقائق قليلة."
+      }
+    }
   }
 }

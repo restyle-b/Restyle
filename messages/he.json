@@ -442,5 +442,56 @@
       "title": "ההזמנה לא נמצאה",
       "description": "לא הצלחנו לאתר הזמנה עם המספר הזה."
     }
+  },
+  "orders": {
+    "title": "ההזמנות שלי",
+    "inProgressTitle": "בביצוע",
+    "completedTitle": "הושלמו",
+    "emptyState": "עדיין אין לך הזמנות.",
+    "viewDetails": "צפייה בפרטים",
+    "backToAccount": "חזרה לאזור האישי",
+    "backToOrders": "חזרה להזמנות שלי",
+    "status": {
+      "PENDING": "ממתין לתשלום",
+      "PAID": "שולם",
+      "FULFILLED": "מוכן/נשלח",
+      "COMPLETED": "הושלם",
+      "CANCELLED": "בוטל",
+      "FAILED": "נכשל"
+    },
+    "detail": {
+      "title": "פרטי הזמנה",
+      "orderNumberLabel": "מספר הזמנה",
+      "statusLabel": "סטטוס",
+      "itemsTitle": "פריטים",
+      "quantityLabel": "כמות",
+      "subtotalLabel": "סכום ביניים",
+      "shippingLabel": "משלוח",
+      "totalLabel": "סה\"כ",
+      "deliveryMethodLabel": "אופן קבלה",
+      "addressTitle": "כתובת למשלוח",
+      "paymentStatusLabel": "סטטוס תשלום",
+      "paymentStatus": {
+        "PENDING": "ממתין",
+        "SUCCEEDED": "שולם בהצלחה",
+        "FAILED": "נכשל",
+        "REFUNDED": "זוכה",
+        "PARTIALLY_REFUNDED": "זוכה חלקית"
+      }
+    },
+    "lookup": {
+      "title": "בדיקת סטטוס הזמנה",
+      "description": "הזינו את מספר ההזמנה ואת קוד המעקב שקיבלתם באימייל.",
+      "orderNumberLabel": "מספר הזמנה",
+      "tokenLabel": "קוד מעקב",
+      "submit": "בדיקה",
+      "submitting": "בודק...",
+      "notFound": "לא נמצאה הזמנה עם הפרטים שהוזנו.",
+      "errors": {
+        "orderNumberRequired": "יש להזין מספר הזמנה",
+        "tokenRequired": "יש להזין קוד מעקב",
+        "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות."
+      }
+    }
   }
 }
