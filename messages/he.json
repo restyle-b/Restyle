@@ -362,5 +362,16 @@
     "viewProduct": "צפייה במוצר",
     "allCategories": "הכל",
     "priceLabel": "מחיר"
+  },
+  "cart": {
+    "title": "עגלת קניות",
+    "empty": "העגלה שלך ריקה.",
+    "continueShopping": "המשך בקנייה",
+    "quantityLabel": "כמות",
+    "remove": "הסרה",
+    "subtotal": "סכום ביניים",
+    "checkoutCta": "מעבר לתשלום",
+    "itemAdded": "נוסף לעגלה",
+    "cartAria": "עגלת קניות"
   }
 }

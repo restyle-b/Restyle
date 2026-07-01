@@ -362,5 +362,16 @@
     "viewProduct": "View product",
     "allCategories": "All",
     "priceLabel": "Price"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty.",
+    "continueShopping": "Continue shopping",
+    "quantityLabel": "Quantity",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "checkoutCta": "Proceed to checkout",
+    "itemAdded": "Added to cart",
+    "cartAria": "Shopping cart"
   }
 }

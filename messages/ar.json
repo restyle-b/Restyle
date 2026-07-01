@@ -362,5 +362,16 @@
     "viewProduct": "عرض المنتج",
     "allCategories": "الكل",
     "priceLabel": "السعر"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلتك فارغة.",
+    "continueShopping": "متابعة التسوق",
+    "quantityLabel": "الكمية",
+    "remove": "إزالة",
+    "subtotal": "المجموع الفرعي",
+    "checkoutCta": "الانتقال للدفع",
+    "itemAdded": "أضيف إلى السلة",
+    "cartAria": "سلة التسوق"
   }
 }

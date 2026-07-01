@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { ProductImage } from "@/components/shop/product-image";
+import { AddToCartButton } from "@/components/shop/add-to-cart-button";
 import { formatAgorot } from "@/lib/format";
 import { getProductBySlug } from "@/lib/content/get-products";
 
@@ -44,6 +45,14 @@ export default async function ProductPage({
           {product.stock <= 0 && (
             <p className="mt-2 text-sm text-neutral-500">{t("outOfStock")}</p>
           )}
+          <AddToCartButton
+            productId={product.id}
+            slug={product.slug}
+            name={product.name}
+            priceAgorot={product.priceAgorot}
+            imageUrl={product.imageUrl}
+            inStock={product.stock > 0}
+          />
         </div>
       </div>
     </Container>
