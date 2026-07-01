@@ -5,6 +5,7 @@
   },
   "nav": {
     "about": "אודות",
+    "shop": "חנות",
     "services": "שירותים",
     "academy": "אקדמיה",
     "gallery": "גלריה",
@@ -349,5 +350,17 @@
     "resetButton": "איפוס הגדרות",
     "statementLink": "הצהרת נגישות ←",
     "openAria": "פתיחת תפריט נגישות"
+  },
+  "shop": {
+    "metaTitle": "חנות",
+    "metaDescription": "מוצרי טיפוח מקצועיים למספרה — שמפו, שמן זקן, כלים ואביזרים.",
+    "eyebrow": "מוצרים נבחרים",
+    "title": "החנות שלנו",
+    "emptyState": "אין מוצרים זמינים כרגע.",
+    "addToCart": "הוספה לעגלה",
+    "outOfStock": "אזל המלאי",
+    "viewProduct": "צפייה במוצר",
+    "allCategories": "הכל",
+    "priceLabel": "מחיר"
   }
 }

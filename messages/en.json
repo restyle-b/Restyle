@@ -5,6 +5,7 @@
   },
   "nav": {
     "about": "About",
+    "shop": "Shop",
     "services": "Services",
     "academy": "Academy",
     "gallery": "Gallery",
@@ -349,5 +350,17 @@
     "resetButton": "Reset Settings",
     "statementLink": "Accessibility statement ←",
     "openAria": "Open accessibility menu"
+  },
+  "shop": {
+    "metaTitle": "Shop",
+    "metaDescription": "Professional barbershop grooming products — shampoo, beard oil, tools and accessories.",
+    "eyebrow": "Selected Products",
+    "title": "Our Shop",
+    "emptyState": "No products available right now.",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of stock",
+    "viewProduct": "View product",
+    "allCategories": "All",
+    "priceLabel": "Price"
   }
 }
