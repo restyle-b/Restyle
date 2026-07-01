@@ -24,6 +24,7 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders    Order[]
 
   @@map("users")
 }
@@ -151,4 +152,155 @@ model ContentBlock {
 
   @@unique([namespace, key])
   @@map("content_blocks")
+}
+
+// ── חנות (Stage 2, Phase 4+5+6) — ראה docs/features/shop.md ──
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FULFILLED
+  COMPLETED
+  CANCELLED
+  FAILED
+
+  @@map("order_status")
+}
+
+enum DeliveryMethod {
+  PICKUP
+  DELIVERY
+
+  @@map("delivery_method")
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+
+  @@map("payment_status")
+}
+
+// קטגוריית מוצרים — לסינון בקטלוג.
+model Category {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  order     Int       @default(0)
+  nameHe    String
+  nameEn    String?
+  nameAr    String?
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+
+  @@map("categories")
+}
+
+// מוצרי החנות.
+// ⚠️ imageUrl (לא imageKey/R2) — אותה מוסכמה כמו GalleryImage.imageUrl (ראה
+// שם למה). imageUrl ריק/null => מוצג ImagePlaceholder בציבורי.
+model Product {
+  id            String      @id @default(cuid())
+  slug          String      @unique
+  order         Int         @default(0)
+  nameHe        String
+  nameEn        String?
+  nameAr        String?
+  descriptionHe String      @db.Text
+  descriptionEn String?     @db.Text
+  descriptionAr String?     @db.Text
+  priceAgorot   Int
+  stock         Int         @default(0)
+  imageUrl      String?
+  categoryId    String?
+  category      Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  active        Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  orderItems    OrderItem[]
+
+  @@index([categoryId])
+  @@map("products")
+}
+
+// הזמנה — אורח או משתמש רשום (userId אופציונלי, guest checkout מותר).
+model Order {
+  id     String @id @default(cuid())
+  orderNumber String @unique
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  status OrderStatus @default(PENDING)
+
+  // תקציר לקוח — snapshot בזמן ההזמנה, לא תלוי בפרופיל עתידי.
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  deliveryMethod DeliveryMethod
+  shippingAgorot Int            @default(0) // 0=pickup, 4000=delivery (קבוע כרגע)
+  addressLine    String?
+  addressCity    String?
+  addressNotes   String?
+
+  subtotalAgorot Int // סכום פריטים בלבד, מחושב בשרת
+  totalAgorot    Int // subtotal + shipping, מחושב בשרת
+
+  paymentProvider  String? // "mock" | "tranzila" — נשמר בזמן היצירה
+  guestLookupToken String? @unique // אקראי, ל-guest order lookup
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items   OrderItem[]
+  payment Payment?
+
+  @@index([userId])
+  @@index([customerEmail])
+  @@map("orders")
+}
+
+// שורת פריט בהזמנה — snapshot של שם+מחיר בזמן הרכישה (לא JOIN חי ל-Product,
+// כך שהזמנה היסטורית לא משתנה אם מחיר/שם מוצר משתנים בעתיד).
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  nameHeSnapshot  String
+  unitPriceAgorot Int
+  quantity        Int
+  lineTotalAgorot Int
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+// תשלום — קשור 1:1 להזמנה. לעולם לא PAN/CVV — רק מזהי התייחסות של הספק.
+model Payment {
+  id      String @id @default(cuid())
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  provider        String // "mock" | "tranzila"
+  status          PaymentStatus @default(PENDING)
+  amountAgorot    Int
+  externalRef     String? // transactionId/confirmationCode מהספק
+  last4           String? // 4 ספרות אחרונות בלבד (אם מוחזר), לתצוגה בלבד
+  failureReason   String? // הודעת כשל קריאה-לאדם, בלי פרטי כרטיס
+  rawResponseMeta Json? // metadata לא-רגיש בלבד (status code, timestamp) — לעולם לא body מלא
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([provider, externalRef])
+  @@map("payments")
 }
