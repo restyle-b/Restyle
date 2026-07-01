@@ -39,7 +39,7 @@ export function ScrollFeature({
       ref={ref}
       className={cn(
         "transition-all duration-500 ease-out motion-reduce:transition-none",
-        active ? "opacity-100" : "opacity-40",
+        active ? "opacity-100" : "opacity-80",
         className,
       )}
     >

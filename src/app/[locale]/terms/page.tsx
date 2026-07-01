@@ -44,7 +44,7 @@ export default function TermsPage() {
           <h2 className="font-display text-xl font-bold text-white">{t("privacyHeading")}</h2>
           <p className="mt-3">
             {t("privacyBodyBefore")}{" "}
-            <Link href="/privacy" className="text-accent hover:underline">
+            <Link href="/privacy" className="text-accent underline underline-offset-2">
               {t("privacyLink")}
             </Link>{" "}
             {t("privacyBodyAfter")}
