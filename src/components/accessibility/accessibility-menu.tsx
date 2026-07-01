@@ -83,12 +83,26 @@ export function AccessibilityMenu() {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<A11yState>(DEFAULT_STATE);
   const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
   // טעינת המצב השמור אחרי הידרציה (נמנע מ-mismatch — השרת מרנדר ברירת מחדל)
   useEffect(() => {
     const loaded = loadState();
     setState(loaded);
     applyState(loaded);
+  }, []);
+
+  // ניהול מיקוד (WCAG 2.4.3 Focus Order): בפתיחה — מיקוד עובר לתוך הפאנל (כפתור
+  // הסגירה), כדי ש-Tab הבא ימשיך בתוך הדיאלוג ולא ידלג עליו. בסגירה — חוזר
+  // לכפתור שפתח את הפאנל, כך שמשתמש מקלדת לא "מאבד את המקום".
+  useEffect(() => {
+    if (open) closeButtonRef.current?.focus();
+  }, [open]);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    toggleButtonRef.current?.focus();
   }, []);
 
   // החלה ושמירה בכל שינוי
@@ -114,11 +128,11 @@ export function AccessibilityMenu() {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, close]);
 
   return (
     <div className="fixed bottom-4 start-4 z-[60] print:hidden">
@@ -132,8 +146,9 @@ export function AccessibilityMenu() {
           <div className="flex items-center justify-between">
             <h2 className="font-display text-base font-bold text-white">{t("title")}</h2>
             <button
+              ref={closeButtonRef}
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={close}
               aria-label={t("closeAria")}
               className="rounded p-1 text-neutral-400 hover:text-white"
             >
@@ -204,6 +219,7 @@ export function AccessibilityMenu() {
       )}
 
       <button
+        ref={toggleButtonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
