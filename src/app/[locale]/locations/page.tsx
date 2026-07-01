@@ -10,6 +10,8 @@ import { getContactLinks } from "@/lib/contact-links";
 import { siteConfig } from "@/lib/config";
 import type { Locale } from "@/i18n/routing";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
 }: {

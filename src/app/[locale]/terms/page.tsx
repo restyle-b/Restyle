@@ -6,6 +6,8 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { siteConfig } from "@/lib/config";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
 }: {

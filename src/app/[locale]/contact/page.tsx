@@ -7,6 +7,8 @@ import { ContactForm } from "@/components/contact-form";
 import { ContactActions } from "@/components/contact-actions";
 import { siteConfig } from "@/lib/config";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
 }: {
