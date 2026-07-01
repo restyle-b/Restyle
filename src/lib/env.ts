@@ -22,6 +22,9 @@ const serverSchema = z
     PAYMENT_WEBHOOK_SECRET: z.string().min(1).optional(),
     TRANZILA_TERMINAL: z.string().min(1).optional(),
     TRANZILA_TERMINAL_PASSWORD: z.string().min(1).optional(),
+    // opt-in מפורש להפעלת MockProvider ב-production (preview/דמו בלבד) —
+    // ראה src/lib/payments/mock-allowed.ts. ברירת מחדל: mock חסום ב-production.
+    ALLOW_MOCK_CHECKOUT: z.enum(["true", "false"]).optional(),
   })
   .superRefine((env, ctx) => {
     if (env.PAYMENT_PROVIDER === "tranzila" && (!env.TRANZILA_TERMINAL || !env.TRANZILA_TERMINAL_PASSWORD)) {
