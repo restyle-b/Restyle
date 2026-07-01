@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 /**
  * כותרת ש"נחתכת" — בכניסה לאזור הצפייה הטקסט נחשף ב-wipe מהצד הלוגי (ימין ב-RTL,
@@ -10,8 +11,8 @@ import { cn } from "@/lib/utils";
  * כל הבלוק, לא שורה בודדת). הכיווניות נשלטת ב-CSS דרך scope של `[dir]`.
  *
  * נגישות: הטקסט תמיד ב-DOM (clip לא מסיר אותו מעץ הנגישות). תחת
- * prefers-reduced-motion ה-class `is-cut` מתווסף מיד והאנימציה קופאת למצב החשוף
- * המלא — הכותרת נראית רגיל, בלי wipe.
+ * prefers-reduced-motion או תפריט הנגישות ה-class `is-cut` מתווסף מיד והאנימציה
+ * קופאת למצב החשוף המלא — הכותרת נראית רגיל, בלי wipe.
  */
 export function CutHeading({
   title,
@@ -22,14 +23,15 @@ export function CutHeading({
 }) {
   const ref = useRef<HTMLHeadingElement>(null);
   const [cut, setCut] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reducedMotion) {
       setCut(true);
       return;
     }
+    const el = ref.current;
+    if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
@@ -41,7 +43,7 @@ export function CutHeading({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <h2 ref={ref} className={cn("cut-title", cut && "is-cut", className)}>

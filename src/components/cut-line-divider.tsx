@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 /**
  * מפריד "קו גזירה" — מוטיב המספריים כשפה ויזואלית בין סקציות.
@@ -24,6 +25,7 @@ export function CutLineDivider({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [cutting, setCutting] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
@@ -37,7 +39,8 @@ export function CutLineDivider({
     measure();
     window.addEventListener("resize", measure);
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reducedMotion) {
+      setCutting(false);
       return () => window.removeEventListener("resize", measure);
     }
 
@@ -55,7 +58,7 @@ export function CutLineDivider({
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <div

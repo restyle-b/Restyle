@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 /** כיוון הכניסה של ה-Reveal. ברירת מחדל: up (עלייה עדינה). */
 type RevealDirection = "up" | "down" | "left" | "right" | "scale";
@@ -19,7 +20,7 @@ const HIDDEN_BY_DIRECTION: Record<RevealDirection, string> = {
  * עוטף תוכן ב-fade/slide עדין כשהוא נכנס למסך בגלילה (ראה docs/DESIGN.md).
  * - direction: כיוון הכניסה (ברירת מחדל "up").
  * - delay: השהיה ב-ms ל-stagger בגריד/רשימה.
- * מכבד prefers-reduced-motion (מציג מיד, בלי תנועה).
+ * מכבד prefers-reduced-motion וגם את תפריט הנגישות (מציג מיד, בלי תנועה).
  */
 export function Reveal({
   children,
@@ -34,14 +35,15 @@ export function Reveal({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reducedMotion) {
       setVisible(true);
       return;
     }
+    const el = ref.current;
+    if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -54,7 +56,7 @@ export function Reveal({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <div
