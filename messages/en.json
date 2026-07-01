@@ -373,5 +373,74 @@
     "checkoutCta": "Proceed to checkout",
     "itemAdded": "Added to cart",
     "cartAria": "Shopping cart"
+  },
+  "checkout": {
+    "metaTitle": "Checkout",
+    "metaDescription": "Complete your order and payment.",
+    "title": "Checkout",
+    "contactTitle": "Contact details",
+    "nameLabel": "Full name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "companyLabel": "Company",
+    "deliveryTitle": "Delivery method",
+    "deliveryPickup": "Store pickup",
+    "deliveryDelivery": "Home delivery",
+    "addressLineLabel": "Address",
+    "addressCityLabel": "City",
+    "addressNotesLabel": "Delivery notes (optional)",
+    "summaryTitle": "Order summary",
+    "subtotalLabel": "Subtotal",
+    "shippingLabel": "Shipping",
+    "shippingFree": "Free",
+    "totalLabel": "Total",
+    "submit": "Proceed to payment",
+    "submitting": "Processing...",
+    "emptyCartTitle": "Your cart is empty",
+    "emptyCartDescription": "You can't check out with an empty cart.",
+    "backToShop": "Back to shop",
+    "errors": {
+      "nameTooShort": "Please enter your full name (at least 2 characters)",
+      "emailInvalid": "Invalid email address",
+      "phoneTooShort": "Invalid phone number",
+      "addressRequired": "Please enter a delivery address",
+      "cityRequired": "Please enter a delivery city",
+      "rateLimited": "Too many attempts. Please try again in a few minutes.",
+      "invalidInput": "The submitted data is invalid.",
+      "emptyCart": "Your cart is empty or the submitted data is invalid.",
+      "productUnavailable": "One of the items in your cart is no longer available.",
+      "insufficientStock": "Not enough stock for \"{name}\".",
+      "paymentInitFailed": "Failed to start payment. Please try again."
+    },
+    "mockPay": {
+      "title": "Simulated payment (dev mode)",
+      "description": "This is a mock payment page for testing only — no real charge.",
+      "orderLabel": "Order number",
+      "amountLabel": "Amount due",
+      "successButton": "Simulate successful payment",
+      "failureButton": "Simulate failed payment",
+      "processing": "Processing..."
+    },
+    "success": {
+      "title": "Payment received",
+      "description": "Thank you for your purchase! Your order has been received and is being processed.",
+      "orderNumberLabel": "Order number",
+      "backToShop": "Back to shop",
+      "viewOrders": "View my orders"
+    },
+    "cancel": {
+      "title": "Payment not completed",
+      "description": "The payment was cancelled or failed. You can try again.",
+      "retry": "Try again",
+      "backToShop": "Back to shop"
+    },
+    "processing": {
+      "title": "Checking payment status...",
+      "description": "Your payment is still being processed. Refresh this page or check your order history shortly."
+    },
+    "notFound": {
+      "title": "Order not found",
+      "description": "We couldn't find an order with this number."
+    }
   }
 }

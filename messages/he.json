@@ -373,5 +373,74 @@
     "checkoutCta": "מעבר לתשלום",
     "itemAdded": "נוסף לעגלה",
     "cartAria": "עגלת קניות"
+  },
+  "checkout": {
+    "metaTitle": "תשלום",
+    "metaDescription": "השלמת הזמנה ותשלום.",
+    "title": "השלמת הזמנה",
+    "contactTitle": "פרטי יצירת קשר",
+    "nameLabel": "שם מלא",
+    "emailLabel": "אימייל",
+    "phoneLabel": "טלפון",
+    "companyLabel": "חברה",
+    "deliveryTitle": "אופן קבלה",
+    "deliveryPickup": "איסוף עצמי",
+    "deliveryDelivery": "משלוח עד הבית",
+    "addressLineLabel": "כתובת",
+    "addressCityLabel": "עיר",
+    "addressNotesLabel": "הערות למשלוח (אופציונלי)",
+    "summaryTitle": "סיכום הזמנה",
+    "subtotalLabel": "סכום ביניים",
+    "shippingLabel": "משלוח",
+    "shippingFree": "ללא עלות",
+    "totalLabel": "סה\"כ לתשלום",
+    "submit": "מעבר לתשלום",
+    "submitting": "מעבד...",
+    "emptyCartTitle": "העגלה שלך ריקה",
+    "emptyCartDescription": "אין אפשרות להשלים תשלום על עגלה ריקה.",
+    "backToShop": "חזרה לחנות",
+    "errors": {
+      "nameTooShort": "יש להזין שם מלא (לפחות 2 תווים)",
+      "emailInvalid": "כתובת אימייל לא תקינה",
+      "phoneTooShort": "מספר טלפון לא תקין",
+      "addressRequired": "יש להזין כתובת למשלוח",
+      "cityRequired": "יש להזין עיר למשלוח",
+      "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.",
+      "invalidInput": "הנתונים שהוזנו אינם תקינים.",
+      "emptyCart": "העגלה ריקה או שהנתונים שנשלחו אינם תקינים.",
+      "productUnavailable": "אחד המוצרים בעגלה כבר אינו זמין.",
+      "insufficientStock": "אין מספיק מלאי עבור \"{name}\".",
+      "paymentInitFailed": "פתיחת התשלום נכשלה. נסו שוב."
+    },
+    "mockPay": {
+      "title": "סימולציית תשלום (מצב פיתוח)",
+      "description": "זהו עמוד תשלום מדומה לבדיקות בלבד — אין חיוב אמיתי.",
+      "orderLabel": "מספר הזמנה",
+      "amountLabel": "סכום לתשלום",
+      "successButton": "סימולציית תשלום מוצלח",
+      "failureButton": "סימולציית תשלום נכשל",
+      "processing": "מעבד..."
+    },
+    "success": {
+      "title": "התשלום התקבל בהצלחה",
+      "description": "תודה על הרכישה! ההזמנה שלך התקבלה ונמצאת בטיפול.",
+      "orderNumberLabel": "מספר הזמנה",
+      "backToShop": "חזרה לחנות",
+      "viewOrders": "צפייה בהזמנות שלי"
+    },
+    "cancel": {
+      "title": "התשלום לא הושלם",
+      "description": "התשלום בוטל או נכשל. ניתן לנסות שוב.",
+      "retry": "נסה שוב",
+      "backToShop": "חזרה לחנות"
+    },
+    "processing": {
+      "title": "בבדיקת סטטוס התשלום...",
+      "description": "התשלום מעובד כרגע. אפשר לרענן את העמוד או לבדוק בהיסטוריית ההזמנות בעוד רגע."
+    },
+    "notFound": {
+      "title": "ההזמנה לא נמצאה",
+      "description": "לא הצלחנו לאתר הזמנה עם המספר הזה."
+    }
   }
 }

@@ -373,5 +373,74 @@
     "checkoutCta": "الانتقال للدفع",
     "itemAdded": "أضيف إلى السلة",
     "cartAria": "سلة التسوق"
+  },
+  "checkout": {
+    "metaTitle": "الدفع",
+    "metaDescription": "إتمام الطلب والدفع.",
+    "title": "إتمام الطلب",
+    "contactTitle": "بيانات التواصل",
+    "nameLabel": "الاسم الكامل",
+    "emailLabel": "البريد الإلكتروني",
+    "phoneLabel": "الهاتف",
+    "companyLabel": "الشركة",
+    "deliveryTitle": "طريقة الاستلام",
+    "deliveryPickup": "استلام من المحل",
+    "deliveryDelivery": "توصيل إلى المنزل",
+    "addressLineLabel": "العنوان",
+    "addressCityLabel": "المدينة",
+    "addressNotesLabel": "ملاحظات التوصيل (اختياري)",
+    "summaryTitle": "ملخص الطلب",
+    "subtotalLabel": "المجموع الفرعي",
+    "shippingLabel": "التوصيل",
+    "shippingFree": "مجاني",
+    "totalLabel": "الإجمالي للدفع",
+    "submit": "الانتقال للدفع",
+    "submitting": "جارٍ المعالجة...",
+    "emptyCartTitle": "سلتك فارغة",
+    "emptyCartDescription": "لا يمكن إتمام الدفع لسلة فارغة.",
+    "backToShop": "العودة إلى المتجر",
+    "errors": {
+      "nameTooShort": "يرجى إدخال الاسم الكامل (حرفان على الأقل)",
+      "emailInvalid": "عنوان بريد إلكتروني غير صالح",
+      "phoneTooShort": "رقم هاتف غير صالح",
+      "addressRequired": "يرجى إدخال عنوان للتوصيل",
+      "cityRequired": "يرجى إدخال مدينة للتوصيل",
+      "rateLimited": "عدد محاولات كبير جدًا. حاول مرة أخرى بعد دقائق قليلة.",
+      "invalidInput": "البيانات المُدخلة غير صالحة.",
+      "emptyCart": "السلة فارغة أو أن البيانات المُرسلة غير صالحة.",
+      "productUnavailable": "أحد المنتجات في سلتك لم يعد متوفرًا.",
+      "insufficientStock": "لا توجد كمية كافية من \"{name}\".",
+      "paymentInitFailed": "فشل بدء عملية الدفع. حاول مرة أخرى."
+    },
+    "mockPay": {
+      "title": "محاكاة دفع (وضع التطوير)",
+      "description": "هذه صفحة دفع وهمية للاختبار فقط — لا يوجد خصم حقيقي.",
+      "orderLabel": "رقم الطلب",
+      "amountLabel": "المبلغ المستحق",
+      "successButton": "محاكاة دفع ناجح",
+      "failureButton": "محاكاة دفع فاشل",
+      "processing": "جارٍ المعالجة..."
+    },
+    "success": {
+      "title": "تم استلام الدفع بنجاح",
+      "description": "شكرًا لشرائك! تم استلام طلبك وهو قيد المعالجة.",
+      "orderNumberLabel": "رقم الطلب",
+      "backToShop": "العودة إلى المتجر",
+      "viewOrders": "عرض طلباتي"
+    },
+    "cancel": {
+      "title": "لم تكتمل عملية الدفع",
+      "description": "تم إلغاء الدفع أو فشل. يمكنك المحاولة مرة أخرى.",
+      "retry": "حاول مرة أخرى",
+      "backToShop": "العودة إلى المتجر"
+    },
+    "processing": {
+      "title": "جارٍ التحقق من حالة الدفع...",
+      "description": "الدفع قيد المعالجة حاليًا. حدّث الصفحة أو تحقق من طلباتك بعد قليل."
+    },
+    "notFound": {
+      "title": "الطلب غير موجود",
+      "description": "لم نتمكن من العثور على طلب بهذا الرقم."
+    }
   }
 }
