@@ -121,6 +121,16 @@ export function MobileNav() {
                   </Link>
                 );
               })}
+              <Link
+                href="/account"
+                onClick={() => setOpen(false)}
+                aria-current={pathname === "/account" ? "page" : undefined}
+                className={`block border-b border-line-dark px-4 py-5 text-2xl font-semibold text-white transition-colors hover:text-accent sm:px-6 ${
+                  pathname === "/account" ? "bg-white/5 text-accent" : ""
+                }`}
+              >
+                {t("account")}
+              </Link>
             </nav>
 
             <div className="flex shrink-0 items-center justify-between gap-4 border-t border-line-dark px-4 py-6 sm:px-6">
