@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [claude/salon-website-platform-yaa9ya]
+    branches: [main]
   pull_request:
 
 permissions:

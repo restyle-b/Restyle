@@ -53,4 +53,5 @@
 - `npm run lint && npm run typecheck && npm test` ירוקים לפני "סיימתי".
 
 ## ענף עבודה
-פיתוח על `claude/salon-website-platform-yaa9ya`. push רק לפי הוראת המשתמש.
+פיתוח על `main` (עודכן 2026-07-01 — קודם היה `claude/salon-website-platform-yaa9ya`, שנשאר
+בריפו כתיעוד היסטורי בלבד). `main` הוא גם ברירת המחדל ב-GitHub. push רק לפי הוראת המשתמש.
