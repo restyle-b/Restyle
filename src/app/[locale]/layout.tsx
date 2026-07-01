@@ -11,6 +11,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SkipToContent } from "@/components/skip-to-content";
 import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu";
 import { FloatingContact } from "@/components/floating-contact";
+import { CartProvider } from "@/lib/cart/cart-context";
 import "../globals.css";
 
 /**
@@ -93,15 +94,17 @@ export default async function RootLayout({
           }}
         />
         <NextIntlClientProvider>
-          <SkipToContent />
-          <ScrollProgress />
-          <SiteHeader />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <SiteFooter />
-          <FloatingContact />
-          <AccessibilityMenu />
+          <CartProvider>
+            <SkipToContent />
+            <ScrollProgress />
+            <SiteHeader />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <SiteFooter />
+            <FloatingContact />
+            <AccessibilityMenu />
+          </CartProvider>
         </NextIntlClientProvider>
       </body>
     </html>

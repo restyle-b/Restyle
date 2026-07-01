@@ -34,6 +34,7 @@ export const siteConfig = {
 export const navLinks = [
   { href: "/about", key: "about" },
   { href: "/services", key: "services" },
+  { href: "/shop", key: "shop" },
   { href: "/academy", key: "academy" },
   { href: "/gallery", key: "gallery" },
   { href: "/locations", key: "locations" },

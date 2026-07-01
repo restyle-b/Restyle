@@ -5,6 +5,7 @@
   },
   "nav": {
     "about": "من نحن",
+    "shop": "المتجر",
     "services": "الخدمات",
     "academy": "الأكاديمية",
     "gallery": "معرض الصور",
@@ -14,6 +15,8 @@
     "mainAria": "التنقل الرئيسي",
     "footerAria": "تنقل التذييل",
     "bookingCta": "حجز موعد",
+    "account": "حسابي",
+    "accountAria": "الذهاب إلى حسابي",
     "openAria": "فتح القائمة",
     "closeAria": "إغلاق القائمة",
     "themeDay": "نهار",
@@ -22,6 +25,12 @@
   },
   "footer": {
     "navHeading": "التنقل",
+    "accountHeading": "حسابي",
+    "accountAria": "روابط الحساب",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "myOrders": "طلباتي",
+    "orderLookup": "تتبع الطلب",
     "bookingHeading": "حجز موعد",
     "bookingText": "يتم حجز المواعيد من خلال تطبيق ريستايل.",
     "downloadApp": "لتحميل التطبيق ←",
@@ -56,6 +65,11 @@
     "academyTitle": "تعلّموا المهنة من الأفضل",
     "academyDescription": "دورات مهنية في تصفيف الشعر وتصميم اللحية، من البداية وحتى مستوى الخبير — بإشراف فريقنا المتميز.",
     "allCoursesCta": "جميع الدورات",
+    "shopEyebrow": "متجرنا",
+    "shopTitle": "منتجات مختارة",
+    "shopDescription": "منتجات العناية التي نستخدمها ونثق بها — متوفرة الآن لتأخذها معك.",
+    "shopCta": "زيارة المتجر",
+    "shopOutOfStock": "نفدت الكمية",
     "aboutImageLabel": "صورة الاستوديو",
     "studioFeatureLighting": "إضاءة مهنية",
     "studioFeatureChairs": "كراسي متميزة",
@@ -349,5 +363,150 @@
     "resetButton": "إعادة ضبط الإعدادات",
     "statementLink": "بيان إمكانية الوصول ←",
     "openAria": "فتح قائمة إمكانية الوصول"
+  },
+  "shop": {
+    "metaTitle": "المتجر",
+    "metaDescription": "منتجات عناية احترافية للصالون — شامبو، زيت لحية، أدوات وإكسسوارات.",
+    "eyebrow": "منتجات مختارة",
+    "title": "متجرنا",
+    "emptyState": "لا توجد منتجات متاحة حاليًا.",
+    "addToCart": "أضف إلى السلة",
+    "outOfStock": "نفدت الكمية",
+    "viewProduct": "عرض المنتج",
+    "allCategories": "الكل",
+    "priceLabel": "السعر",
+    "backToShop": "العودة إلى المتجر",
+    "inStock": "متوفر · توصيل سريع"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلتك فارغة.",
+    "continueShopping": "متابعة التسوق",
+    "quantityLabel": "الكمية",
+    "remove": "إزالة",
+    "subtotal": "المجموع الفرعي",
+    "checkoutCta": "الانتقال للدفع",
+    "itemAdded": "أضيف إلى السلة",
+    "cartAria": "سلة التسوق"
+  },
+  "checkout": {
+    "metaTitle": "الدفع",
+    "metaDescription": "إتمام الطلب والدفع.",
+    "title": "إتمام الطلب",
+    "contactTitle": "بيانات التواصل",
+    "nameLabel": "الاسم الكامل",
+    "emailLabel": "البريد الإلكتروني",
+    "phoneLabel": "الهاتف",
+    "companyLabel": "الشركة",
+    "deliveryTitle": "طريقة الاستلام",
+    "deliveryPickup": "استلام من المحل",
+    "deliveryDelivery": "توصيل إلى المنزل",
+    "addressLineLabel": "العنوان",
+    "addressCityLabel": "المدينة",
+    "addressNotesLabel": "ملاحظات التوصيل (اختياري)",
+    "summaryTitle": "ملخص الطلب",
+    "subtotalLabel": "المجموع الفرعي",
+    "shippingLabel": "التوصيل",
+    "shippingFree": "مجاني",
+    "totalLabel": "الإجمالي للدفع",
+    "submit": "الانتقال للدفع",
+    "submitting": "جارٍ المعالجة...",
+    "emptyCartTitle": "سلتك فارغة",
+    "emptyCartDescription": "لا يمكن إتمام الدفع لسلة فارغة.",
+    "backToShop": "العودة إلى المتجر",
+    "errors": {
+      "nameTooShort": "يرجى إدخال الاسم الكامل (حرفان على الأقل)",
+      "emailInvalid": "عنوان بريد إلكتروني غير صالح",
+      "phoneTooShort": "رقم هاتف غير صالح",
+      "addressRequired": "يرجى إدخال عنوان للتوصيل",
+      "cityRequired": "يرجى إدخال مدينة للتوصيل",
+      "rateLimited": "عدد محاولات كبير جدًا. حاول مرة أخرى بعد دقائق قليلة.",
+      "invalidInput": "البيانات المُدخلة غير صالحة.",
+      "emptyCart": "السلة فارغة أو أن البيانات المُرسلة غير صالحة.",
+      "productUnavailable": "أحد المنتجات في سلتك لم يعد متوفرًا.",
+      "insufficientStock": "لا توجد كمية كافية من \"{name}\".",
+      "paymentInitFailed": "فشل بدء عملية الدفع. حاول مرة أخرى."
+    },
+    "mockPay": {
+      "title": "محاكاة دفع (وضع التطوير)",
+      "description": "هذه صفحة دفع وهمية للاختبار فقط — لا يوجد خصم حقيقي.",
+      "orderLabel": "رقم الطلب",
+      "amountLabel": "المبلغ المستحق",
+      "successButton": "محاكاة دفع ناجح",
+      "failureButton": "محاكاة دفع فاشل",
+      "processing": "جارٍ المعالجة..."
+    },
+    "success": {
+      "title": "تم استلام الدفع بنجاح",
+      "description": "شكرًا لشرائك! تم استلام طلبك وهو قيد المعالجة.",
+      "orderNumberLabel": "رقم الطلب",
+      "backToShop": "العودة إلى المتجر",
+      "viewOrders": "عرض طلباتي"
+    },
+    "cancel": {
+      "title": "لم تكتمل عملية الدفع",
+      "description": "تم إلغاء الدفع أو فشل. يمكنك المحاولة مرة أخرى.",
+      "retry": "حاول مرة أخرى",
+      "backToShop": "العودة إلى المتجر"
+    },
+    "processing": {
+      "title": "جارٍ التحقق من حالة الدفع...",
+      "description": "الدفع قيد المعالجة حاليًا. حدّث الصفحة أو تحقق من طلباتك بعد قليل."
+    },
+    "notFound": {
+      "title": "الطلب غير موجود",
+      "description": "لم نتمكن من العثور على طلب بهذا الرقم."
+    }
+  },
+  "orders": {
+    "title": "طلباتي",
+    "inProgressTitle": "قيد التنفيذ",
+    "completedTitle": "مكتملة",
+    "emptyState": "ليس لديك أي طلبات بعد.",
+    "viewDetails": "عرض التفاصيل",
+    "backToAccount": "العودة إلى حسابي",
+    "backToOrders": "العودة إلى طلباتي",
+    "status": {
+      "PENDING": "بانتظار الدفع",
+      "PAID": "تم الدفع",
+      "FULFILLED": "جاهز/تم الشحن",
+      "COMPLETED": "مكتمل",
+      "CANCELLED": "ملغى",
+      "FAILED": "فشل"
+    },
+    "detail": {
+      "title": "تفاصيل الطلب",
+      "orderNumberLabel": "رقم الطلب",
+      "statusLabel": "الحالة",
+      "itemsTitle": "المنتجات",
+      "quantityLabel": "الكمية",
+      "subtotalLabel": "المجموع الفرعي",
+      "shippingLabel": "التوصيل",
+      "totalLabel": "الإجمالي",
+      "deliveryMethodLabel": "طريقة الاستلام",
+      "addressTitle": "عنوان التوصيل",
+      "paymentStatusLabel": "حالة الدفع",
+      "paymentStatus": {
+        "PENDING": "بانتظار",
+        "SUCCEEDED": "تم الدفع بنجاح",
+        "FAILED": "فشل",
+        "REFUNDED": "تم الاسترداد",
+        "PARTIALLY_REFUNDED": "استرداد جزئي"
+      }
+    },
+    "lookup": {
+      "title": "تحقق من حالة الطلب",
+      "description": "أدخل رقم الطلب وكود التتبع الذي استلمته بالبريد الإلكتروني.",
+      "orderNumberLabel": "رقم الطلب",
+      "tokenLabel": "كود التتبع",
+      "submit": "تحقق",
+      "submitting": "جارٍ التحقق...",
+      "notFound": "لم يتم العثور على طلب مطابق لهذه التفاصيل.",
+      "errors": {
+        "orderNumberRequired": "يرجى إدخال رقم الطلب",
+        "tokenRequired": "يرجى إدخال كود التتبع",
+        "rateLimited": "عدد محاولات كبير جدًا. حاول مرة أخرى بعد دقائق قليلة."
+      }
+    }
   }
 }

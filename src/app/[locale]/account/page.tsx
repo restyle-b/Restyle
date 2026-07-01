@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { Link } from "@/i18n/navigation";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -37,7 +40,10 @@ export default async function AccountPage() {
         </div>
       </dl>
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-wrap gap-4">
+        <Link href="/account/orders" className={cn(buttonVariants({ size: "lg" }))}>
+          ההזמנות שלי
+        </Link>
         <SignOutButton />
       </div>
     </Container>

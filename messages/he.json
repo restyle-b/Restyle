@@ -5,6 +5,7 @@
   },
   "nav": {
     "about": "אודות",
+    "shop": "חנות",
     "services": "שירותים",
     "academy": "אקדמיה",
     "gallery": "גלריה",
@@ -14,6 +15,8 @@
     "mainAria": "ניווט ראשי",
     "footerAria": "ניווט תחתון",
     "bookingCta": "קביעת תור",
+    "account": "אזור אישי",
+    "accountAria": "כניסה לאזור האישי",
     "openAria": "פתיחת תפריט",
     "closeAria": "סגירת תפריט",
     "themeDay": "יום",
@@ -22,6 +25,12 @@
   },
   "footer": {
     "navHeading": "ניווט",
+    "accountHeading": "אזור אישי",
+    "accountAria": "קישורי חשבון",
+    "login": "התחברות",
+    "register": "הרשמה",
+    "myOrders": "ההזמנות שלי",
+    "orderLookup": "מעקב הזמנה",
     "bookingHeading": "קביעת תור",
     "bookingText": "קביעת תור מתבצעת באפליקציית ReStyle.",
     "downloadApp": "להורדת האפליקציה ←",
@@ -56,6 +65,11 @@
     "academyTitle": "למדו את המקצוע מהמיטב",
     "academyDescription": "קורסים מקצועיים בעיצוב שיער ועיצוב זקן, מההתחלה ועד רמת מומחה — בהדרכת הצוות המוביל שלנו.",
     "allCoursesCta": "לכל הקורסים",
+    "shopEyebrow": "החנות שלנו",
+    "shopTitle": "מוצרים נבחרים",
+    "shopDescription": "מוצרי הטיפוח שאנחנו עובדים ומאמינים בהם — עכשיו זמינים גם לבית.",
+    "shopCta": "לחנות המלאה",
+    "shopOutOfStock": "אזל המלאי",
     "aboutImageLabel": "תמונת הסטודיו",
     "studioFeatureLighting": "תאורה מקצועית",
     "studioFeatureChairs": "כיסאות פרימיום",
@@ -349,5 +363,150 @@
     "resetButton": "איפוס הגדרות",
     "statementLink": "הצהרת נגישות ←",
     "openAria": "פתיחת תפריט נגישות"
+  },
+  "shop": {
+    "metaTitle": "חנות",
+    "metaDescription": "מוצרי טיפוח מקצועיים למספרה — שמפו, שמן זקן, כלים ואביזרים.",
+    "eyebrow": "מוצרים נבחרים",
+    "title": "החנות שלנו",
+    "emptyState": "אין מוצרים זמינים כרגע.",
+    "addToCart": "הוספה לעגלה",
+    "outOfStock": "אזל המלאי",
+    "viewProduct": "צפייה במוצר",
+    "allCategories": "הכל",
+    "priceLabel": "מחיר",
+    "backToShop": "חזרה לחנות",
+    "inStock": "במלאי · אספקה מהירה"
+  },
+  "cart": {
+    "title": "עגלת קניות",
+    "empty": "העגלה שלך ריקה.",
+    "continueShopping": "המשך בקנייה",
+    "quantityLabel": "כמות",
+    "remove": "הסרה",
+    "subtotal": "סכום ביניים",
+    "checkoutCta": "מעבר לתשלום",
+    "itemAdded": "נוסף לעגלה",
+    "cartAria": "עגלת קניות"
+  },
+  "checkout": {
+    "metaTitle": "תשלום",
+    "metaDescription": "השלמת הזמנה ותשלום.",
+    "title": "השלמת הזמנה",
+    "contactTitle": "פרטי יצירת קשר",
+    "nameLabel": "שם מלא",
+    "emailLabel": "אימייל",
+    "phoneLabel": "טלפון",
+    "companyLabel": "חברה",
+    "deliveryTitle": "אופן קבלה",
+    "deliveryPickup": "איסוף עצמי",
+    "deliveryDelivery": "משלוח עד הבית",
+    "addressLineLabel": "כתובת",
+    "addressCityLabel": "עיר",
+    "addressNotesLabel": "הערות למשלוח (אופציונלי)",
+    "summaryTitle": "סיכום הזמנה",
+    "subtotalLabel": "סכום ביניים",
+    "shippingLabel": "משלוח",
+    "shippingFree": "ללא עלות",
+    "totalLabel": "סה\"כ לתשלום",
+    "submit": "מעבר לתשלום",
+    "submitting": "מעבד...",
+    "emptyCartTitle": "העגלה שלך ריקה",
+    "emptyCartDescription": "אין אפשרות להשלים תשלום על עגלה ריקה.",
+    "backToShop": "חזרה לחנות",
+    "errors": {
+      "nameTooShort": "יש להזין שם מלא (לפחות 2 תווים)",
+      "emailInvalid": "כתובת אימייל לא תקינה",
+      "phoneTooShort": "מספר טלפון לא תקין",
+      "addressRequired": "יש להזין כתובת למשלוח",
+      "cityRequired": "יש להזין עיר למשלוח",
+      "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.",
+      "invalidInput": "הנתונים שהוזנו אינם תקינים.",
+      "emptyCart": "העגלה ריקה או שהנתונים שנשלחו אינם תקינים.",
+      "productUnavailable": "אחד המוצרים בעגלה כבר אינו זמין.",
+      "insufficientStock": "אין מספיק מלאי עבור \"{name}\".",
+      "paymentInitFailed": "פתיחת התשלום נכשלה. נסו שוב."
+    },
+    "mockPay": {
+      "title": "סימולציית תשלום (מצב פיתוח)",
+      "description": "זהו עמוד תשלום מדומה לבדיקות בלבד — אין חיוב אמיתי.",
+      "orderLabel": "מספר הזמנה",
+      "amountLabel": "סכום לתשלום",
+      "successButton": "סימולציית תשלום מוצלח",
+      "failureButton": "סימולציית תשלום נכשל",
+      "processing": "מעבד..."
+    },
+    "success": {
+      "title": "התשלום התקבל בהצלחה",
+      "description": "תודה על הרכישה! ההזמנה שלך התקבלה ונמצאת בטיפול.",
+      "orderNumberLabel": "מספר הזמנה",
+      "backToShop": "חזרה לחנות",
+      "viewOrders": "צפייה בהזמנות שלי"
+    },
+    "cancel": {
+      "title": "התשלום לא הושלם",
+      "description": "התשלום בוטל או נכשל. ניתן לנסות שוב.",
+      "retry": "נסה שוב",
+      "backToShop": "חזרה לחנות"
+    },
+    "processing": {
+      "title": "בבדיקת סטטוס התשלום...",
+      "description": "התשלום מעובד כרגע. אפשר לרענן את העמוד או לבדוק בהיסטוריית ההזמנות בעוד רגע."
+    },
+    "notFound": {
+      "title": "ההזמנה לא נמצאה",
+      "description": "לא הצלחנו לאתר הזמנה עם המספר הזה."
+    }
+  },
+  "orders": {
+    "title": "ההזמנות שלי",
+    "inProgressTitle": "בביצוע",
+    "completedTitle": "הושלמו",
+    "emptyState": "עדיין אין לך הזמנות.",
+    "viewDetails": "צפייה בפרטים",
+    "backToAccount": "חזרה לאזור האישי",
+    "backToOrders": "חזרה להזמנות שלי",
+    "status": {
+      "PENDING": "ממתין לתשלום",
+      "PAID": "שולם",
+      "FULFILLED": "מוכן/נשלח",
+      "COMPLETED": "הושלם",
+      "CANCELLED": "בוטל",
+      "FAILED": "נכשל"
+    },
+    "detail": {
+      "title": "פרטי הזמנה",
+      "orderNumberLabel": "מספר הזמנה",
+      "statusLabel": "סטטוס",
+      "itemsTitle": "פריטים",
+      "quantityLabel": "כמות",
+      "subtotalLabel": "סכום ביניים",
+      "shippingLabel": "משלוח",
+      "totalLabel": "סה\"כ",
+      "deliveryMethodLabel": "אופן קבלה",
+      "addressTitle": "כתובת למשלוח",
+      "paymentStatusLabel": "סטטוס תשלום",
+      "paymentStatus": {
+        "PENDING": "ממתין",
+        "SUCCEEDED": "שולם בהצלחה",
+        "FAILED": "נכשל",
+        "REFUNDED": "זוכה",
+        "PARTIALLY_REFUNDED": "זוכה חלקית"
+      }
+    },
+    "lookup": {
+      "title": "בדיקת סטטוס הזמנה",
+      "description": "הזינו את מספר ההזמנה ואת קוד המעקב שקיבלתם באימייל.",
+      "orderNumberLabel": "מספר הזמנה",
+      "tokenLabel": "קוד מעקב",
+      "submit": "בדיקה",
+      "submitting": "בודק...",
+      "notFound": "לא נמצאה הזמנה עם הפרטים שהוזנו.",
+      "errors": {
+        "orderNumberRequired": "יש להזין מספר הזמנה",
+        "tokenRequired": "יש להזין קוד מעקב",
+        "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות."
+      }
+    }
   }
 }

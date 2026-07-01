@@ -12,7 +12,7 @@ const LOCALE_PREFIXES = ["/en", "/ar"];
 // נתיבים שחיים מחוץ לתיקיית [locale] (אינם מתורגמים) — אסור להעביר אותם
 // ל-next-intl, אחרת הוא ממפה אותם פנימית לנתיב עם locale (למשל "/admin" -> "/he/admin")
 // שלא קיים בפועל ב-App Router, וזה מחזיר 404.
-const NON_LOCALIZED_PREFIXES = ["/admin", "/auth"];
+const NON_LOCALIZED_PREFIXES = ["/admin", "/auth", "/api"];
 
 function splitLocale(pathname: string) {
   const prefix = LOCALE_PREFIXES.find((p) => pathname === p || pathname.startsWith(`${p}/`));

@@ -8,6 +8,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
 import { Wordmark } from "@/components/wordmark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { CartIconLink } from "@/components/cart/cart-icon-link";
+import { AccountIconLink } from "@/components/account/account-icon-link";
 import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { navLinks } from "@/lib/config";
@@ -91,6 +93,8 @@ export function SiteHeader() {
             ariaLabel={t("themeToggleAria")}
           />
           <LocaleSwitcher className="hidden md:inline-flex" />
+          <AccountIconLink />
+          <CartIconLink />
           <BookingLink className={buttonVariants({ size: "sm", variant: "light" })}>
             {t("bookingCta")}
           </BookingLink>

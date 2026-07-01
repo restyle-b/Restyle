@@ -5,6 +5,7 @@
   },
   "nav": {
     "about": "About",
+    "shop": "Shop",
     "services": "Services",
     "academy": "Academy",
     "gallery": "Gallery",
@@ -14,6 +15,8 @@
     "mainAria": "Main navigation",
     "footerAria": "Footer navigation",
     "bookingCta": "Book Now",
+    "account": "My Account",
+    "accountAria": "Go to my account",
     "openAria": "Open menu",
     "closeAria": "Close menu",
     "themeDay": "Day",
@@ -22,6 +25,12 @@
   },
   "footer": {
     "navHeading": "Navigation",
+    "accountHeading": "My Account",
+    "accountAria": "Account links",
+    "login": "Log in",
+    "register": "Sign up",
+    "myOrders": "My orders",
+    "orderLookup": "Track order",
     "bookingHeading": "Book Now",
     "bookingText": "Booking is done through the ReStyle app.",
     "downloadApp": "Download the app ←",
@@ -56,6 +65,11 @@
     "academyTitle": "Learn the craft from the best",
     "academyDescription": "Professional courses in hairstyling and beard design, from beginner to expert level — led by our top team.",
     "allCoursesCta": "All Courses",
+    "shopEyebrow": "Our Shop",
+    "shopTitle": "Selected Products",
+    "shopDescription": "The grooming products we use and believe in — now available to take home.",
+    "shopCta": "Visit the shop",
+    "shopOutOfStock": "Out of stock",
     "aboutImageLabel": "Studio photo",
     "studioFeatureLighting": "Professional lighting",
     "studioFeatureChairs": "Premium chairs",
@@ -349,5 +363,150 @@
     "resetButton": "Reset Settings",
     "statementLink": "Accessibility statement ←",
     "openAria": "Open accessibility menu"
+  },
+  "shop": {
+    "metaTitle": "Shop",
+    "metaDescription": "Professional barbershop grooming products — shampoo, beard oil, tools and accessories.",
+    "eyebrow": "Selected Products",
+    "title": "Our Shop",
+    "emptyState": "No products available right now.",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of stock",
+    "viewProduct": "View product",
+    "allCategories": "All",
+    "priceLabel": "Price",
+    "backToShop": "Back to shop",
+    "inStock": "In stock · fast delivery"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty.",
+    "continueShopping": "Continue shopping",
+    "quantityLabel": "Quantity",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "checkoutCta": "Proceed to checkout",
+    "itemAdded": "Added to cart",
+    "cartAria": "Shopping cart"
+  },
+  "checkout": {
+    "metaTitle": "Checkout",
+    "metaDescription": "Complete your order and payment.",
+    "title": "Checkout",
+    "contactTitle": "Contact details",
+    "nameLabel": "Full name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "companyLabel": "Company",
+    "deliveryTitle": "Delivery method",
+    "deliveryPickup": "Store pickup",
+    "deliveryDelivery": "Home delivery",
+    "addressLineLabel": "Address",
+    "addressCityLabel": "City",
+    "addressNotesLabel": "Delivery notes (optional)",
+    "summaryTitle": "Order summary",
+    "subtotalLabel": "Subtotal",
+    "shippingLabel": "Shipping",
+    "shippingFree": "Free",
+    "totalLabel": "Total",
+    "submit": "Proceed to payment",
+    "submitting": "Processing...",
+    "emptyCartTitle": "Your cart is empty",
+    "emptyCartDescription": "You can't check out with an empty cart.",
+    "backToShop": "Back to shop",
+    "errors": {
+      "nameTooShort": "Please enter your full name (at least 2 characters)",
+      "emailInvalid": "Invalid email address",
+      "phoneTooShort": "Invalid phone number",
+      "addressRequired": "Please enter a delivery address",
+      "cityRequired": "Please enter a delivery city",
+      "rateLimited": "Too many attempts. Please try again in a few minutes.",
+      "invalidInput": "The submitted data is invalid.",
+      "emptyCart": "Your cart is empty or the submitted data is invalid.",
+      "productUnavailable": "One of the items in your cart is no longer available.",
+      "insufficientStock": "Not enough stock for \"{name}\".",
+      "paymentInitFailed": "Failed to start payment. Please try again."
+    },
+    "mockPay": {
+      "title": "Simulated payment (dev mode)",
+      "description": "This is a mock payment page for testing only — no real charge.",
+      "orderLabel": "Order number",
+      "amountLabel": "Amount due",
+      "successButton": "Simulate successful payment",
+      "failureButton": "Simulate failed payment",
+      "processing": "Processing..."
+    },
+    "success": {
+      "title": "Payment received",
+      "description": "Thank you for your purchase! Your order has been received and is being processed.",
+      "orderNumberLabel": "Order number",
+      "backToShop": "Back to shop",
+      "viewOrders": "View my orders"
+    },
+    "cancel": {
+      "title": "Payment not completed",
+      "description": "The payment was cancelled or failed. You can try again.",
+      "retry": "Try again",
+      "backToShop": "Back to shop"
+    },
+    "processing": {
+      "title": "Checking payment status...",
+      "description": "Your payment is still being processed. Refresh this page or check your order history shortly."
+    },
+    "notFound": {
+      "title": "Order not found",
+      "description": "We couldn't find an order with this number."
+    }
+  },
+  "orders": {
+    "title": "My Orders",
+    "inProgressTitle": "In progress",
+    "completedTitle": "Completed",
+    "emptyState": "You don't have any orders yet.",
+    "viewDetails": "View details",
+    "backToAccount": "Back to my account",
+    "backToOrders": "Back to my orders",
+    "status": {
+      "PENDING": "Awaiting payment",
+      "PAID": "Paid",
+      "FULFILLED": "Ready/shipped",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "FAILED": "Failed"
+    },
+    "detail": {
+      "title": "Order details",
+      "orderNumberLabel": "Order number",
+      "statusLabel": "Status",
+      "itemsTitle": "Items",
+      "quantityLabel": "Quantity",
+      "subtotalLabel": "Subtotal",
+      "shippingLabel": "Shipping",
+      "totalLabel": "Total",
+      "deliveryMethodLabel": "Delivery method",
+      "addressTitle": "Delivery address",
+      "paymentStatusLabel": "Payment status",
+      "paymentStatus": {
+        "PENDING": "Pending",
+        "SUCCEEDED": "Paid successfully",
+        "FAILED": "Failed",
+        "REFUNDED": "Refunded",
+        "PARTIALLY_REFUNDED": "Partially refunded"
+      }
+    },
+    "lookup": {
+      "title": "Check order status",
+      "description": "Enter your order number and the tracking code you received by email.",
+      "orderNumberLabel": "Order number",
+      "tokenLabel": "Tracking code",
+      "submit": "Check",
+      "submitting": "Checking...",
+      "notFound": "No order found matching those details.",
+      "errors": {
+        "orderNumberRequired": "Please enter an order number",
+        "tokenRequired": "Please enter a tracking code",
+        "rateLimited": "Too many attempts. Please try again in a few minutes."
+      }
+    }
   }
 }

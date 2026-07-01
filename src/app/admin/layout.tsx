@@ -20,6 +20,9 @@ const NAV_LINKS = [
   { href: "/admin/testimonials", label: "המלצות" },
   { href: "/admin/gallery", label: "גלריה" },
   { href: "/admin/content", label: "טקסטי האתר" },
+  { href: "/admin/products", label: "מוצרים" },
+  { href: "/admin/categories", label: "קטגוריות" },
+  { href: "/admin/orders", label: "הזמנות" },
 ] as const;
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

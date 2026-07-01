@@ -9,10 +9,12 @@ import { Reveal } from "@/components/reveal";
 import { BookingLink } from "@/components/booking-link";
 import { ScissorsScrollIndicator } from "@/components/scissors-scroll-indicator";
 import { CutLineDivider } from "@/components/cut-line-divider";
+import { ProductCard } from "@/components/shop/product-card";
 import { siteConfig } from "@/lib/config";
 import { getServices } from "@/lib/content/get-services";
 import { getTestimonials } from "@/lib/content/get-testimonials";
 import { getGalleryImages } from "@/lib/content/get-gallery";
+import { getProducts } from "@/lib/content/get-products";
 
 export default async function HomePage({
   params,
@@ -26,6 +28,7 @@ export default async function HomePage({
   const services = await getServices(locale);
   const testimonials = await getTestimonials(locale);
   const galleryImages = await getGalleryImages(locale);
+  const featuredProducts = (await getProducts(locale)).slice(0, 4);
   return (
     <>
       {/*
@@ -143,6 +146,39 @@ export default async function HomePage({
           </Reveal>
         </Container>
       </section>
+
+      {/* חנות — מוצרים נבחרים (מוצג רק כשיש מוצרים; קטלוג ריק מסתיר את הסקציה) */}
+      {featuredProducts.length > 0 && (
+        <section className="bg-ink relative overflow-hidden py-16 sm:py-24">
+          <div className="glow-orb inset-x-0 -top-24 mx-auto h-72 w-72" aria-hidden="true" />
+          <Container className="relative">
+            <Reveal>
+              <SectionHeading
+                center
+                light
+                cut
+                eyebrow={t("shopEyebrow")}
+                title={t("shopTitle")}
+                description={t("shopDescription")}
+                className="mx-auto"
+              />
+            </Reveal>
+            <CutLineDivider tone="dark" className="mx-auto mt-10 max-w-md" />
+            <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
+              {featuredProducts.map((product, i) => (
+                <Reveal key={product.id} delay={i * 70}>
+                  <ProductCard product={product} locale={locale} outOfStockLabel={t("shopOutOfStock")} />
+                </Reveal>
+              ))}
+            </div>
+            <Reveal className="mt-12 flex justify-center">
+              <Link href="/shop" className={buttonVariants({ size: "lg", variant: "light" })}>
+                {t("shopCta")}
+              </Link>
+            </Reveal>
+          </Container>
+        </section>
+      )}
 
       {/* אודות תקציר */}
       <section className="bg-ink">
