@@ -33,8 +33,12 @@ async function fetchProducts() {
   }
 }
 
+// revalidate: הקטלוג נערך דרך האדמין (שמפעיל revalidateTag מיידית), אבל
+// גם מתרענן לבד כל 5 דק' — כך ששינוי ישיר ב-DB (seed/מיגרציה) מופיע באתר
+// בלי צורך ב-redeploy או פעולת אדמין.
 const cachedFetchProducts = unstable_cache(fetchProducts, ["products-list"], {
   tags: [PRODUCTS_TAG],
+  revalidate: 300,
 });
 
 /**

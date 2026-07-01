@@ -22,6 +22,7 @@ async function fetchCategories() {
 
 const cachedFetchCategories = unstable_cache(fetchCategories, ["categories-list"], {
   tags: [CATEGORIES_TAG],
+  revalidate: 300,
 });
 
 export async function getCategories(locale: string): Promise<CategoryItem[]> {
