@@ -1,14 +1,30 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { siteSettingsSchema, openingHoursSchema } from "@/lib/admin/site-settings-schema";
+import { SITE_SETTINGS_TAG } from "@/lib/content/get-site-settings";
+import { routing } from "@/i18n/routing";
 
 export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
 function toNullable(value: string | undefined) {
   return value && value.length > 0 ? value : null;
+}
+
+// עמודים ציבוריים שקוראים SiteSettings ישירות (ראה get-site-settings.ts) —
+// חייבים revalidatePath מיידי מעבר ל-tag, כי חלקם force-static (מטמון build).
+const PUBLIC_PATHS = ["/", "/contact", "/terms", "/privacy", "/accessibility", "/locations"];
+
+function revalidatePublicPaths() {
+  revalidateTag(SITE_SETTINGS_TAG);
+  for (const locale of routing.locales) {
+    const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+    for (const path of PUBLIC_PATHS) {
+      revalidatePath(path === "/" ? prefix || "/" : `${prefix}${path}`);
+    }
+  }
 }
 
 export async function getSiteSettings() {
@@ -52,6 +68,7 @@ export async function updateSiteSettings(input: unknown): Promise<AdminActionRes
     },
   });
 
+  revalidatePublicPaths();
   revalidatePath("/admin/settings");
   return { ok: true };
 }

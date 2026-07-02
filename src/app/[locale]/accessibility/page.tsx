@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { siteConfig } from "@/lib/config";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 
 export const dynamic = "force-static";
 
@@ -17,14 +17,19 @@ export async function generateMetadata({
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
-export default function AccessibilityPage() {
-  const t = useTranslations("accessibility");
+export default async function AccessibilityPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "accessibility" });
   const items = t.raw("items") as string[];
-  const { phone, email } = siteConfig.contact;
+  const { phone, email } = await getSiteContactInfo();
 
   return (
     <Container className="py-20">
-      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
+      <SectionHeading as="h1" light eyebrow={t("eyebrow")} title={t("title")} />
 
       <div className="mt-10 max-w-3xl space-y-8 text-neutral-300">
         <p>{t("intro")}</p>

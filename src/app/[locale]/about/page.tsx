@@ -21,7 +21,7 @@ export default function AboutPage() {
   const t = useTranslations("about");
   return (
     <Container className="py-20">
-      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
+      <SectionHeading as="h1" light eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
 
       <div className="mt-12 grid items-start gap-12 lg:grid-cols-2">
         <ImagePlaceholder label={t("teamImageLabel")} className="aspect-[4/3] rounded-lg" />

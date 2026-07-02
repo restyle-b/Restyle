@@ -26,7 +26,7 @@ export default async function ServicesPage({
   const services = await getServices(locale);
   return (
     <Container className="py-20">
-      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
+      <SectionHeading as="h1" light eyebrow={t("eyebrow")} title={t("title")} />
 
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (

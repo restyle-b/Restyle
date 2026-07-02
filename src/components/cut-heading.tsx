@@ -17,10 +17,14 @@ import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 export function CutHeading({
   title,
   className,
+  as = "h2",
 }: {
   title: string;
   className?: string;
+  /** רמת הכותרת הסמנטית — ראה SectionHeading */
+  as?: "h1" | "h2";
 }) {
+  const HeadingTag = as;
   const ref = useRef<HTMLHeadingElement>(null);
   const [cut, setCut] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
@@ -46,8 +50,8 @@ export function CutHeading({
   }, [reducedMotion]);
 
   return (
-    <h2 ref={ref} className={cn("cut-title", cut && "is-cut", className)}>
+    <HeadingTag ref={ref} className={cn("cut-title", cut && "is-cut", className)}>
       <span className="cut-title__text">{title}</span>
-    </h2>
+    </HeadingTag>
   );
 }

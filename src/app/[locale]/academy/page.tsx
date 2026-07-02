@@ -30,7 +30,7 @@ export default async function AcademyPage({
     <div className="relative overflow-hidden">
       <div className="glow-orb start-0 -top-20 h-80 w-80" aria-hidden="true" />
       <Container className="relative py-20">
-        <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
+        <SectionHeading as="h1" light eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
 
         <div className="mt-12 grid items-start gap-12 lg:grid-cols-2">
           <div className="lg:sticky lg:top-28">

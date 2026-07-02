@@ -159,7 +159,7 @@ push (תוקן — קודם לא רץ כלל בגלל branch לא קיים ב-co
 לכל שדה (ריק → fallback לעברית בתצוגה הציבורית). ממשק ה-Admin עצמו בעברית
 קבועה, מחוץ לניתוב `[locale]`. מודל הנתונים המלא + חוזה ה-actions + קריטריוני
 הקבלה מתועדים ב-`docs/ARCHITECTURE.md §5.1`. מחולק ל-5 תתי-שלבים:
-- [ ] 🔄 **Phase 8.1 — תשתית Admin + Site Settings** (build 2026-06-22):
+- [x] ✅ **Phase 8.1 — תשתית Admin + Site Settings** (build 2026-06-22, הושלם 2026-07-02):
       - [x] ✅ מיגרציית Prisma (`SiteSettings`, `OpeningHour`) — `prisma/migrations/
             20260622000000_admin_site_settings` (כולל RLS: select פתוח, write
             ל-`ADMIN` בלבד). ⚠️ דורש הרצה ידנית ב-Supabase SQL Editor (כמו
@@ -173,12 +173,28 @@ push (תוקן — קודם לא רץ כלל בגלל branch לא קיים ב-co
       - [x] ✅ CRUD לפרטי קשר/שעות פתיחה (`/admin/settings`) — server actions
             עם zod + `requireAdmin()` בכל action בנפרד (defense in depth).
       - [x] ✅ `npm run lint && tsc --noEmit && npm test && npm run build` ירוקים.
-      - [ ] ⬜ **נותר**: חיבור `/contact`+footer+home לקרוא מה-DB (fallback
-            ל-`siteConfig` אם ריק) — נדחה לצעד הבא (מספר קריאות, ~10 קבצים
-            תלויים ב-`siteConfig.contact`/`getContactLinks`), כדי לא לערבב
-            שינוי רחב בעמודים ציבוריים בלי בדיקה נפרדת.
-      - [ ] ⬜ **נותר**: הרצת `security`+`qa` סקילים פורמלית על קוד ה-admin
-            (התשתית בנויה לפי checklist האבטחה, אך לא רץ סקיל ייעודי עדיין).
+      - [x] ✅ **חיבור פרטי קשר ל-DB** (2026-07-02): נוצר
+            `lib/content/get-site-settings.ts` (אותו דפוס כמו `get-services.ts`
+            — `unstable_cache`+tag+`revalidate:300`, fallback ל-`siteConfig`
+            אם ה-DB ריק/לא נגיש). חוברו 6 עמודים ציבוריים
+            (`home`/`contact`/`terms`/`privacy`/`accessibility`/`locations`)
+            + `contact-links.ts` (עודכן לקבל את פרטי הקשר כפרמטר במקום לייבא
+            `siteConfig` ישירות) + `FloatingContact`/`ContactActions` (הומרו
+            ל-Server Components אסינכרוניים עם `getTranslations`/`getLocale`
+            מ-`next-intl/server` במקום `useTranslations`/`useLocale`, כי
+            `react-hooks/rules-of-hooks` חוסם קריאת "hook" בתוך async
+            function). `updateSiteSettings` קורא כעת גם `revalidateTag`+
+            `revalidatePath` לכל locale (כמו הדפוס ב-`services.ts`).
+      - [x] ✅ **סקיל `security` על קוד `/admin/settings`** (2026-07-02):
+            נסקרו action+schema — `requireAdmin()` בכל action, ולידציית zod
+            עם allowlist תווים לטלפון (`[\d+\-() ]`) ו-allowlist protocol
+            ל-URL-ים (http/https בלבד דרך `new URL()`, מונע `javascript:`
+            stored-XSS), singleton בטוח (`id=1` קבוע — אין IDOR). **0
+            ממצאים חדשים**. בנוסף בוצעה בדיקת רענון ל-security headers
+            (`next.config.ts` — CSP/HSTS/COOP/Permissions-Policy מקיפים,
+            ללא שינוי נדרש) וכיסוי rate-limit על טפסים ציבוריים בענף זה
+            (`auth.ts`/`contact.ts` — שניהם מוגנים; אין endpoints נוספים
+            ב-`main` בשלב זה).
 - [ ] 🔄 **Phase 8.2+8.3+8.4 — שירותים/קורסים/המלצות/גלריה/טקסטי שיווק-משפטי**
       (build 2026-06-23, יחד לפי בקשת המשתמש):
       - [x] ✅ מיגרציית Prisma אחת ל-5 המודלים (`Service`/`Course`/`Testimonial`/
@@ -227,8 +243,10 @@ push (תוקן — קודם לא רץ כלל בגלל branch לא קיים ב-co
             fallback) — **עדיין נותר** (ראה פריט נפרד).
       - [x] ✅ עדכון `docs/ARCHITECTURE.md §5.1` עם הסטייה (`imageUrl`)
             וארכיטקטורת המיזוג ב-`request.ts` + שכבת `get-*.ts` (2026-06-23).
-      - [ ] ⬜ **נותר**: הרצת סקיל `security` פורמלית (checklist מלא) על קוד
-            ה-admin/CRUD החדש.
+      - [x] ✅ סקיל `security` פורמלי על קוד ה-admin/CRUD החדש — בוצע בפועל
+            **2026-06-23** (ראה רשומת Session Log "סקיל `security` פורמלי
+            על Admin CMS (Phase 8.2-8.4)" — 0 Critical/High/Medium). צ'קבוקס
+            זה נשאר פתוח בטעות אחרי אותה רשומה; מסומן כעת בהתאם למצב בפועל.
 - [x] 🚫 **Phase 8.5 — ניהול משתמשים/הרשאות — בוטל לפי בקשת המשתמש** (2026-06-23:
       "אני לא רוצה לתת הרשאה לאף אחד"). **לא יבנה UI לשינוי `role`** — admin יחיד
       (העסק עצמו) שמוענק ורק ידנית דרך `scripts/promote-business-admin.sql`
@@ -398,10 +416,18 @@ push (תוקן — קודם לא רץ כלל בגלל branch לא קיים ב-co
 | 2026-07-01 | **תיקון באג: תמונת ה-Hero מהבהבת עם "עצירת אנימציות"** (דיווח המשתמש: "מצאתי באג — כשלוחצים על עצירת אנימציות תמונת hero מרצדת"). **אבחון**: `.a11y-no-motion` ב-`globals.css` איפס את `animation-duration` כמעט לאפס אבל לא את `animation-iteration-count` (בניגוד למדיה `prefers-reduced-motion` הסמוכה שכן איפסה את שניהם) — אנימציית `hero-zoom` (`22s infinite alternate`, זום עדין על תמונת ה-Hero) המשיכה ללולאה אינסופית, ובמשך כמעט-אפס גרמה להבהוב מהיר בין `scale(1)` ל-`scale(1.08)`. הבאג השפיע על כל אנימציית `infinite` באתר (גם `.animate-float`, קליק המספריים, `pulse-ring`), לא רק ה-Hero. **תיקון**: שורה אחת — נוסף `animation-iteration-count: 1 !important;` לכלל `.a11y-no-motion`. **אימות**: הורץ build+server מקומי, ונשלחו פקודות CDP ל-Chrome אמיתי (headless) שמדמות בדיוק את מה שהווידג'ט עושה (כתיבת `localStorage["restyle-a11y"]` עם `noMotion:true` + reload) — אומת ש-`animationIterationCount` הפך ל-`"1"`, וש-`transform` של אלמנט ה-Hero זהה בשני צילומי מצב 300ms זה מזה (יציב, לא מתנדנד). אומת גם שאנימציות כניסה עם `fill-mode:both` (למשל `fade-up`) עדיין נשארות במצב הסופי הגלוי (`opacity:1`, `transform:none`) כרגיל. `typecheck`/`lint`/`test` ירוקים. נדחף ל-`main` (commit `095441f`). | אין פעולה נדרשת — הבאג סגור. שאר הפריטים הפתוחים ללא שינוי. |
 | 2026-07-01 | **תיקון נוסף לאותו נושא: "עצירת אנימציות" לא חשף תוכן שלא נגלל אליו** (דיווח המשתמש בהמשך: "בעצירת אנימציות אני מצפה לראות אתר סטטי (מת) שכל הדברים כבר נמצאים ולא מתווספים עם הגלילה"). **אבחון**: מעבר לתיקון ה-CSS הקודם (אנימציות לולאה), 4 רכיבי scroll-reveal מבוססי `IntersectionObserver` — `Reveal`, `ScrollFeature`, `CutHeading`, `CutLineDivider` — בדקו רק את `prefers-reduced-motion` ברמת מערכת ההפעלה, פעם אחת ב-mount, ולא ידעו כלל על ה-toggle הידני בתפריט הנגישות (`class a11y-no-motion` על ה-`html`, מוחל בלי רענון דף). תוצאה: אחרי הפעלת "עצירת אנימציות", כל תוכן שעדיין לא נכנס לאזור הצפייה נשאר מוסתר (`opacity-0`/`clip-path`) עד שגוללים אליו בפועל — בדיוק ההפך מהציפייה לאתר סטטי שהכל כבר גלוי. **תיקון**: נוסף hook משותף `usePrefersReducedMotion` (`src/lib/use-prefers-reduced-motion.ts`) שבודק גם `matchMedia` וגם `document.documentElement.classList.contains("a11y-no-motion")`, ומגיב בזמן אמת ל-`MutationObserver` על ה-`class` (כך שגם toggle חי, בלי רענון, מתעדכן). 4 הרכיבים עודכנו להשתמש בו: כשמצב הצמצום פעיל הם חושפים/מאפסים מיד (`setVisible(true)`/`setCut(true)`/`setCutting(false)`) במקום להמתין ל-observer. **אימות**: Chrome אמיתי (headless CDP) — לפני הפעלה: 32 אלמנטים מתחת לקפל היו `opacity-0` (לא נגללו אליהם עדיין). אחרי הפעלת "עצירת אנימציות" (ללא גלילה בכלל, `scrollY≈0`) — 0 אלמנטים מוסתרים, כולם גלויים מיד. `typecheck`/`lint`/`test` ירוקים. נדחף ל-`main` (commit `5320f79`). | אין פעולה נדרשת — הבאג סגור. שאר הפריטים הפתוחים ללא שינוי. |
 | 2026-07-01 | **בדיקת תאימות לחוק הנגישות הישראלי** (בקשת המשתמש: "תבדוק שהתפריט נגישות עומד בדרישות החוק", לאחר בירור: "האם יש דברים שאמורים להיות ואין אצלנו" — בדיקת פערים מול תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג-2013 + ת"י 5568/WCAG 2.0 AA, לא רק הרכיב הטכני). **נבדק ותקין**: `<html lang>` דינמי לפי locale, landmarks סמנטיים מלאים (`header`/`nav`/`main`/`footer` עם `aria-label`), קישור "דלג לתוכן", טופס צור קשר עם `<label htmlFor>` תקין + `aria-invalid`/`aria-describedby` על שגיאות, `alt` משמעותי לתמונות, מיקוד נראה (`focus-visible`), Lighthouse accessibility=100 בכל 10 העמודים. **פערים שנמצאו (לא תוקנו — המשתמש ביקש בדיקה בלבד בשלב זה)**:
-      1. ⬜ **אין `<h1>` באף עמוד משנה** (`about`/`services`/`gallery`/`academy`/`locations`/`contact`/`accessibility`/`privacy`/`terms`) — כולם משתמשים ב-`<h2>` (`SectionHeading`) כתגית הכותרת הראשית, ורק דף הבית מכיל `<h1>` בפועל. הפרה נפוצה שנבדקי נגישות מסמנים (מבנה כותרות היררכי, SC 1.3.1).
-      2. ⬜ `siteConfig.lastUpdated` ("18.06.2026") מיושן — בוצעו תיקוני נגישות אמיתיים בקוד מאז (כולל היום, 2026-07-01: הבהוב hero, חשיפת תוכן ב"עצירת אנימציות"), אך תאריך "עודכן בתאריך" בהצהרת הנגישות (`/accessibility`) לא שיקף זאת.
+      1. ✅ **תוקן 2026-07-02**: נוסף `as?: "h1"|"h2"` (ברירת מחדל `"h2"`, ללא
+         שינוי התנהגות קיימת) ל-`SectionHeading`/`CutHeading`, והועבר
+         `as="h1"` ב-9 עמודי המשנה (`about`/`services`/`gallery`/`academy`/
+         `locations`/`contact`/`accessibility`/`privacy`/`terms`) — כל אחד
+         מהם קורא ל-`<SectionHeading>` פעם אחת בדיוק כתגית הכותרת היחידה,
+         אז השינוי בטוח (אין `cut` בשימוש באף אחד מהם). המשתמש אישר את
+         התיקון דרך בדיקת תוכנית העבודה (סבב "תעשה בינתיים...").
+      2. ✅ **תוקן 2026-07-02**: `siteConfig.lastUpdated` עודכן ל-`"01.07.2026"`
+         (תאריך תיקון הנגישות המתועד האחרון — Focus Order, commit `6d78fbe`).
       3. ⬜ שם רכז הנגישות עדיין placeholder ("צוות ReStyle", לא שם אמיתי) — פריט קיים וידוע (סעיף 2 ב"משימות פתוחות שדורשות פעולת המשתמש" בראש הקובץ), אומת שוב כרלוונטי מבחינה חוקית.
       4. ⏸️ **מומלץ, לא ודאי חובה חוקית קשיחה** — אין אזכור אם האתר נבדק ע"י בודק נגישות מוסמך (רק פותח לפי WCAG AA, לא עבר בדיקה אנושית מוסמכת); עסקים מעל סף גודל מסוים מחויבים בכך. **המשתמש בחר לא להוסיף טקסט על כך כרגע**.
       5. ⏸️ **מומלץ, לא ודאי חובה קשיחה** — אין הפניה לזכות תלונה לנציבות שוויון זכויות לאנשים עם מוגבלות אם הפנייה לרכז לא נענתה (נפוץ בתבניות ישראליות). **המשתמש בחר לא להוסיף כרגע**.
-      6. ℹ️ תזכורת: החוק חל גם על נגישות המקום הפיזי (המספרה עצמה), לא רק האתר — מחוץ לתחום הקוד, באחריות המשתמש. | המשתמש ענה "לא כרגע" על תיקון מיידי של פריטים 1-2 (h1 + תאריך) — לברר בסשן הבא אם לתקנם (קוד סגור, ללא סיכון); שאר הפריטים הפתוחים ללא שינוי. |
+      6. ℹ️ תזכורת: החוק חל גם על נגישות המקום הפיזי (המספרה עצמה), לא רק האתר — מחוץ לתחום הקוד, באחריות המשתמש. | פריטים 1-2 תוקנו 2026-07-02 (ראה רשומה נפרדת למטה); פריט 3 (שם רכז נגישות אמיתי) עדיין דורש פעולת המשתמש; שאר הפריטים הפתוחים ללא שינוי. |
 | 2026-07-01 | **תיקון WCAG 2.4.3 (Focus Order) בפאנל תפריט הנגישות** (המשתמש שיתף קישור לתקן הרשמי https://www.w3.org/TR/WCAG20 — "זה התקן העולמי"; בוצעה עבודה שיטתית מול רשימת 38 קריטריוני A/AA המלאה מהתקן, לא רק זיכרון כללי). **נמצא**: בפתיחת הפאנל (לחיצת מקלדת/עכבר על כפתור ה-toggle) המיקוד נשאר על הכפתור; Tab הבא לא נכנס לפאנל שנפתח (למרות שהוא מופיע *לפניו* ב-DOM — ה-CSS ממקם אותו למעלה ויזואלית) אלא ממשיך הלאה בעמוד, כך שמשתמשי מקלדת בפועל לא הגיעו לתוכן הפאנל בזרימה טבעית של Tab (רק Shift+Tab הפוך הגיע אליו) — הפרת קריטריון A (לא AA), משמעותי יותר מרוב הממצאים הקודמים. **תוקן**: ניהול מיקוד מלא — בפתיחה עובר לכפתור הסגירה (ראשון בפאנל), ב-Escape/סגירה חוזר לכפתור שפתח. **אימות מלא ב-Chrome אמיתי** (headless CDP, אירועי עכבר/מקלדת אמיתיים — לא JS מדומה): בפתיחה מיקוד על "Close accessibility menu" בתוך הדיאלוג (`inDialog:true`); 9 לחיצות Tab עוקבות עברו כסדרן על **כל** הפקדים (הגדלת טקסט — הקטנה מדולגת נכון כי `disabled` בערך המינימלי; 6 טוגלים; איפוס; קישור הצהרת נגישות), ואז יצאו טבעית לכפתור הפתיחה (`inDialog:false`); Escape סגר את הפאנל והחזיר מיקוד לכפתור הפתיחה בדיוק. **בדיקות נוספות מול רשימת 38 הקריטריונים** (ללא ממצאים חדשים נוספים): 1.4.1 שימוש בצבע, 2.2.2 Pause/Stop/Hide (מכוסה ע"י "עצירת אנימציות" אחרי תיקוני היום), 2.3.1 הבהובים (הבאג שתוקן קודם היה גם הפרת 2.3.1 בפועל), 2.4.4 מטרת קישור ("קרא עוד עלינו" — לא "קרא עוד" גנרי, תקין), 2.4.7 focus visible (global `:focus-visible` outline), 4.1.1 IDs ייחודיים (ContactForm מרונדר פעם אחת בלבד). `typecheck`/`lint`/`test` ירוקים. נדחף ל-`main` (commit `6d78fbe`). | 2 פריטי ה-h1/תאריך מהבדיקה הקודמת עדיין ממתינים לאישור המשתמש; שאר הפריטים הפתוחים ללא שינוי. |
+| 2026-07-02 | **"תעשה בינתיים את כל המשימות הפתוחות שאתה יכול בלעדיי" — מסלול A (תשתית ראשי + נגישות + פרטי קשר)**, על branch חדש `main-hygiene-a11y-contact` (בסיס `origin/main`), עצמאי מ-PR #6/#7 שתלויים בסליקה. סוכן Explore קרא את כל `ROADMAP.md` וסיווג כל פריט פתוח: הנדסי-טהור (בר-ביצוע בלעדי המשתמש) מול דורש-נכסים/החלטות/דשבורד. **(1) תיקון WCAG SC 1.3.1** (מבנה כותרות): נוסף `as?: "h1"\|"h2"` (ברירת מחדל `"h2"`) ל-`SectionHeading`+`CutHeading`, והועבר `as="h1"` ב-9 עמודי המשנה שהיו חסרי `<h1>` אמיתי (ראו רשומת 2026-07-01). **(2)** `siteConfig.lastUpdated` עודכן ל-`01.07.2026`. **(3) חיבור פרטי קשר ל-DB** (`SiteSettings`, Phase 8.1 שהיה `⬜`): נוצר `lib/content/get-site-settings.ts` (דפוס `get-services.ts` + `revalidate:300` להחלמה עצמית כמו שנוסף בעבר ל-`get-products`/`get-categories`), `contact-links.ts` שונה לקבל פרטי קשר כפרמטר במקום לייבא `siteConfig` ישירות, ו-6 עמודים ציבוריים (`home`/`contact`/`terms`/`privacy`/`accessibility`/`locations`) + `FloatingContact`/`ContactActions` חוברו. **תיקון אגבי אמיתי בדרך**: הפיכת `FloatingContact`/`ContactActions`/5 מה-6 עמודים ל-`async` (כדי לקרוא ל-DB) חשפה שהם השתמשו ב-`useTranslations`/`useLocale` (hooks של next-intl בהקשר sync) — `react-hooks/rules-of-hooks` חסם את זה ב-lint; תוקן עקבי לדפוס הקיים בקוד (`getTranslations`/`getLocale` מ-`next-intl/server`, locale מגיע מ-`params` בעמודים או מ-`getLocale()` ברכיבים ללא params). `updateSiteSettings` קורא כעת גם `revalidateTag(SITE_SETTINGS_TAG)`+`revalidatePath` לכל locale (כמו הדפוס ב-`services.ts`) כך שעריכה ב-`/admin/settings` משתקפת מיידית בעמודים הציבוריים. **(4) סקיל `security`**: `/admin/settings` (action+schema, לא נסקר קודם) — `requireAdmin()` בכל action, zod עם allowlist תווים לטלפון ו-allowlist protocol ל-URL (מונע stored-XSS דרך `javascript:`), singleton `id=1` (אין IDOR) — **0 ממצאים**. רענון סקירת `next.config.ts` (CSP/HSTS/COOP/Permissions-Policy — מקיף, אין שינוי נדרש) וכיסוי rate-limit (`auth.ts`/`contact.ts` — כל הפעולות הציבוריות על `main` מוגנות). **(5) ניקוי ROADMAP**: Phase 8.1 סומן ✅ (כל תתי-הסעיפים הושלמו), תוקן צ'קבוקס מיושן ב-Phase 8.2-8.4 (הרצת security כבר בוצעה ותועדה ב-2026-06-23 אך נשארה לא-מסומנת), פריטים 1-2 בבדיקת תאימות הנגישות (2026-07-01) סומנו ✅. **QA**: `rm -rf .next && npx tsc --noEmit && npm run lint && npm test && npm run build` — כולם ירוקים (52 נתיבים, `/contact` וכו' עברו ל-SSG עם `revalidate:5m` בזכות ה-cache החדש). | לפתוח draft PR מול `main` ולדחוף; להמשיך למסלול B (Playwright E2E) על `academy-phase-7`; "QA מול DB חי" ל-Phase 8.2-8.4 (services/testimonials/gallery מול DB אמיתי, לא fallback) עדיין פתוח מ-2026-06-23 — לא טופל בסבב הזה (מחוץ להיקף מסלול A); שאר הפריטים הפתוחים ללא שינוי. |

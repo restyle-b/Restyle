@@ -1,13 +1,15 @@
-import { useLocale, useTranslations } from "next-intl";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getContactLinks } from "@/lib/contact-links";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 /** שורת לחצני יצירת קשר מהירה — וייז, טלפון, וואטסאפ. */
-export function ContactActions({ className }: { className?: string }) {
-  const t = useTranslations("contactActions");
-  const locale = useLocale() as Locale;
-  const contactLinks = getContactLinks(t("whatsappMessage"), locale);
+export async function ContactActions({ className }: { className?: string }) {
+  const locale = (await getLocale()) as Locale;
+  const t = await getTranslations({ locale, namespace: "contactActions" });
+  const contact = await getSiteContactInfo();
+  const contactLinks = getContactLinks(t("whatsappMessage"), locale, contact);
 
   return (
     <div className={cn("flex flex-wrap gap-3", className)}>
