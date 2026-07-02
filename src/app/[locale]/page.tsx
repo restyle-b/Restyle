@@ -13,6 +13,7 @@ import { siteConfig } from "@/lib/config";
 import { getServices } from "@/lib/content/get-services";
 import { getTestimonials } from "@/lib/content/get-testimonials";
 import { getGalleryImages } from "@/lib/content/get-gallery";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 
 export default async function HomePage({
   params,
@@ -26,6 +27,7 @@ export default async function HomePage({
   const services = await getServices(locale);
   const testimonials = await getTestimonials(locale);
   const galleryImages = await getGalleryImages(locale);
+  const contact = await getSiteContactInfo();
   return (
     <>
       {/*
@@ -284,11 +286,11 @@ export default async function HomePage({
               <dl className="mt-8 space-y-3 text-neutral-700">
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("addressLabel")}</dt>
-                  <dd>{siteConfig.contact.address}</dd>
+                  <dd>{contact.address}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("phoneLabel")}</dt>
-                  <dd>{siteConfig.contact.phone}</dd>
+                  <dd>{contact.phone}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("hoursLabel")}</dt>

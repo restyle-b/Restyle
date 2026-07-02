@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { siteConfig } from "@/lib/config";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 
 export const dynamic = "force-static";
 
@@ -18,11 +18,17 @@ export async function generateMetadata({
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
-export default function TermsPage() {
-  const t = useTranslations("terms");
+export default async function TermsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "terms" });
+  const contact = await getSiteContactInfo();
   return (
     <Container className="py-20">
-      <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
+      <SectionHeading as="h1" light eyebrow={t("eyebrow")} title={t("title")} />
 
       <div className="mt-10 max-w-3xl space-y-8 text-neutral-300">
         <p>{t("intro")}</p>
@@ -57,12 +63,12 @@ export default function TermsPage() {
           <h2 className="font-display text-xl font-bold text-white">{t("contactHeading")}</h2>
           <p className="mt-3">
             {t("contactBodyBefore")}{" "}
-            <a href={`tel:${siteConfig.contact.phone}`} className="hover:text-accent">
-              {siteConfig.contact.phone}
+            <a href={`tel:${contact.phone}`} className="hover:text-accent">
+              {contact.phone}
             </a>{" "}
             {t("contactBodyMiddle")}{" "}
-            <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-accent">
-              {siteConfig.contact.email}
+            <a href={`mailto:${contact.email}`} className="hover:text-accent">
+              {contact.email}
             </a>
             .
           </p>
