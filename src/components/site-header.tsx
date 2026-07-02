@@ -87,15 +87,20 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <ThemeToggle
-            dayLabel={t("themeDay")}
-            nightLabel={t("themeNight")}
-            ariaLabel={t("themeToggleAria")}
-          />
+          {/* במובייל השורה העליונה נשארת רק ללוגו+עגלה+המבורגר (בקשת המשתמש —
+              עומס חזותי); שאר הפריטים (מצב יום/לילה, שפה, קביעת תור) עדיין
+              נגישים בתוך תפריט ההמבורגר, ואזור אישי נגיש דרך קישור בתפריט. */}
+          <div className="hidden md:block">
+            <ThemeToggle
+              dayLabel={t("themeDay")}
+              nightLabel={t("themeNight")}
+              ariaLabel={t("themeToggleAria")}
+            />
+          </div>
           <LocaleSwitcher className="hidden md:inline-flex" />
-          <AccountIconLink />
+          <AccountIconLink className="hidden h-9 w-9 items-center justify-center rounded-full text-neutral-300 transition-colors hover:bg-current/10 hover:text-white md:flex" />
           <CartIconLink />
-          <BookingLink className={buttonVariants({ size: "sm", variant: "light" })}>
+          <BookingLink className={cn(buttonVariants({ size: "sm", variant: "light" }), "hidden md:inline-flex")}>
             {t("bookingCta")}
           </BookingLink>
           <MobileNav />

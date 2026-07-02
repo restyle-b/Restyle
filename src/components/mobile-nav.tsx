@@ -9,6 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { CartIconLink } from "@/components/cart/cart-icon-link";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/wordmark";
 import { navLinks } from "@/lib/config";
 
@@ -133,13 +134,20 @@ export function MobileNav() {
               </Link>
             </nav>
 
-            <div className="flex shrink-0 items-center justify-between gap-4 border-t border-line-dark px-4 py-6 sm:px-6">
-              <div className="flex items-center gap-2">
-                <LocaleSwitcher />
-                <CartIconLink />
+            <div className="flex shrink-0 flex-col gap-4 border-t border-line-dark px-4 py-6 sm:px-6">
+              <div className="flex items-center justify-between gap-2">
+                <ThemeToggle
+                  dayLabel={t("themeDay")}
+                  nightLabel={t("themeNight")}
+                  ariaLabel={t("themeToggleAria")}
+                />
+                <div className="flex items-center gap-2">
+                  <LocaleSwitcher />
+                  <CartIconLink />
+                </div>
               </div>
               <BookingLink
-                className={buttonVariants({ size: "sm", variant: "light" })}
+                className={`${buttonVariants({ size: "sm", variant: "light" })} w-full`}
                 onClick={() => setOpen(false)}
               >
                 {t("bookingCta")}
