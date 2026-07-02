@@ -59,8 +59,8 @@ export default async function HomePage({
             <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>
               {t("bookingCta")}
             </BookingLink>
-            <Link href="/services" className={buttonVariants({ variant: "outline", size: "lg" })}>
-              {t("servicesCta")}
+            <Link href="/shop" className={buttonVariants({ variant: "outline", size: "lg" })}>
+              {t("shopCta")}
             </Link>
           </div>
         </Container>
