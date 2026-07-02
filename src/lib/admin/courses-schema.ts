@@ -23,7 +23,33 @@ export const courseSchema = z.object({
   levelHe: z.string().trim().min(1, "שדה חובה").max(60),
   levelEn: optionalText(60),
   levelAr: optionalText(60),
+  // מסחר (Phase 7). מחיר בשקלים (ריק → קורס תדמיתי, לא נמכר). המרה ל-agorot
+  // בשרת בלבד (courseShekelsToAgorot), לעולם לא float ב-DB.
+  priceShekels: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(""))
+    .refine(
+      (v) => !v || (Number.isFinite(Number(v)) && Number(v) > 0 && Number(v) < 1_000_000),
+      "מחיר לא תקין",
+    ),
+  depositPercent: z.number().int().min(0).max(100),
+  // "" מהטופס מומר ל-undefined ע"י setValueAs (ראה courses-form) — כאן מספר אופציונלי.
+  capacity: z.number().int().min(1).max(100_000).optional(),
+  detailsHe: optionalText(5000),
+  detailsEn: optionalText(5000),
+  detailsAr: optionalText(5000),
+  syllabusHe: optionalText(5000),
+  syllabusEn: optionalText(5000),
+  syllabusAr: optionalText(5000),
   active: z.boolean(),
 });
 
 export type CourseInput = z.infer<typeof courseSchema>;
+
+/** המרת שקלים→אגורות לקורס; ריק → null (קורס לא נמכר). בשרת בלבד. */
+export function courseShekelsToAgorot(priceShekels: string | undefined): number | null {
+  if (!priceShekels) return null;
+  return Math.round(Number(priceShekels) * 100);
+}

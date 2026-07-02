@@ -25,6 +25,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   orders    Order[]
+  enrollments Enrollment[]
 
   @@map("users")
 }
@@ -95,9 +96,21 @@ model Course {
   levelHe       String
   levelEn       String?
   levelAr       String?
+  // מסחר (Phase 7). כל השדות אופציונליים — קורס בלי priceAgorot נשאר תדמיתי
+  // (CTA צור-קשר). כסף תמיד Int אגורות.
+  priceAgorot    Int? // מחיר מלא; null → לא ניתן לרכישה
+  depositPercent Int      @default(20) // 0 = רק תשלום מלא
+  capacity       Int? // null = ללא הגבלת מקומות
+  detailsHe      String?  @db.Text // הסבר מפורט
+  detailsEn      String?  @db.Text
+  detailsAr      String?  @db.Text
+  syllabusHe     String?  @db.Text // סילבוס (טקסט חופשי)
+  syllabusEn     String?  @db.Text
+  syllabusAr     String?  @db.Text
   active        Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  enrollments   Enrollment[]
 
   @@map("courses")
 }
@@ -303,4 +316,91 @@ model Payment {
 
   @@index([provider, externalRef])
   @@map("payments")
+}
+
+// ===== Phase 7: רכישת קורסים =====
+
+enum EnrollmentStatus {
+  PENDING
+  DEPOSIT_PAID
+  PAID
+  CANCELLED
+  FAILED
+
+  @@map("enrollment_status")
+}
+
+enum EnrollmentPlan {
+  DEPOSIT
+  FULL
+
+  @@map("enrollment_plan")
+}
+
+enum CoursePaymentKind {
+  DEPOSIT
+  BALANCE
+  FULL
+
+  @@map("course_payment_kind")
+}
+
+// הרשמה לקורס — מקבילה ל-Order בחנות אך ייעודית (מקדמה/יתרה, בלי משלוח).
+// כסף תמיד Int אגורות; המחיר/מקדמה snapshot בזמן ההרשמה.
+model Enrollment {
+  id               String @id @default(cuid())
+  enrollmentNumber String @unique // "C-XXXXXX", קריא ללקוח
+
+  courseId             String?
+  course               Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  courseNameHeSnapshot String
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  guestLookupToken String? @unique
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  plan              EnrollmentPlan
+  coursePriceAgorot Int // snapshot מחיר מלא
+  depositAgorot     Int // snapshot מקדמה מחושבת
+  amountPaidAgorot  Int              @default(0) // סכום ששולם מצטבר
+  status            EnrollmentStatus @default(PENDING)
+  paymentProvider   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments CoursePayment[]
+
+  @@index([userId])
+  @@index([customerEmail])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+// תשלום קורס — רבים-ל-אחד להרשמה (מקדמה + יתרה). לעולם לא PAN/CVV.
+model CoursePayment {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  kind            CoursePaymentKind
+  provider        String
+  status          PaymentStatus     @default(PENDING)
+  amountAgorot    Int // הסכום הספציפי של העסקה הזו (מקדמה/מלא/יתרה)
+  externalRef     String?
+  last4           String?
+  failureReason   String?
+  rawResponseMeta Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([enrollmentId])
+  @@index([provider, externalRef])
+  @@map("course_payments")
 }

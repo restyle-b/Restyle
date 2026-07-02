@@ -32,6 +32,15 @@ export default async function AdminCoursesPage() {
             levelHe: c.levelHe,
             levelEn: c.levelEn ?? "",
             levelAr: c.levelAr ?? "",
+            priceShekels: c.priceAgorot != null ? (c.priceAgorot / 100).toString() : "",
+            depositPercent: c.depositPercent,
+            capacity: c.capacity ?? undefined,
+            detailsHe: c.detailsHe ?? "",
+            detailsEn: c.detailsEn ?? "",
+            detailsAr: c.detailsAr ?? "",
+            syllabusHe: c.syllabusHe ?? "",
+            syllabusEn: c.syllabusEn ?? "",
+            syllabusAr: c.syllabusAr ?? "",
             active: c.active,
           }))}
         />

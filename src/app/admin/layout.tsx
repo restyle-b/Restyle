@@ -23,6 +23,7 @@ const NAV_LINKS = [
   { href: "/admin/products", label: "מוצרים" },
   { href: "/admin/categories", label: "קטגוריות" },
   { href: "/admin/orders", label: "הזמנות" },
+  { href: "/admin/enrollments", label: "הרשמות לקורסים" },
 ] as const;
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

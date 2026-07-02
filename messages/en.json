@@ -30,6 +30,7 @@
     "login": "Log in",
     "register": "Sign up",
     "myOrders": "My orders",
+    "myCourses": "My courses",
     "orderLookup": "Track order",
     "bookingHeading": "Book Now",
     "bookingText": "Booking is done through the ReStyle app.",
@@ -115,7 +116,95 @@
     "paragraph1": "ReStyle Academy was founded to pass on our knowledge, technique and professional standards to the next generation of professionals. Learning happens in small groups, in a real work environment, with close personal guidance.",
     "paragraph2": "For details on start dates, pricing and enrollment terms — contact us and we'll be happy to tell you everything.",
     "durationLabel": "Duration: {duration}",
-    "ctaText": "For details and enrollment — contact us"
+    "ctaText": "For details and enrollment — contact us",
+    "detailsCta": "Details & enrollment",
+    "fromLabel": "From "
+  },
+  "academyCommerce": {
+    "backToAcademy": "Back to academy",
+    "detailsTitle": "About the course",
+    "syllabusTitle": "Course syllabus",
+    "durationLabel": "Duration",
+    "levelLabel": "Level",
+    "priceLabel": "Full price",
+    "depositInfo": "{percent}% deposit ({amount}) — reserves your spot, balance later",
+    "seatsLeft": "{count} spots left",
+    "soldOut": "Course is currently full",
+    "contactCta": "For details and enrollment — contact us",
+    "enroll": {
+      "title": "Course enrollment",
+      "nameLabel": "Full name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone",
+      "companyLabel": "Company",
+      "planLabel": "Payment method",
+      "planDeposit": "Pay deposit — {amount}",
+      "planFull": "Pay in full — {amount}",
+      "submit": "Enroll & pay",
+      "submitting": "Processing...",
+      "errors": {
+        "nameTooShort": "Please enter your full name (at least 2 characters)",
+        "emailInvalid": "Invalid email address",
+        "phoneTooShort": "Invalid phone number",
+        "invalidInput": "The submitted data is invalid.",
+        "rateLimited": "Too many attempts. Please try again in a few minutes.",
+        "courseUnavailable": "This course is not available for enrollment right now.",
+        "soldOut": "The course is full — no spots available.",
+        "enrollFailed": "Enrollment failed. Please try again."
+      }
+    },
+    "success": {
+      "title": "Enrollment received!",
+      "descriptionDeposit": "Your deposit is paid and your spot is reserved. The remaining balance is pending.",
+      "descriptionFull": "Payment received in full. See you in the course!",
+      "processing": "Your payment is being processed — refresh shortly or check your account.",
+      "enrollmentNumberLabel": "Enrollment number",
+      "payBalanceCta": "Pay balance",
+      "viewMyCourses": "My courses",
+      "backToAcademy": "Back to academy"
+    },
+    "cancel": {
+      "title": "Enrollment not completed",
+      "description": "The payment was cancelled or failed. You can try again.",
+      "retry": "Back to course",
+      "backToAcademy": "Back to academy"
+    },
+    "notFound": {
+      "title": "Enrollment not found",
+      "description": "We couldn't find an enrollment with this number."
+    },
+    "balance": {
+      "dueLabel": "Balance due",
+      "payCta": "Pay balance",
+      "paidInFull": "Paid in full"
+    },
+    "status": {
+      "PENDING": "Awaiting payment",
+      "DEPOSIT_PAID": "Deposit paid",
+      "PAID": "Paid in full",
+      "CANCELLED": "Cancelled",
+      "FAILED": "Failed"
+    },
+    "myCourses": {
+      "title": "My courses",
+      "empty": "You haven't enrolled in any courses yet.",
+      "amountPaidLabel": "Paid",
+      "viewCourse": "View course"
+    },
+    "lookup": {
+      "title": "Check course enrollment",
+      "description": "Enter your enrollment number and the tracking code you received by email.",
+      "numberLabel": "Enrollment number",
+      "tokenLabel": "Tracking code",
+      "submit": "Check",
+      "submitting": "Checking...",
+      "notFound": "No enrollment found matching those details.",
+      "errors": {
+        "numberRequired": "Please enter an enrollment number",
+        "tokenRequired": "Please enter a tracking code",
+        "rateLimited": "Too many attempts. Please try again in a few minutes."
+      }
+    }
   },
   "accessibility": {
     "metaTitle": "Accessibility Statement",

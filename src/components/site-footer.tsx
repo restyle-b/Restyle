@@ -53,6 +53,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link href="/account/courses" className="text-sm text-neutral-400 transition-colors hover:text-white">
+                {tFooter("myCourses")}
+              </Link>
+            </li>
+            <li>
               <Link href="/orders/lookup" className="text-sm text-neutral-400 transition-colors hover:text-white">
                 {tFooter("orderLookup")}
               </Link>

@@ -7,6 +7,7 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 import { ScrollFeature } from "@/components/scroll-feature";
 import { buttonVariants } from "@/components/ui/button";
 import { getCourses } from "@/lib/content/get-courses";
+import { formatAgorot } from "@/lib/format";
 
 export async function generateMetadata({
   params,
@@ -48,23 +49,41 @@ export default async function AcademyPage({
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2">
           {courses.map((course) => (
-            <div key={course.slug} className="border-line-dark bg-ink-soft rounded-lg border p-6">
+            <Link
+              key={course.slug}
+              href={`/academy/${course.slug}`}
+              className="border-line-dark bg-ink-soft group block rounded-lg border p-6 transition-colors hover:border-accent/50"
+            >
               <div className="flex items-center justify-between gap-3">
-                <h2 className="font-display text-lg font-bold text-white">{course.name}</h2>
+                <h2 className="font-display text-lg font-bold text-white transition-colors group-hover:text-accent">
+                  {course.name}
+                </h2>
                 <span className="border-accent/40 text-accent shrink-0 rounded-full border px-3 py-1 text-xs">
                   {course.level}
                 </span>
               </div>
               <p className="mt-3 text-sm text-neutral-400">{course.description}</p>
-              <p className="mt-4 text-xs tracking-wide text-neutral-500 uppercase">
-                {t("durationLabel", { duration: course.duration })}
-              </p>
-            </div>
+              <div className="mt-4 flex items-center justify-between">
+                <p className="text-xs tracking-wide text-neutral-500 uppercase">
+                  {t("durationLabel", { duration: course.duration })}
+                </p>
+                {course.priceAgorot != null && (
+                  <p className="text-sm font-semibold text-accent">
+                    {t("fromLabel")}
+                    {formatAgorot(
+                      Math.round((course.priceAgorot * course.depositPercent) / 100) || course.priceAgorot,
+                      locale,
+                    )}
+                  </p>
+                )}
+              </div>
+              <span className="mt-4 inline-block text-sm font-medium text-accent">{t("detailsCta")} ←</span>
+            </Link>
           ))}
         </div>
 
         <div className="mt-12">
-          <Link href="/contact" className={buttonVariants({ size: "lg", variant: "light" })}>
+          <Link href="/contact" className={buttonVariants({ size: "lg", variant: "outline" })}>
             {t("ctaText")}
           </Link>
         </div>

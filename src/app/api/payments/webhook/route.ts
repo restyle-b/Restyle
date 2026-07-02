@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { tranzilaProvider } from "@/lib/payments/tranzila-provider";
 import { handlePaymentResult } from "@/server/actions/orders/handle-payment-result";
+import { handleEnrollmentPaymentResult } from "@/server/actions/courses/handle-enrollment-payment-result";
 
 /** השוואת secret בזמן קבוע — מונע timing attack על השוואת header (10/10 קריטיות, ראה SKILL.md). */
 function secretsMatch(provided: string, expected: string): boolean {
@@ -34,6 +35,15 @@ export async function POST(req: Request) {
   }
 
   const result = await tranzilaProvider.verifyCallback(req);
-  const outcome = await handlePaymentResult(result);
-  return NextResponse.json(outcome, { status: outcome.ok ? 200 : 400 });
+
+  // ניתוב: מנסים קודם הזמנת חנות (result.orderId = Order.id); אם לא נמצאה,
+  // מנסים הרשמה לקורס (result.orderId = CoursePayment.id). שני ה-handlers
+  // מחפשים בטבלאות שונות לפי אותו id, כך שהניסיון בטוח. best-effort —
+  // Tranzila לא מחובר בפועל; ראה handle-enrollment-payment-result.ts.
+  const orderOutcome = await handlePaymentResult(result);
+  if (!orderOutcome.ok && orderOutcome.reason === "order not found") {
+    const enrollmentOutcome = await handleEnrollmentPaymentResult(result);
+    return NextResponse.json(enrollmentOutcome, { status: enrollmentOutcome.ok ? 200 : 400 });
+  }
+  return NextResponse.json(orderOutcome, { status: orderOutcome.ok ? 200 : 400 });
 }

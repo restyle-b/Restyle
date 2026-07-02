@@ -5,13 +5,18 @@
  */
 
 export type CheckoutInput = {
-  orderId: string; // Order.id (cuid) — משמש כמפתח idempotency
+  orderId: string; // Order.id / Enrollment.id (cuid) — משמש כמפתח idempotency
   orderNumber: string; // מספר קריא ללקוח, מוצג גם לספק כ-reference
   amountAgorot: number;
   customerEmail: string;
   customerName: string;
   locale: string;
   returnUrls: { success: string; cancel: string };
+  /**
+   * סוג הישות המשלמת — קובע לאיזה callback ה-MockProvider מנתב (הזמנת חנות
+   * מול הרשמה לקורס). ברירת מחדל "order". Tranzila מתעלם משדה זה.
+   */
+  kind?: "order" | "enrollment";
 };
 
 export type CheckoutResult = {

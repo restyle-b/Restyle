@@ -32,6 +32,15 @@ function emptyRow(order: number): CourseInput {
     levelHe: "",
     levelEn: "",
     levelAr: "",
+    priceShekels: "",
+    depositPercent: 20,
+    capacity: undefined,
+    detailsHe: "",
+    detailsEn: "",
+    detailsAr: "",
+    syllabusHe: "",
+    syllabusEn: "",
+    syllabusAr: "",
     active: true,
   };
 }
@@ -149,6 +158,49 @@ export function CoursesForm({ initialValues }: { initialValues: CourseInput[] })
                 </label>
                 <input className={inputClass} {...register(`rows.${index}.levelAr`)} />
               </div>
+              {/* מסחר (Phase 7) — מחיר ריק = קורס תדמיתי (לא נמכר, CTA צור-קשר) */}
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  מחיר מלא (₪, ריק = לא נמכר)
+                </label>
+                <input
+                  className={inputClass}
+                  placeholder="1200"
+                  {...register(`rows.${index}.priceShekels`)}
+                />
+                {errors.rows?.[index]?.priceShekels && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.rows[index]?.priceShekels?.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  מקדמה (% מהמחיר, 0 = רק תשלום מלא)
+                </label>
+                <input
+                  type="number"
+                  className={inputClass}
+                  {...register(`rows.${index}.depositPercent`, { valueAsNumber: true })}
+                />
+                {errors.rows?.[index]?.depositPercent && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.rows[index]?.depositPercent?.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  מספר מקומות (ריק = ללא הגבלה)
+                </label>
+                <input
+                  type="number"
+                  className={inputClass}
+                  {...register(`rows.${index}.capacity`, {
+                    setValueAs: (v) => (v === "" || v == null ? undefined : Number(v)),
+                  })}
+                />
+              </div>
               <div className="sm:col-span-2">
                 <label className="flex items-center gap-2 text-sm text-neutral-300">
                   <input type="checkbox" {...register(`rows.${index}.active`)} />
@@ -157,7 +209,7 @@ export function CoursesForm({ initialValues }: { initialValues: CourseInput[] })
               </div>
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-sm font-medium text-neutral-300">
-                  תיאור (עברית)
+                  תיאור קצר (עברית)
                 </label>
                 <textarea className={textareaClass} {...register(`rows.${index}.descriptionHe`)} />
                 {errors.rows?.[index]?.descriptionHe && (
@@ -177,6 +229,44 @@ export function CoursesForm({ initialValues }: { initialValues: CourseInput[] })
                   תיאור (ערבית)
                 </label>
                 <textarea className={textareaClass} {...register(`rows.${index}.descriptionAr`)} />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  הסבר מפורט (עברית)
+                </label>
+                <textarea className={textareaClass} {...register(`rows.${index}.detailsHe`)} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  הסבר מפורט (אנגלית)
+                </label>
+                <textarea className={textareaClass} {...register(`rows.${index}.detailsEn`)} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  הסבר מפורט (ערבית)
+                </label>
+                <textarea className={textareaClass} {...register(`rows.${index}.detailsAr`)} />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  סילבוס (עברית, שורה לכל נושא)
+                </label>
+                <textarea className={textareaClass} {...register(`rows.${index}.syllabusHe`)} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  סילבוס (אנגלית)
+                </label>
+                <textarea className={textareaClass} {...register(`rows.${index}.syllabusEn`)} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  סילבוס (ערבית)
+                </label>
+                <textarea className={textareaClass} {...register(`rows.${index}.syllabusAr`)} />
               </div>
             </div>
           </div>

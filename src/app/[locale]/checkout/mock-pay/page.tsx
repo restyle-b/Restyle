@@ -32,11 +32,14 @@ function MockPayContent() {
   const orderId = searchParams.get("oid") ?? "";
   const providerRef = searchParams.get("ref") ?? "";
   const amountAgorot = Number(searchParams.get("amount") ?? "0");
+  // kind=enrollment → הרשמה לקורס (callback + עמודי תוצאה שונים).
+  const isCourse = searchParams.get("kind") === "enrollment";
 
   async function simulate(outcome: "success" | "failure") {
     setIsProcessing(true);
+    const callback = isCourse ? "/api/payments/course-mock-callback" : "/api/payments/mock-callback";
     try {
-      await fetch("/api/payments/mock-callback", {
+      await fetch(callback, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ orderId, providerRef, amountAgorot, outcome }),
@@ -44,7 +47,9 @@ function MockPayContent() {
     } finally {
       const localePrefix = locale === "he" ? "" : `/${locale}`;
       const target = outcome === "success" ? "success" : "cancel";
-      window.location.href = `${localePrefix}/checkout/${target}?order=${orderNumber}`;
+      window.location.href = isCourse
+        ? `${localePrefix}/courses/${target}?enrollment=${orderNumber}`
+        : `${localePrefix}/checkout/${target}?order=${orderNumber}`;
     }
   }
 

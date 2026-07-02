@@ -30,6 +30,7 @@
     "login": "התחברות",
     "register": "הרשמה",
     "myOrders": "ההזמנות שלי",
+    "myCourses": "הקורסים שלי",
     "orderLookup": "מעקב הזמנה",
     "bookingHeading": "קביעת תור",
     "bookingText": "קביעת תור מתבצעת באפליקציית ReStyle.",
@@ -115,7 +116,95 @@
     "paragraph1": "אקדמיית ReStyle הוקמה כדי להעביר את הידע, הטכניקה והסטנדרט המקצועי שלנו לדור הבא של אנשי המקצוע. הלימוד בקבוצות קטנות, בסביבת עבודה אמיתית ובליווי אישי צמוד.",
     "paragraph2": "לפרטים על מועדי פתיחה, מחירים ותנאי הרשמה — צרו איתנו קשר ונשמח לספר לכם הכול.",
     "durationLabel": "משך: {duration}",
-    "ctaText": "לפרטים והרשמה — צרו קשר"
+    "ctaText": "לפרטים והרשמה — צרו קשר",
+    "detailsCta": "לפרטים והרשמה",
+    "fromLabel": "החל מ-"
+  },
+  "academyCommerce": {
+    "backToAcademy": "חזרה לאקדמיה",
+    "detailsTitle": "על הקורס",
+    "syllabusTitle": "סילבוס הקורס",
+    "durationLabel": "משך",
+    "levelLabel": "רמה",
+    "priceLabel": "מחיר מלא",
+    "depositInfo": "מקדמה {percent}% ({amount}) — שריון מקום, יתרה בהמשך",
+    "seatsLeft": "{count} מקומות אחרונים",
+    "soldOut": "הקורס מלא כרגע",
+    "contactCta": "לפרטים והרשמה — צרו קשר",
+    "enroll": {
+      "title": "הרשמה לקורס",
+      "nameLabel": "שם מלא",
+      "emailLabel": "אימייל",
+      "phoneLabel": "טלפון",
+      "companyLabel": "חברה",
+      "planLabel": "אופן תשלום",
+      "planDeposit": "תשלום מקדמה — {amount}",
+      "planFull": "תשלום מלא — {amount}",
+      "submit": "להרשמה ותשלום",
+      "submitting": "מעבד...",
+      "errors": {
+        "nameTooShort": "יש להזין שם מלא (לפחות 2 תווים)",
+        "emailInvalid": "כתובת אימייל לא תקינה",
+        "phoneTooShort": "מספר טלפון לא תקין",
+        "invalidInput": "הנתונים שהוזנו אינם תקינים.",
+        "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.",
+        "courseUnavailable": "הקורס אינו זמין להרשמה כרגע.",
+        "soldOut": "הקורס מלא — אין מקומות פנויים.",
+        "enrollFailed": "ההרשמה נכשלה. נסו שוב."
+      }
+    },
+    "success": {
+      "title": "ההרשמה התקבלה!",
+      "descriptionDeposit": "המקדמה שולמה והמקום שלך שמור. יתרת התשלום ממתינה להשלמה.",
+      "descriptionFull": "התשלום התקבל במלואו. נתראה בקורס!",
+      "processing": "התשלום מעובד — רעננו את העמוד בעוד רגע או בדקו באזור האישי.",
+      "enrollmentNumberLabel": "מספר הרשמה",
+      "payBalanceCta": "תשלום יתרה",
+      "viewMyCourses": "לקורסים שלי",
+      "backToAcademy": "חזרה לאקדמיה"
+    },
+    "cancel": {
+      "title": "ההרשמה לא הושלמה",
+      "description": "התשלום בוטל או נכשל. ניתן לנסות שוב.",
+      "retry": "חזרה לקורס",
+      "backToAcademy": "חזרה לאקדמיה"
+    },
+    "notFound": {
+      "title": "ההרשמה לא נמצאה",
+      "description": "לא הצלחנו לאתר הרשמה עם המספר הזה."
+    },
+    "balance": {
+      "dueLabel": "יתרה לתשלום",
+      "payCta": "תשלום יתרה",
+      "paidInFull": "שולם במלואו"
+    },
+    "status": {
+      "PENDING": "ממתין לתשלום",
+      "DEPOSIT_PAID": "מקדמה שולמה",
+      "PAID": "שולם במלואו",
+      "CANCELLED": "בוטל",
+      "FAILED": "נכשל"
+    },
+    "myCourses": {
+      "title": "הקורסים שלי",
+      "empty": "עדיין לא נרשמת לקורסים.",
+      "amountPaidLabel": "שולם",
+      "viewCourse": "לצפייה בקורס"
+    },
+    "lookup": {
+      "title": "בדיקת הרשמה לקורס",
+      "description": "הזינו את מספר ההרשמה ואת קוד המעקב שקיבלתם באימייל.",
+      "numberLabel": "מספר הרשמה",
+      "tokenLabel": "קוד מעקב",
+      "submit": "בדיקה",
+      "submitting": "בודק...",
+      "notFound": "לא נמצאה הרשמה עם הפרטים שהוזנו.",
+      "errors": {
+        "numberRequired": "יש להזין מספר הרשמה",
+        "tokenRequired": "יש להזין קוד מעקב",
+        "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות."
+      }
+    }
   },
   "accessibility": {
     "metaTitle": "הצהרת נגישות",

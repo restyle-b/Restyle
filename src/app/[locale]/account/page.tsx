@@ -44,6 +44,9 @@ export default async function AccountPage() {
         <Link href="/account/orders" className={cn(buttonVariants({ size: "lg" }))}>
           ההזמנות שלי
         </Link>
+        <Link href="/account/courses" className={cn(buttonVariants({ size: "lg", variant: "outline" }))}>
+          הקורסים שלי
+        </Link>
         <SignOutButton />
       </div>
     </Container>

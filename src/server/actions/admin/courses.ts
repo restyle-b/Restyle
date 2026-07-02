@@ -3,7 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
-import { courseSchema, type CourseInput } from "@/lib/admin/courses-schema";
+import { courseSchema, courseShekelsToAgorot, type CourseInput } from "@/lib/admin/courses-schema";
 import { COURSES_TAG } from "@/lib/content/get-courses";
 import { routing } from "@/i18n/routing";
 
@@ -45,6 +45,18 @@ export async function updateCourses(input: unknown): Promise<AdminActionResult> 
   await db.$transaction(async (tx) => {
     await tx.course.deleteMany({ where: { slug: { notIn: slugs } } });
     for (const row of rows) {
+      const priceAgorot = courseShekelsToAgorot(row.priceShekels);
+      const commerce = {
+        priceAgorot,
+        depositPercent: row.depositPercent,
+        capacity: row.capacity ?? null,
+        detailsHe: toNullable(row.detailsHe),
+        detailsEn: toNullable(row.detailsEn),
+        detailsAr: toNullable(row.detailsAr),
+        syllabusHe: toNullable(row.syllabusHe),
+        syllabusEn: toNullable(row.syllabusEn),
+        syllabusAr: toNullable(row.syllabusAr),
+      };
       await tx.course.upsert({
         where: { slug: row.slug },
         create: {
@@ -63,6 +75,7 @@ export async function updateCourses(input: unknown): Promise<AdminActionResult> 
           levelEn: toNullable(row.levelEn),
           levelAr: toNullable(row.levelAr),
           active: row.active,
+          ...commerce,
         },
         update: {
           order: row.order,
@@ -79,6 +92,7 @@ export async function updateCourses(input: unknown): Promise<AdminActionResult> 
           levelEn: toNullable(row.levelEn),
           levelAr: toNullable(row.levelAr),
           active: row.active,
+          ...commerce,
         },
       });
     }

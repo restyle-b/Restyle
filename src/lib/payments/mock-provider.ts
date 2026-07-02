@@ -18,6 +18,7 @@ export const mockProvider: PaymentProvider = {
           oid: input.orderId,
           ref: providerRef,
           amount: String(input.amountAgorot),
+          kind: input.kind ?? "order",
         },
       },
       locale: input.locale as never,
