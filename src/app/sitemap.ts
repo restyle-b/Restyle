@@ -6,7 +6,6 @@ import { getPathname } from "@/i18n/navigation";
 const routes = [
   "/",
   "/about",
-  "/services",
   "/academy",
   "/gallery",
   "/locations",

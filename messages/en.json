@@ -6,7 +6,6 @@
   "nav": {
     "about": "About",
     "shop": "Shop",
-    "services": "Services",
     "academy": "Academy",
     "gallery": "Gallery",
     "locations": "Location & Hours",
@@ -52,12 +51,8 @@
     "heroTitle": "{name} — Precision, Style & Craft",
     "heroSubtitle": "A top-tier hairstyling experience, a professional team, and an academy for training stylists.",
     "bookingCta": "Book Now",
-    "servicesCta": "View Services",
-    "shopCta": "Shop Now",
+    "shopCta": "Visit the shop",
     "scrollDownLabel": "Scroll down",
-    "servicesEyebrow": "What We Do",
-    "servicesTitle": "Barbershop Services",
-    "allServicesCta": "All Services",
     "ctaEyebrow": "Book Now",
     "ctaTitle": "Ready for your next appointment?",
     "ctaText": "Booking is done through the ReStyle app — fast, easy and available 24/7.",
@@ -70,7 +65,6 @@
     "shopEyebrow": "Our Shop",
     "shopTitle": "Selected Products",
     "shopDescription": "The grooming products we use and believe in — now available to take home.",
-    "shopCta": "Visit the shop",
     "shopOutOfStock": "Out of stock",
     "aboutImageLabel": "Studio photo",
     "studioFeatureLighting": "Professional lighting",
@@ -315,39 +309,6 @@
     "contactBodyBefore": "For questions regarding these terms, you may contact us by phone at",
     "contactBodyMiddle": "or by email at",
     "updatedText": "These terms were last updated on {date}."
-  },
-  "services": {
-    "metaTitle": "Services",
-    "metaDescription": "All of ReStyle's barbershop services — haircuts, beard design, coloring and hair treatments.",
-    "eyebrow": "What We Do",
-    "title": "All Our Services",
-    "bookingCta": "Book Now"
-  },
-  "servicesData": {
-    "haircut": {
-      "name": "Precision Haircut",
-      "description": "A haircut tailored to your face shape and style, with a short consultation."
-    },
-    "beard": {
-      "name": "Beard Styling",
-      "description": "Precise shaving and trimming, including a hot towel treatment and skin care."
-    },
-    "coloring": {
-      "name": "Color & Highlights",
-      "description": "Professional coloring and highlights using premium products, without damaging hair structure."
-    },
-    "treatment": {
-      "name": "Hair Treatments",
-      "description": "Nourishing and restorative treatments for hair and scalp, tailored to your hair type."
-    },
-    "kids": {
-      "name": "Kids' Haircuts",
-      "description": "A pleasant, quick experience at the barbershop, with patience and professionalism."
-    },
-    "vip": {
-      "name": "VIP Experience",
-      "description": "A comprehensive treatment — haircut, beard and grooming, with personal attention and extended quality time."
-    }
   },
   "academyData": {
     "barbering-foundations": {

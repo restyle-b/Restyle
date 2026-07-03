@@ -15,7 +15,6 @@ export const dynamic = "force-dynamic";
 const NAV_LINKS = [
   { href: "/admin", label: "דשבורד" },
   { href: "/admin/settings", label: "הגדרות אתר" },
-  { href: "/admin/services", label: "שירותים" },
   { href: "/admin/courses", label: "קורסים" },
   { href: "/admin/testimonials", label: "המלצות" },
   { href: "/admin/gallery", label: "גלריה" },

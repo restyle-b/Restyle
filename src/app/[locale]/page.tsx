@@ -11,7 +11,6 @@ import { ScissorsScrollIndicator } from "@/components/scissors-scroll-indicator"
 import { CutLineDivider } from "@/components/cut-line-divider";
 import { ProductCard } from "@/components/shop/product-card";
 import { siteConfig } from "@/lib/config";
-import { getServices } from "@/lib/content/get-services";
 import { getTestimonials } from "@/lib/content/get-testimonials";
 import { getGalleryImages } from "@/lib/content/get-gallery";
 import { getProducts } from "@/lib/content/get-products";
@@ -26,7 +25,6 @@ export default async function HomePage({
   const t = await getTranslations({ locale, namespace: "home" });
   const tRoot = await getTranslations({ locale });
   const hours = tRoot.raw("hours") as { day: string; hours: string }[];
-  const services = await getServices(locale);
   const testimonials = await getTestimonials(locale);
   const galleryImages = await getGalleryImages(locale);
   const featuredProducts = (await getProducts(locale)).slice(0, 4);
@@ -68,40 +66,12 @@ export default async function HomePage({
 
         {/* חיווי "גלול" — מספריים של ספר: כמה סבבי כניסה, ואז נסניס בלופ; לחיצה מסבבת וגוללת לסקציה הבאה */}
         <div className="absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[88svh]">
-          <ScissorsScrollIndicator label={t("scrollDownLabel")} scrollTargetId="home-services" />
+          <ScissorsScrollIndicator label={t("scrollDownLabel")} scrollTargetId="home-cta" />
         </div>
       </section>
 
-      {/* שירותים */}
-      <section id="home-services" className="bg-paper text-ink py-16 sm:py-24">
-        <Container>
-          <Reveal>
-            <SectionHeading center cut eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
-          </Reveal>
-          {/* מפריד "קו גזירה" — מוטיב המספריים גוזר לאורך הקו בכניסה לצפייה */}
-          <CutLineDivider tone="light" className="mx-auto mt-10 max-w-md" />
-          <div className="border-line-light mt-6 grid gap-px overflow-hidden border sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, i) => (
-              <Reveal key={service.slug} delay={i * 70}>
-                <div className="border-line-light bg-cream h-full p-8 transition-colors hover:bg-white sm:border-l">
-                  <h3 className="font-display text-lg font-bold tracking-wide uppercase">
-                    {service.name}
-                  </h3>
-                  <p className="mt-3 text-sm text-neutral-600">{service.description}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-12 flex justify-center">
-            <Link href="/services" className={buttonVariants({ variant: "outline" })}>
-              {t("allServicesCta")}
-            </Link>
-          </Reveal>
-        </Container>
-      </section>
-
       {/* CTA קביעת תור */}
-      <section className="bg-ink relative overflow-hidden py-16 text-center sm:py-24">
+      <section id="home-cta" className="bg-ink relative overflow-hidden py-16 text-center sm:py-24">
         <div className="glow-orb inset-x-0 -top-24 mx-auto h-72 w-72" aria-hidden="true" />
         <Container className="relative flex flex-col items-center">
           <Reveal>

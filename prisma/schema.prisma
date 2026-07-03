@@ -61,24 +61,6 @@ model OpeningHour {
   @@map("opening_hours")
 }
 
-// שירותי המספרה — מוצג ב-/services ובדף הבית. Phase 8.2.
-model Service {
-  id            String   @id @default(cuid())
-  slug          String   @unique
-  order         Int      @default(0)
-  nameHe        String
-  nameEn        String?
-  nameAr        String?
-  descriptionHe String   @db.Text
-  descriptionEn String?  @db.Text
-  descriptionAr String?  @db.Text
-  active        Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@map("services")
-}
-
 // קורסי האקדמיה — מוצג ב-/academy. Phase 8.2.
 model Course {
   id            String   @id @default(cuid())
