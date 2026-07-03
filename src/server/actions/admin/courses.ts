@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { courseSchema, courseShekelsToAgorot, type CourseInput } from "@/lib/admin/courses-schema";
+import { generateSlug } from "@/lib/admin/slug";
 import { COURSES_TAG } from "@/lib/content/get-courses";
 import { routing } from "@/i18n/routing";
 
@@ -37,16 +38,36 @@ export async function updateCourses(input: unknown): Promise<AdminActionResult> 
   }
 
   const rows: CourseInput[] = parsed.data;
-  const slugs = rows.map((r) => r.slug);
-  if (new Set(slugs).size !== slugs.length) {
-    return { ok: false, error: "כל slug חייב להיות ייחודי" };
+  const submittedIds = rows.map((r) => r.id).filter((id): id is string => Boolean(id));
+  if (new Set(submittedIds).size !== submittedIds.length) {
+    return { ok: false, error: "מזהה כפול בקלט" };
   }
 
+  // ה-slug נוצר בשרת ולעולם לא נערך ע"י האדמין. seed מכל ה-slugים הקיימים כדי
+  // להבטיח ייחודיות, ומעדכנים אותו תוך כדי היצירה בבאטץ' הנוכחי.
+  const existingSlugs = new Set(
+    (await db.course.findMany({ select: { slug: true } })).map((c) => c.slug),
+  );
+
   await db.$transaction(async (tx) => {
-    await tx.course.deleteMany({ where: { slug: { notIn: slugs } } });
+    await tx.course.deleteMany({ where: { id: { notIn: submittedIds } } });
     for (const row of rows) {
       const priceAgorot = courseShekelsToAgorot(row.priceShekels);
-      const commerce = {
+      const data = {
+        order: row.order,
+        nameHe: row.nameHe,
+        nameEn: toNullable(row.nameEn),
+        nameAr: toNullable(row.nameAr),
+        descriptionHe: row.descriptionHe,
+        descriptionEn: toNullable(row.descriptionEn),
+        descriptionAr: toNullable(row.descriptionAr),
+        durationHe: row.durationHe,
+        durationEn: toNullable(row.durationEn),
+        durationAr: toNullable(row.durationAr),
+        levelHe: row.levelHe,
+        levelEn: toNullable(row.levelEn),
+        levelAr: toNullable(row.levelAr),
+        active: row.active,
         priceAgorot,
         depositPercent: row.depositPercent,
         capacity: row.capacity ?? null,
@@ -57,44 +78,13 @@ export async function updateCourses(input: unknown): Promise<AdminActionResult> 
         syllabusEn: toNullable(row.syllabusEn),
         syllabusAr: toNullable(row.syllabusAr),
       };
-      await tx.course.upsert({
-        where: { slug: row.slug },
-        create: {
-          slug: row.slug,
-          order: row.order,
-          nameHe: row.nameHe,
-          nameEn: toNullable(row.nameEn),
-          nameAr: toNullable(row.nameAr),
-          descriptionHe: row.descriptionHe,
-          descriptionEn: toNullable(row.descriptionEn),
-          descriptionAr: toNullable(row.descriptionAr),
-          durationHe: row.durationHe,
-          durationEn: toNullable(row.durationEn),
-          durationAr: toNullable(row.durationAr),
-          levelHe: row.levelHe,
-          levelEn: toNullable(row.levelEn),
-          levelAr: toNullable(row.levelAr),
-          active: row.active,
-          ...commerce,
-        },
-        update: {
-          order: row.order,
-          nameHe: row.nameHe,
-          nameEn: toNullable(row.nameEn),
-          nameAr: toNullable(row.nameAr),
-          descriptionHe: row.descriptionHe,
-          descriptionEn: toNullable(row.descriptionEn),
-          descriptionAr: toNullable(row.descriptionAr),
-          durationHe: row.durationHe,
-          durationEn: toNullable(row.durationEn),
-          durationAr: toNullable(row.durationAr),
-          levelHe: row.levelHe,
-          levelEn: toNullable(row.levelEn),
-          levelAr: toNullable(row.levelAr),
-          active: row.active,
-          ...commerce,
-        },
-      });
+      if (row.id) {
+        await tx.course.update({ where: { id: row.id }, data });
+      } else {
+        const slug = generateSlug(row.nameEn, existingSlugs);
+        existingSlugs.add(slug);
+        await tx.course.create({ data: { ...data, slug } });
+      }
     }
   });
 

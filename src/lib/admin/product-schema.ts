@@ -24,12 +24,6 @@ const optionalUrl = z
 
 export const productSchema = z.object({
   id: z.string().trim().min(1).optional(),
-  slug: z
-    .string()
-    .trim()
-    .min(1, "שדה חובה")
-    .max(60)
-    .regex(/^[a-z0-9-]+$/, "מותרות אותיות אנגליות קטנות, ספרות ומקף בלבד"),
   order: z.number().int().min(0).max(9999),
   nameHe: z.string().trim().min(1, "שדה חובה").max(100),
   nameEn: optionalText(100),

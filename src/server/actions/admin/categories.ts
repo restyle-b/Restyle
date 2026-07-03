@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { categorySchema, type CategoryInput } from "@/lib/admin/category-schema";
+import { generateSlug } from "@/lib/admin/slug";
 import { CATEGORIES_TAG } from "@/lib/content/get-categories";
 import { routing } from "@/i18n/routing";
 
@@ -36,32 +37,34 @@ export async function updateCategories(input: unknown): Promise<AdminActionResul
   }
 
   const rows: CategoryInput[] = parsed.data;
-  const slugs = rows.map((r) => r.slug);
-  if (new Set(slugs).size !== slugs.length) {
-    return { ok: false, error: "כל slug חייב להיות ייחודי" };
+  const submittedIds = rows.map((r) => r.id).filter((id): id is string => Boolean(id));
+  if (new Set(submittedIds).size !== submittedIds.length) {
+    return { ok: false, error: "מזהה כפול בקלט" };
   }
 
+  // ה-slug נוצר בשרת ולעולם לא נערך ע"י האדמין. seed מכל ה-slugים הקיימים כדי
+  // להבטיח ייחודיות, ומעדכנים אותו תוך כדי היצירה בבאטץ' הנוכחי.
+  const existingSlugs = new Set(
+    (await db.category.findMany({ select: { slug: true } })).map((c) => c.slug),
+  );
+
   await db.$transaction(async (tx) => {
-    await tx.category.deleteMany({ where: { slug: { notIn: slugs } } });
+    await tx.category.deleteMany({ where: { id: { notIn: submittedIds } } });
     for (const row of rows) {
-      await tx.category.upsert({
-        where: { slug: row.slug },
-        create: {
-          slug: row.slug,
-          order: row.order,
-          nameHe: row.nameHe,
-          nameEn: toNullable(row.nameEn),
-          nameAr: toNullable(row.nameAr),
-          active: row.active,
-        },
-        update: {
-          order: row.order,
-          nameHe: row.nameHe,
-          nameEn: toNullable(row.nameEn),
-          nameAr: toNullable(row.nameAr),
-          active: row.active,
-        },
-      });
+      const data = {
+        order: row.order,
+        nameHe: row.nameHe,
+        nameEn: toNullable(row.nameEn),
+        nameAr: toNullable(row.nameAr),
+        active: row.active,
+      };
+      if (row.id) {
+        await tx.category.update({ where: { id: row.id }, data });
+      } else {
+        const slug = generateSlug(row.nameEn, existingSlugs);
+        existingSlugs.add(slug);
+        await tx.category.create({ data: { ...data, slug } });
+      }
     }
   });
 

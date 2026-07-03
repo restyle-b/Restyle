@@ -15,7 +15,7 @@ const formSchema = z.object({ rows: categorySchema.array() });
 type FormValues = { rows: CategoryInput[] };
 
 function emptyRow(order: number): CategoryInput {
-  return { order, slug: "", nameHe: "", nameEn: "", nameAr: "", active: true };
+  return { order, nameHe: "", nameEn: "", nameAr: "", active: true };
 }
 
 export function CategoriesForm({ initialValues }: { initialValues: CategoryInput[] }) {
@@ -50,15 +50,6 @@ export function CategoriesForm({ initialValues }: { initialValues: CategoryInput
             </div>
             <input type="hidden" {...register(`rows.${index}.id`)} />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
-                  Slug (אנגלית)
-                </label>
-                <input className={inputClass} {...register(`rows.${index}.slug`)} />
-                {errors.rows?.[index]?.slug && (
-                  <p className="mt-1 text-sm text-red-400">{errors.rows[index]?.slug?.message}</p>
-                )}
-              </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-neutral-300">סדר</label>
                 <input

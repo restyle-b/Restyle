@@ -8,6 +8,7 @@ import { productSchema, type ProductInput } from "@/lib/admin/product-schema";
 import { updateProducts } from "@/server/actions/admin/products";
 import { buttonVariants } from "@/components/ui/button";
 import { ConfirmRemoveButton } from "@/components/admin/confirm-remove-button";
+import { ImageUploadButton } from "@/components/admin/image-upload-button";
 import { adminInputClass as inputClass, adminTextareaClass as textareaClass } from "@/lib/admin/form-styles";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +18,6 @@ type FormValues = { rows: ProductInput[] };
 function emptyRow(order: number): ProductInput {
   return {
     order,
-    slug: "",
     nameHe: "",
     nameEn: "",
     nameAr: "",
@@ -37,7 +37,7 @@ export function ProductsForm({
   categories,
 }: {
   initialValues: ProductInput[];
-  categories: { id: string; nameHe: string; slug: string }[];
+  categories: { id: string; nameHe: string }[];
 }) {
   const [serverMessage, setServerMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const {
@@ -45,6 +45,7 @@ export function ProductsForm({
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -72,15 +73,6 @@ export function ProductsForm({
             </div>
             <input type="hidden" {...register(`rows.${index}.id`)} />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
-                  Slug (אנגלית)
-                </label>
-                <input className={inputClass} {...register(`rows.${index}.slug`)} />
-                {errors.rows?.[index]?.slug && (
-                  <p className="mt-1 text-sm text-red-400">{errors.rows[index]?.slug?.message}</p>
-                )}
-              </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-neutral-300">סדר</label>
                 <input
@@ -116,7 +108,7 @@ export function ProductsForm({
                   <option value="">ללא קטגוריה</option>
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.nameHe} ({c.slug})
+                      {c.nameHe}
                     </option>
                   ))}
                 </select>
@@ -169,9 +161,20 @@ export function ProductsForm({
               </div>
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-sm font-medium text-neutral-300">
-                  כתובת תמונה (URL, אופציונלי)
+                  תמונה (אופציונלי)
                 </label>
-                <input className={inputClass} {...register(`rows.${index}.imageUrl`)} />
+                <div className="flex flex-wrap items-center gap-3">
+                  <ImageUploadButton
+                    onUploaded={(url) =>
+                      setValue(`rows.${index}.imageUrl`, url, { shouldDirty: true, shouldValidate: true })
+                    }
+                  />
+                  <input
+                    className={cn(inputClass, "flex-1 basis-64")}
+                    placeholder="או הדבקת קישור (URL)"
+                    {...register(`rows.${index}.imageUrl`)}
+                  />
+                </div>
                 {errors.rows?.[index]?.imageUrl && (
                   <p className="mt-1 text-sm text-red-400">{errors.rows[index]?.imageUrl?.message}</p>
                 )}

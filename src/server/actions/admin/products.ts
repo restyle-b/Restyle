@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { productSchema, shekelsToAgorot, type ProductInput } from "@/lib/admin/product-schema";
+import { generateSlug } from "@/lib/admin/slug";
 import { PRODUCTS_TAG } from "@/lib/content/get-products";
 import { routing } from "@/i18n/routing";
 
@@ -30,7 +31,7 @@ export async function getProducts() {
 
 export async function getCategoriesForSelect() {
   await requireAdmin();
-  return db.category.findMany({ orderBy: { order: "asc" }, select: { id: true, nameHe: true, slug: true } });
+  return db.category.findMany({ orderBy: { order: "asc" }, select: { id: true, nameHe: true } });
 }
 
 export async function updateProducts(input: unknown): Promise<AdminActionResult> {
@@ -42,9 +43,9 @@ export async function updateProducts(input: unknown): Promise<AdminActionResult>
   }
 
   const rows: ProductInput[] = parsed.data;
-  const slugs = rows.map((r) => r.slug);
-  if (new Set(slugs).size !== slugs.length) {
-    return { ok: false, error: "כל slug חייב להיות ייחודי" };
+  const submittedIds = rows.map((r) => r.id).filter((id): id is string => Boolean(id));
+  if (new Set(submittedIds).size !== submittedIds.length) {
+    return { ok: false, error: "מזהה כפול בקלט" };
   }
 
   // ולידציית categoryId מול קטגוריות קיימות בפועל — בלי זה, ID שגוי/לא-קיים
@@ -57,42 +58,37 @@ export async function updateProducts(input: unknown): Promise<AdminActionResult>
     }
   }
 
+  // ה-slug נוצר בשרת ולעולם לא נערך ע"י האדמין. seed מכל ה-slugים הקיימים כדי
+  // להבטיח ייחודיות, ומעדכנים אותו תוך כדי היצירה בבאטץ' הנוכחי.
+  const existingSlugs = new Set(
+    (await db.product.findMany({ select: { slug: true } })).map((p) => p.slug),
+  );
+
   await db.$transaction(async (tx) => {
-    await tx.product.deleteMany({ where: { slug: { notIn: slugs } } });
+    await tx.product.deleteMany({ where: { id: { notIn: submittedIds } } });
     for (const row of rows) {
       const priceAgorot = shekelsToAgorot(row.priceShekels);
-      await tx.product.upsert({
-        where: { slug: row.slug },
-        create: {
-          slug: row.slug,
-          order: row.order,
-          nameHe: row.nameHe,
-          nameEn: toNullable(row.nameEn),
-          nameAr: toNullable(row.nameAr),
-          descriptionHe: row.descriptionHe,
-          descriptionEn: toNullable(row.descriptionEn),
-          descriptionAr: toNullable(row.descriptionAr),
-          priceAgorot,
-          stock: row.stock,
-          imageUrl: toNullable(row.imageUrl),
-          categoryId: toNullable(row.categoryId),
-          active: row.active,
-        },
-        update: {
-          order: row.order,
-          nameHe: row.nameHe,
-          nameEn: toNullable(row.nameEn),
-          nameAr: toNullable(row.nameAr),
-          descriptionHe: row.descriptionHe,
-          descriptionEn: toNullable(row.descriptionEn),
-          descriptionAr: toNullable(row.descriptionAr),
-          priceAgorot,
-          stock: row.stock,
-          imageUrl: toNullable(row.imageUrl),
-          categoryId: toNullable(row.categoryId),
-          active: row.active,
-        },
-      });
+      const data = {
+        order: row.order,
+        nameHe: row.nameHe,
+        nameEn: toNullable(row.nameEn),
+        nameAr: toNullable(row.nameAr),
+        descriptionHe: row.descriptionHe,
+        descriptionEn: toNullable(row.descriptionEn),
+        descriptionAr: toNullable(row.descriptionAr),
+        priceAgorot,
+        stock: row.stock,
+        imageUrl: toNullable(row.imageUrl),
+        categoryId: toNullable(row.categoryId),
+        active: row.active,
+      };
+      if (row.id) {
+        await tx.product.update({ where: { id: row.id }, data });
+      } else {
+        const slug = generateSlug(row.nameEn, existingSlugs);
+        existingSlugs.add(slug);
+        await tx.product.create({ data: { ...data, slug } });
+      }
     }
   });
 

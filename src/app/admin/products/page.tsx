@@ -19,7 +19,6 @@ export default async function AdminProductsPage() {
           categories={categories}
           initialValues={products.map((p) => ({
             id: p.id,
-            slug: p.slug,
             order: p.order,
             nameHe: p.nameHe,
             nameEn: p.nameEn ?? "",

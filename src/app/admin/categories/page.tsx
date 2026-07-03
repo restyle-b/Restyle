@@ -16,7 +16,6 @@ export default async function AdminCategoriesPage() {
         <CategoriesForm
           initialValues={categories.map((c) => ({
             id: c.id,
-            slug: c.slug,
             order: c.order,
             nameHe: c.nameHe,
             nameEn: c.nameEn ?? "",
