@@ -1,5 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
+import { getEffectivePriceAgorot } from "@/lib/shop/pricing";
 
 export const PRODUCTS_TAG = "products";
 
@@ -9,7 +10,10 @@ export type ProductItem = {
   name: string;
   description: string;
   priceAgorot: number;
+  effectivePriceAgorot: number; // מבצע אם תקף, אחרת = priceAgorot
+  onSale: boolean;
   stock: number;
+  available: boolean;
   imageUrl: string | null;
   categorySlug: string | null;
 };
@@ -50,29 +54,39 @@ export async function getProducts(locale: string, categorySlug?: string): Promis
   const rows = await cachedFetchProducts();
   return rows
     .filter((r) => !categorySlug || r.category?.slug === categorySlug)
-    .map((r) => ({
-      id: r.id,
-      slug: r.slug,
-      name: pick(locale, r.nameHe, r.nameEn, r.nameAr),
-      description: pick(locale, r.descriptionHe, r.descriptionEn, r.descriptionAr),
-      priceAgorot: r.priceAgorot,
-      stock: r.stock,
-      imageUrl: r.imageUrl,
-      categorySlug: r.category?.slug ?? null,
-    }));
+    .map((r) => {
+      const effectivePriceAgorot = getEffectivePriceAgorot(r.priceAgorot, r.salePriceAgorot);
+      return {
+        id: r.id,
+        slug: r.slug,
+        name: pick(locale, r.nameHe, r.nameEn, r.nameAr),
+        description: pick(locale, r.descriptionHe, r.descriptionEn, r.descriptionAr),
+        priceAgorot: r.priceAgorot,
+        effectivePriceAgorot,
+        onSale: effectivePriceAgorot < r.priceAgorot,
+        stock: r.stock,
+        available: r.available,
+        imageUrl: r.imageUrl,
+        categorySlug: r.category?.slug ?? null,
+      };
+    });
 }
 
 export async function getProductBySlug(locale: string, slug: string): Promise<ProductItem | null> {
   const rows = await cachedFetchProducts();
   const row = rows.find((r) => r.slug === slug);
   if (!row) return null;
+  const effectivePriceAgorot = getEffectivePriceAgorot(row.priceAgorot, row.salePriceAgorot);
   return {
     id: row.id,
     slug: row.slug,
     name: pick(locale, row.nameHe, row.nameEn, row.nameAr),
     description: pick(locale, row.descriptionHe, row.descriptionEn, row.descriptionAr),
     priceAgorot: row.priceAgorot,
+    effectivePriceAgorot,
+    onSale: effectivePriceAgorot < row.priceAgorot,
     stock: row.stock,
+    available: row.available,
     imageUrl: row.imageUrl,
     categorySlug: row.category?.slug ?? null,
   };

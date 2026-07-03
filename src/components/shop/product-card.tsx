@@ -20,7 +20,7 @@ export function ProductCard({
   locale: string;
   outOfStockLabel: string;
 }) {
-  const soldOut = product.stock <= 0;
+  const soldOut = product.stock <= 0 || !product.available;
 
   return (
     <div className="group">
@@ -42,8 +42,13 @@ export function ProductCard({
           <h3 className="font-display text-sm font-bold uppercase tracking-wide text-white transition-colors group-hover:text-accent">
             {product.name}
           </h3>
-          <p className="mt-2 text-sm font-semibold text-accent">
-            {formatAgorot(product.priceAgorot, locale)}
+          <p className="mt-2 flex items-baseline gap-2 text-sm font-semibold text-accent">
+            <span>{formatAgorot(product.effectivePriceAgorot, locale)}</span>
+            {product.onSale && (
+              <span className="text-xs font-normal text-neutral-500 line-through">
+                {formatAgorot(product.priceAgorot, locale)}
+              </span>
+            )}
           </p>
         </div>
       </Link>
@@ -53,7 +58,7 @@ export function ProductCard({
           productId={product.id}
           slug={product.slug}
           name={product.name}
-          priceAgorot={product.priceAgorot}
+          priceAgorot={product.effectivePriceAgorot}
           imageUrl={product.imageUrl}
         />
       )}

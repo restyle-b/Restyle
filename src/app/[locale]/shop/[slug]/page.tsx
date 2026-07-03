@@ -29,7 +29,7 @@ export default async function ProductPage({
   const product = await getProductBySlug(locale, slug);
   if (!product) notFound();
 
-  const inStock = product.stock > 0;
+  const inStock = product.stock > 0 && product.available;
 
   return (
     <Container className="py-20 sm:py-28">
@@ -53,8 +53,13 @@ export default async function ProductPage({
           <h1 className="font-display text-3xl font-bold uppercase tracking-wide text-white sm:text-4xl">
             {product.name}
           </h1>
-          <p className="mt-6 text-2xl font-semibold text-accent">
-            {formatAgorot(product.priceAgorot, locale)}
+          <p className="mt-6 flex items-baseline gap-3 text-2xl font-semibold text-accent">
+            <span>{formatAgorot(product.effectivePriceAgorot, locale)}</span>
+            {product.onSale && (
+              <span className="text-base font-normal text-neutral-500 line-through">
+                {formatAgorot(product.priceAgorot, locale)}
+              </span>
+            )}
           </p>
           <p className="mt-6 leading-relaxed text-neutral-300">{product.description}</p>
 
@@ -66,7 +71,7 @@ export default async function ProductPage({
             productId={product.id}
             slug={product.slug}
             name={product.name}
-            priceAgorot={product.priceAgorot}
+            priceAgorot={product.effectivePriceAgorot}
             imageUrl={product.imageUrl}
             inStock={inStock}
           />

@@ -11,6 +11,7 @@ import { createCheckoutSchema, cartItemsSchema } from "@/lib/checkout/checkout-s
 import { DELIVERY_FEE_AGOROT } from "@/lib/checkout/shipping";
 import { generateOrderNumber } from "@/lib/checkout/order-number";
 import { getPaymentProvider } from "@/lib/payments/get-provider";
+import { getEffectivePriceAgorot } from "@/lib/shop/pricing";
 import { siteConfig } from "@/lib/config";
 
 export type CreateOrderResult =
@@ -59,7 +60,7 @@ export async function createOrder(
   // חישוב מחיר בשרת בלבד — קריאה חיה למוצרים פעילים, לא סומכים על שום דבר מהקליינט.
   const productIds = parsedCart.data.map((i) => i.productId);
   const products = await db.product.findMany({
-    where: { id: { in: productIds }, active: true },
+    where: { id: { in: productIds }, active: true, available: true },
   });
   const productsById = new Map(products.map((p) => [p.id, p]));
 
@@ -80,12 +81,13 @@ export async function createOrder(
     if (product.stock < line.quantity) {
       return { ok: false, error: t("insufficientStock", { name: product.nameHe }) };
     }
-    const lineTotal = product.priceAgorot * line.quantity;
+    const unitPriceAgorot = getEffectivePriceAgorot(product.priceAgorot, product.salePriceAgorot);
+    const lineTotal = unitPriceAgorot * line.quantity;
     subtotalAgorot += lineTotal;
     orderItemsData.push({
       productId: product.id,
       nameHeSnapshot: product.nameHe,
-      unitPriceAgorot: product.priceAgorot,
+      unitPriceAgorot,
       quantity: line.quantity,
       lineTotalAgorot: lineTotal,
     });
