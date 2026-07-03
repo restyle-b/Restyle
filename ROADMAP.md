@@ -89,6 +89,12 @@ Plan: [`docs/features/admin-redesign.md`](./docs/features/admin-redesign.md). Fu
 ## Phase 9 — Restyle app link (booking) ✅
 No booking system on the site — "Book now" CTAs deep-link to the Restyle app (`BookingLink`: Android→Google Play, else App Store), URLs now editable via admin SiteSettings.
 
+## Phase 11 — PWA (two separate installable apps) 🔄
+Plan: [`docs/features/pwa.md`](./docs/features/pwa.md). User request 2026-07-03: PWA for both the public site and the admin panel. Since `[locale]` and `admin` are two independent `<html>` trees (no shared root `layout.tsx`), these are two separate installed apps, not one PWA with modes — separate manifest, icons, and service worker each, on purpose. Key decisions: static `public/*.webmanifest` files (not `app/manifest.ts` — nested-segment support for that convention isn't confirmed, and a leaked manifest between the two apps is a real risk not worth the convenience); `serwist`/`@serwist/next` for the service workers rather than hand-rolled fetch routing (this site has auth/payments/admin — a caching bug here is a security/correctness risk, and a declarative per-route-pattern config is easier to audit than manual `if` branches); strict `NetworkOnly` for `/cart`, `/checkout*`, `/account/*`, `/api/*`, `/auth/*`, and all of `/admin/*` (never cached), `NetworkFirst` for `/shop*` (real prices), `StaleWhileRevalidate` for static marketing pages, `CacheFirst` only for immutable `/_next/static/*` assets. Admin icon set is color-inverted from the public one so the two installed apps are visually distinguishable on a home screen/task switcher.
+- ⬜ Group 1 — Icons + manifests (Playwright-rendered from the existing `icon.svg` mark; `metadata.manifest` wired per layout; iOS meta tags)
+- ⬜ Group 2 — Service workers (serwist config, two SWs with distinct scopes, registration per layout, CSP `worker-src`/`manifest-src`)
+- ⬜ Group 3 — Security review (caching-scope correctness) + QA (Cache Storage inspection on sensitive routes, offline fallback) + roadmap close-out
+
 ## Stages 1/1.1/1.2 — Marketing completion ✅
 Accessibility widget + `/accessibility` statement (IS 5568 / WCAG 2.0 AA), `/academy` content page, `/locations`, quick-contact buttons (floating WhatsApp/phone + Waze/tel/WhatsApp rows, `contact-links.ts` single source), `/privacy` + `/terms`, favicon, real brand logo asset, Brevo email verified in production, Lighthouse pass (a11y/BP 100, perf 88-95, SEO 100 after `force-static` fix on 6 pages).
 
