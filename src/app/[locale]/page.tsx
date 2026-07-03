@@ -14,6 +14,7 @@ import { siteConfig } from "@/lib/config";
 import { getTestimonials } from "@/lib/content/get-testimonials";
 import { getGalleryImages } from "@/lib/content/get-gallery";
 import { getProducts } from "@/lib/content/get-products";
+import { getOpeningHours } from "@/lib/content/get-opening-hours";
 import { cn } from "@/lib/utils";
 
 export default async function HomePage({
@@ -23,8 +24,7 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
-  const tRoot = await getTranslations({ locale });
-  const hours = tRoot.raw("hours") as { day: string; hours: string }[];
+  const hours = await getOpeningHours(locale);
   const testimonials = await getTestimonials(locale);
   const galleryImages = await getGalleryImages(locale);
   const featuredProducts = (await getProducts(locale)).slice(0, 4);

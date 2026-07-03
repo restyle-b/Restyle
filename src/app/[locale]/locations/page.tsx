@@ -9,6 +9,7 @@ import { ContactTiles } from "@/components/locations/contact-tiles";
 import { getContactLinks } from "@/lib/contact-links";
 import { siteConfig } from "@/lib/config";
 import type { Locale } from "@/i18n/routing";
+import { getOpeningHours, getOpeningHourRows } from "@/lib/content/get-opening-hours";
 
 export const dynamic = "force-static";
 
@@ -44,8 +45,7 @@ export default async function LocationsPage({
   const locale = localeParam as Locale;
   const t = await getTranslations({ locale, namespace: "locations" });
   const tActions = await getTranslations({ locale, namespace: "contactActions" });
-  const tRoot = await getTranslations({ locale });
-  const hours = tRoot.raw("hours") as { day: string; hours: string }[];
+  const [hours, hourRows] = await Promise.all([getOpeningHours(locale), getOpeningHourRows()]);
   const contactLinks = getContactLinks(tActions("whatsappMessage"), locale);
 
   return (
@@ -74,7 +74,7 @@ export default async function LocationsPage({
                 </div>
               ))}
             </dl>
-            <OpenNowBadge label={t("openNow")} />
+            <OpenNowBadge label={t("openNow")} hours={hourRows} />
           </div>
 
           <div>

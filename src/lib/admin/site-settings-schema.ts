@@ -43,19 +43,20 @@ export const siteSettingsSchema = z.object({
 
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
 
-const optionalText = z.string().trim().max(100).optional().or(z.literal(""));
+// "HH:MM" בפורמט 24 שעות — ניטרלי-שפה, לא דורש שכפול He/En/Ar.
+const timeString = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "פורמט שעה לא תקין (HH:MM)");
 
-export const openingHourSchema = z.object({
-  id: z.number().int().optional(),
-  dayOrder: z.number().int().min(0).max(6),
-  dayHe: z.string().trim().min(1, "שדה חובה").max(50),
-  dayEn: optionalText,
-  dayAr: optionalText,
-  hoursHe: z.string().trim().min(1, "שדה חובה").max(100),
-  hoursEn: optionalText,
-  hoursAr: optionalText,
-});
+export const openingHourSchema = z
+  .object({
+    dayOrder: z.number().int().min(0).max(6),
+    closed: z.boolean(),
+    openTime: timeString.optional().or(z.literal("")),
+    closeTime: timeString.optional().or(z.literal("")),
+  })
+  .refine((row) => row.closed || (row.openTime && row.closeTime), {
+    message: "יש להזין שעת פתיחה וסגירה, או לסמן 'סגור'",
+  });
 
 export type OpeningHourInput = z.infer<typeof openingHourSchema>;
 
-export const openingHoursSchema = z.array(openingHourSchema).max(7);
+export const openingHoursSchema = z.array(openingHourSchema).length(7);

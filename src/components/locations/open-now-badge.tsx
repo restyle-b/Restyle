@@ -1,28 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { OpeningHourRow } from "@/lib/content/get-opening-hours";
 
 /**
  * בודק אם השעה הנוכחית (של המבקר, בזמן אמת בצד הלקוח) נמצאת בתוך שעות
- * הפעילות — ראשון–חמישי 09:00–20:00, שישי 09:00–14:00, שבת סגור (תואם
- * ל-messages/*.json "hours"). מוצג רק אחרי mount כדי למנוע hydration
- * mismatch (השרת לא יודע את השעה המקומית של המבקר).
+ * הפעילות לפי נתוני ה-DB (dayOrder 0=ראשון, תואם ל-Date.getDay()).
+ * מוצג רק אחרי mount כדי למנוע hydration mismatch (השרת לא יודע את
+ * השעה המקומית של המבקר).
  */
-function isOpenNow(): boolean {
+function isOpenNow(hours: OpeningHourRow[]): boolean {
   const now = new Date();
-  const day = now.getDay();
-  const hour = now.getHours();
-  if (day >= 0 && day <= 4) return hour >= 9 && hour < 20;
-  if (day === 5) return hour >= 9 && hour < 14;
-  return false;
+  const row = hours.find((h) => h.dayOrder === now.getDay());
+  if (!row || row.closed || !row.openTime || !row.closeTime) return false;
+  const current = now.getHours() * 60 + now.getMinutes();
+  const toMinutes = (time: string) => {
+    const [h, m] = time.split(":").map(Number);
+    return (h ?? 0) * 60 + (m ?? 0);
+  };
+  return current >= toMinutes(row.openTime) && current < toMinutes(row.closeTime);
 }
 
-export function OpenNowBadge({ label }: { label: string }) {
+export function OpenNowBadge({ label, hours }: { label: string; hours: OpeningHourRow[] }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setOpen(isOpenNow());
-  }, []);
+    setOpen(isOpenNow(hours));
+  }, [hours]);
 
   if (!open) return null;
 

@@ -1,9 +1,20 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { siteSettingsSchema, openingHoursSchema } from "@/lib/admin/site-settings-schema";
+import { OPENING_HOURS_TAG } from "@/lib/content/get-opening-hours";
+import { routing } from "@/i18n/routing";
+
+function revalidateOpeningHoursPaths() {
+  revalidateTag(OPENING_HOURS_TAG);
+  for (const locale of routing.locales) {
+    const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+    revalidatePath(prefix || "/");
+    revalidatePath(`${prefix}/locations`);
+  }
+}
 
 export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
@@ -56,7 +67,7 @@ export async function updateSiteSettings(input: unknown): Promise<AdminActionRes
   return { ok: true };
 }
 
-export async function getOpeningHours() {
+export async function getOpeningHoursAdmin() {
   await requireAdmin();
   return db.openingHour.findMany({ orderBy: { dayOrder: "asc" } });
 }
@@ -81,25 +92,20 @@ export async function updateOpeningHours(input: unknown): Promise<AdminActionRes
         where: { dayOrder: row.dayOrder },
         create: {
           dayOrder: row.dayOrder,
-          dayHe: row.dayHe,
-          dayEn: toNullable(row.dayEn),
-          dayAr: toNullable(row.dayAr),
-          hoursHe: row.hoursHe,
-          hoursEn: toNullable(row.hoursEn),
-          hoursAr: toNullable(row.hoursAr),
+          closed: row.closed,
+          openTime: row.closed ? null : toNullable(row.openTime),
+          closeTime: row.closed ? null : toNullable(row.closeTime),
         },
         update: {
-          dayHe: row.dayHe,
-          dayEn: toNullable(row.dayEn),
-          dayAr: toNullable(row.dayAr),
-          hoursHe: row.hoursHe,
-          hoursEn: toNullable(row.hoursEn),
-          hoursAr: toNullable(row.hoursAr),
+          closed: row.closed,
+          openTime: row.closed ? null : toNullable(row.openTime),
+          closeTime: row.closed ? null : toNullable(row.closeTime),
         },
       }),
     ),
   );
 
+  revalidateOpeningHoursPaths();
   revalidatePath("/admin/settings");
   return { ok: true };
 }
