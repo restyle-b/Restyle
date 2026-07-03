@@ -15,7 +15,6 @@ const LOCALES = [
 const CORE_PATHS = [
   "/",
   "/about",
-  "/services",
   "/academy",
   "/gallery",
   "/locations",
