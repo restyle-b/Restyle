@@ -14,7 +14,7 @@ export function DialogOverlay({ className, ...props }: React.ComponentProps<type
   return (
     <DialogPrimitive.Overlay
       data-slot="overlay"
-      className={cn("fixed inset-0 z-50 bg-black/70 backdrop-blur-[2px]", className)}
+      className={cn("fixed inset-0 z-50 bg-black/70", className)}
       {...props}
     />
   );

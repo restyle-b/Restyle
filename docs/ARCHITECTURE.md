@@ -163,7 +163,48 @@ server action (`src/server/actions/admin/*.ts`), **בנוסף** לחסימת `/a
 **תתי-שלבים שמומשו:** 8.1 תשתית+SiteSettings → 8.2 שירותים+קורסים → 8.3
 המלצות+גלריה (URL ישיר, ללא R2 עדיין) → 8.4 `ContentBlock` (seed מ-JSON,
 מיגרציה ידנית טרם הורצה ב-Supabase). נותר: 8.5 ניהול משתמשים/הרשאות (security
-סקיל ייעודי), חיבור R2 בפועל. פירוט מלא ב-`ROADMAP.md` Phase 8.
+סקיל ייעודי — **בוטל** לפי החלטת המשתמש, מנהל יחיד), חיבור R2 בפועל. פירוט
+מלא ב-`ROADMAP.md` Phase 8. **הערה:** "שירותים" (`Service`) תואר למעלה כחלק
+מהסכימה המקורית — **נמחק לגמרי** ב-Phase 8.6 לפי בקשת המשתמש (DB+admin+
+עמוד ציבורי+ניווט); הטקסט מעל נשאר כתיעוד היסטורי בלבד.
+
+### 5.2 Admin — רה-דיזיין פרימיום (Phase 8.6, 2026-07-03)
+תכנון מלא: [`docs/features/admin-redesign.md`](./features/admin-redesign.md).
+שינויים ארכיטקטוניים מרכזיים:
+
+- **shadcn/ui אומץ בפועל** (`src/components/ui/`) — עד אז היה רק `Button`.
+  נוספו Badge/Card/Table/Sheet/Dialog/DropdownMenu/Switch/Tooltip/Toaster
+  (Radix primitives + `cva`, כמו `Button` הקיים). מעטפת חדשה: sidebar קבוע
+  (דסקטופ, מקובץ) + Sheet לנייד + topbar (התראות+פרופיל).
+- **`Product` — שלושה צירים עצמאיים** (לא מוזגו לשדה אחד בכוונה, ראה השוואה
+  ל-Shopify Published/Available/Inventory): `active`=נראות בקטלוג הציבורי,
+  `available`=זמינות לרכישה (override ידני, עצמאי ממלאי), `stock`=מלאי
+  (בריאות מלאי — healthy/low/out — **נגזרת** בזמן ריצה, לא מאוחסנת).
+  `salePriceAgorot` (nullable) חובר גם לציבורי+checkout
+  (`src/lib/shop/pricing.ts` `getEffectivePriceAgorot` — מקור אמת יחיד,
+  נקרא גם ב-`get-products.ts` וגם ב-`create-order.ts` כדי שתצוגה וחיוב
+  לעולם לא יסתטרו).
+- **מוצרים: מ"שמור-הכל" ל-server actions גרנולריים.** התבנית הישנה
+  (`updateProducts(rows[])`) שלחה תמיד את כל הטבלה ומחקה כל שורה שלא
+  הופיעה ב-array המוגש — resubmit חלקי (למשל אחרי race או באג קליינט) היה
+  מוחק מוצרים בשקט. הוחלף ב-`createProduct`/`updateProductDetails`/
+  `deleteProduct`/`updateProductPrice`/`updateProductSalePrice`/
+  `updateProductStock`/`toggle{Active,Available,Featured}` — כל אחד
+  `requireAdmin()`+ולידציית zod משלו. Categories/Courses/Testimonials/
+  Gallery/Content/SiteSettings **נשארו** בתבנית "שמור-הכל" (רשימות קטנות,
+  לא נדרש עדיין) — הסיכון תועד כאן במקום להיפתר בכולם בבת אחת.
+- **`ActivityLog` — יומן ביקורת מאוחד חדש**, לא מחליף את
+  `OrderStatusEvent`/`EnrollmentStatusEvent` (אלה עדיין המקור ללקוח/לדף
+  הפרטים). `logActivity()` (`src/lib/admin/activity-log.ts`) — **לא**
+  "use server" בכוונה (אינו endpoint ציבורי; נקרא רק מתוך actions
+  שכבר עברו `requireAdmin()`), best-effort (כשל בכתיבת היומן לא מפיל
+  את הפעולה העסקית). `metadata: Json?` קיים בסכימה לעתיד אך **לא נעשה בו
+  שימוש כרגע** (כל הסיכומים כתובים inline ב-`summary`); אם ישמש בעתיד —
+  לעולם לא נתוני כרטיס/סוד, רק ערכים שהאדמין כבר רואה במסכים אחרים.
+- **תנועת overlay** (`globals.css`, ליד מערכת ה-motion הקיימת) — keyframes
+  חדשים (`overlay-in/out`, `dialog-in/out`, `sheet-in/out-{start,end}`)
+  נשלטים ע"י `data-state`/`data-side` של Radix, בלי תלות ב-plugin; מכבדים
+  את ה-`prefers-reduced-motion` הגלובלי הקיים אוטומטית.
 
 ---
 

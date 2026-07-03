@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
+import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { logActivity } from "@/lib/admin/activity-log";
@@ -266,9 +267,17 @@ async function toggleProductFlag(
   field: "active" | "available" | "featured",
   label: string,
   id: string,
-  value: boolean,
+  valueInput: boolean,
 ): Promise<AdminActionResult> {
   const admin = await requireAdmin();
+
+  // TypeScript מבטיח boolean רק בזמן קומפילציה — קריאה ישירה ל-server action
+  // יכולה לשלוח כל JSON; ולידציה מפורשת כאן, לא רק הסתמכות על Prisma לדחות בשקט.
+  const parsedValue = z.boolean().safeParse(valueInput);
+  if (!parsedValue.success) {
+    return { ok: false, error: "ערך לא תקין" };
+  }
+  const value = parsedValue.data;
 
   const existing = await db.product.findUnique({ where: { id } });
   if (!existing) return { ok: false, error: "מוצר לא נמצא" };
