@@ -3,6 +3,8 @@ import Link from "next/link";
 import type { EnrollmentStatus } from "@prisma/client";
 import { listEnrollments } from "@/server/actions/admin/enrollments";
 import { AdminEnrollmentStatusBadge } from "@/components/admin/enrollment-status-badge";
+import { Pagination } from "@/components/admin/pagination";
+import { adminInputClass } from "@/lib/admin/form-styles";
 import { formatAgorot } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -21,22 +23,45 @@ const STATUS_LABELS: Record<EnrollmentStatus, string> = {
 export default async function AdminEnrollmentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; page?: string }>;
 }) {
-  const { status } = await searchParams;
+  const { status, q, page: pageParam } = await searchParams;
   const statusFilter = STATUS_OPTIONS.includes(status as EnrollmentStatus)
     ? (status as EnrollmentStatus)
     : undefined;
-  const enrollments = await listEnrollments(statusFilter);
+  const page = Math.max(1, Number(pageParam) || 1);
+  const { enrollments, total, pageSize } = await listEnrollments({ statusFilter, search: q, page });
 
   return (
     <div>
       <h1 className="text-2xl font-semibold">הרשמות לקורסים</h1>
-      <p className="mt-1 text-neutral-400">עד 100 ההרשמות האחרונות. לחצו על הרשמה לפרטים ולשינוי סטטוס.</p>
+      <p className="mt-1 text-neutral-400">{total} הרשמות בסינון הנוכחי. לחצו על הרשמה לפרטים ולשינוי סטטוס.</p>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <form method="get" className="mt-6 flex flex-wrap items-center gap-2">
+        {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
+        <input
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="חיפוש: מספר הרשמה, שם, אימייל או טלפון"
+          className={cn(adminInputClass, "max-w-xs")}
+        />
+        <button type="submit" className="rounded-md border border-line-dark px-4 py-2 text-sm hover:border-accent">
+          חיפוש
+        </button>
+        {q && (
+          <Link
+            href={statusFilter ? `/admin/enrollments?status=${statusFilter}` : "/admin/enrollments"}
+            className="text-sm text-neutral-400 hover:text-white"
+          >
+            נקה חיפוש
+          </Link>
+        )}
+      </form>
+
+      <div className="mt-4 flex flex-wrap gap-2">
         <Link
-          href="/admin/enrollments"
+          href={q ? `/admin/enrollments?q=${encodeURIComponent(q)}` : "/admin/enrollments"}
           className={cn(
             "rounded-full border px-4 py-1.5 text-sm transition-colors",
             !statusFilter ? "border-accent bg-accent text-ink" : "border-line-dark text-neutral-300 hover:bg-ink-soft",
@@ -47,7 +72,7 @@ export default async function AdminEnrollmentsPage({
         {STATUS_OPTIONS.map((s) => (
           <Link
             key={s}
-            href={`/admin/enrollments?status=${s}`}
+            href={`/admin/enrollments?status=${s}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
             className={cn(
               "rounded-full border px-4 py-1.5 text-sm transition-colors",
               statusFilter === s ? "border-accent bg-accent text-ink" : "border-line-dark text-neutral-300 hover:bg-ink-soft",
@@ -81,6 +106,14 @@ export default async function AdminEnrollmentsPage({
           </Link>
         ))}
       </div>
+
+      <Pagination
+        basePath="/admin/enrollments"
+        params={{ status: statusFilter, q }}
+        page={page}
+        pageSize={pageSize}
+        total={total}
+      />
     </div>
   );
 }

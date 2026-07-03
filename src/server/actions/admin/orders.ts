@@ -1,27 +1,49 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import type { OrderStatus } from "@prisma/client";
+import type { OrderStatus, Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { ALLOWED_ORDER_TRANSITIONS } from "@/lib/admin/order-status-transitions";
+import { orderStatusSchema } from "@/lib/admin/order-status-schema";
 
 export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
-// TypeScript מאכיף את הטיפוס הזה רק בזמן קומפילציה — קריאה ישירה ל-server
-// action (בעקיפין ל-client bundle) יכולה לשלוח כל string. ולידציה מפורשת
-// כאן היא ההגנה בפועל, לא רק הסתמכות על allow-list/Prisma enum כ-backstop עקיף.
-const orderStatusSchema = z.enum(["PENDING", "PAID", "FULFILLED", "COMPLETED", "CANCELLED", "FAILED"]);
+const PAGE_SIZE = 25;
 
-export async function listOrders(statusFilter?: OrderStatus) {
+export async function listOrders(options?: { statusFilter?: OrderStatus; search?: string; page?: number }) {
   await requireAdmin();
-  return db.order.findMany({
-    where: statusFilter ? { status: statusFilter } : undefined,
-    orderBy: { createdAt: "desc" },
-    take: 100,
-    include: { payment: true },
-  });
+
+  const { statusFilter, search, page = 1 } = options ?? {};
+  const trimmedSearch = search?.trim();
+
+  const where: Prisma.OrderWhereInput = {
+    ...(statusFilter ? { status: statusFilter } : {}),
+    ...(trimmedSearch
+      ? {
+          OR: [
+            { orderNumber: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerName: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerEmail: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerPhone: { contains: trimmedSearch, mode: "insensitive" } },
+          ],
+        }
+      : {}),
+  };
+
+  const currentPage = Math.max(1, page);
+  const [orders, total] = await Promise.all([
+    db.order.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (currentPage - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: { payment: true },
+    }),
+    db.order.count({ where }),
+  ]);
+
+  return { orders, total, page: currentPage, pageSize: PAGE_SIZE };
 }
 
 export async function getOrder(orderNumber: string) {

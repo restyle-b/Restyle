@@ -3,6 +3,8 @@ import Link from "next/link";
 import type { OrderStatus } from "@prisma/client";
 import { listOrders } from "@/server/actions/admin/orders";
 import { AdminOrderStatusBadge } from "@/components/admin/order-status-badge";
+import { Pagination } from "@/components/admin/pagination";
+import { adminInputClass } from "@/lib/admin/form-styles";
 import { formatAgorot } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -22,20 +24,43 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 export default async function AdminOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; page?: string }>;
 }) {
-  const { status } = await searchParams;
+  const { status, q, page: pageParam } = await searchParams;
   const statusFilter = STATUS_OPTIONS.includes(status as OrderStatus) ? (status as OrderStatus) : undefined;
-  const orders = await listOrders(statusFilter);
+  const page = Math.max(1, Number(pageParam) || 1);
+  const { orders, total, pageSize } = await listOrders({ statusFilter, search: q, page });
 
   return (
     <div>
       <h1 className="text-2xl font-semibold">הזמנות</h1>
-      <p className="mt-1 text-neutral-400">עד 100 ההזמנות האחרונות. לחצו על הזמנה לפרטים ולשינוי סטטוס.</p>
+      <p className="mt-1 text-neutral-400">{total} הזמנות בסינון הנוכחי. לחצו על הזמנה לפרטים ולשינוי סטטוס.</p>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <form method="get" className="mt-6 flex flex-wrap items-center gap-2">
+        {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
+        <input
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="חיפוש: מספר הזמנה, שם, אימייל או טלפון"
+          className={cn(adminInputClass, "max-w-xs")}
+        />
+        <button type="submit" className="rounded-md border border-line-dark px-4 py-2 text-sm hover:border-accent">
+          חיפוש
+        </button>
+        {q && (
+          <Link
+            href={statusFilter ? `/admin/orders?status=${statusFilter}` : "/admin/orders"}
+            className="text-sm text-neutral-400 hover:text-white"
+          >
+            נקה חיפוש
+          </Link>
+        )}
+      </form>
+
+      <div className="mt-4 flex flex-wrap gap-2">
         <Link
-          href="/admin/orders"
+          href={q ? `/admin/orders?q=${encodeURIComponent(q)}` : "/admin/orders"}
           className={cn(
             "rounded-full border px-4 py-1.5 text-sm transition-colors",
             !statusFilter ? "border-accent bg-accent text-ink" : "border-line-dark text-neutral-300 hover:bg-ink-soft",
@@ -46,7 +71,7 @@ export default async function AdminOrdersPage({
         {STATUS_OPTIONS.map((s) => (
           <Link
             key={s}
-            href={`/admin/orders?status=${s}`}
+            href={`/admin/orders?status=${s}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
             className={cn(
               "rounded-full border px-4 py-1.5 text-sm transition-colors",
               statusFilter === s ? "border-accent bg-accent text-ink" : "border-line-dark text-neutral-300 hover:bg-ink-soft",
@@ -78,6 +103,8 @@ export default async function AdminOrdersPage({
           </Link>
         ))}
       </div>
+
+      <Pagination basePath="/admin/orders" params={{ status: statusFilter, q }} page={page} pageSize={pageSize} total={total} />
     </div>
   );
 }

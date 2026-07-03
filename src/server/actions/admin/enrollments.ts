@@ -1,23 +1,52 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import type { EnrollmentStatus } from "@prisma/client";
+import type { EnrollmentStatus, Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { ALLOWED_ENROLLMENT_TRANSITIONS } from "@/lib/admin/enrollment-status-transitions";
+import { enrollmentStatusSchema } from "@/lib/admin/enrollment-status-schema";
 
 export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
-const enrollmentStatusSchema = z.enum(["PENDING", "DEPOSIT_PAID", "PAID", "CANCELLED", "FAILED"]);
+const PAGE_SIZE = 25;
 
-export async function listEnrollments(statusFilter?: EnrollmentStatus) {
+export async function listEnrollments(options?: {
+  statusFilter?: EnrollmentStatus;
+  search?: string;
+  page?: number;
+}) {
   await requireAdmin();
-  return db.enrollment.findMany({
-    where: statusFilter ? { status: statusFilter } : undefined,
-    orderBy: { createdAt: "desc" },
-    take: 100,
-  });
+
+  const { statusFilter, search, page = 1 } = options ?? {};
+  const trimmedSearch = search?.trim();
+
+  const where: Prisma.EnrollmentWhereInput = {
+    ...(statusFilter ? { status: statusFilter } : {}),
+    ...(trimmedSearch
+      ? {
+          OR: [
+            { enrollmentNumber: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerName: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerEmail: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerPhone: { contains: trimmedSearch, mode: "insensitive" } },
+          ],
+        }
+      : {}),
+  };
+
+  const currentPage = Math.max(1, page);
+  const [enrollments, total] = await Promise.all([
+    db.enrollment.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (currentPage - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    db.enrollment.count({ where }),
+  ]);
+
+  return { enrollments, total, page: currentPage, pageSize: PAGE_SIZE };
 }
 
 export async function getEnrollment(enrollmentNumber: string) {
