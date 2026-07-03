@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import type { EnrollmentStatus, Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { ALLOWED_ENROLLMENT_TRANSITIONS } from "@/lib/admin/enrollment-status-transitions";
 import { enrollmentStatusSchema } from "@/lib/admin/enrollment-status-schema";
 
@@ -42,11 +43,43 @@ export async function listEnrollments(options?: {
       orderBy: { createdAt: "desc" },
       skip: (currentPage - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
+      include: {
+        statusEvents: { orderBy: { createdAt: "desc" } },
+        payments: { orderBy: { createdAt: "asc" } },
+      },
     }),
     db.enrollment.count({ where }),
   ]);
 
   return { enrollments, total, page: currentPage, pageSize: PAGE_SIZE };
+}
+
+/** מדדים לכרטיסי הסיכום שבראש עמוד ההרשמות — לא תלויים בסינון הנוכחי. */
+export async function getEnrollmentsOverview() {
+  await requireAdmin();
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [pendingCount, todayEnrollments, todayPaymentsAgg, overallAgg] = await Promise.all([
+    db.enrollment.count({ where: { status: "PENDING" } }),
+    db.enrollment.count({ where: { createdAt: { gte: startOfToday } } }),
+    db.coursePayment.aggregate({
+      where: { createdAt: { gte: startOfToday }, status: "SUCCEEDED" },
+      _sum: { amountAgorot: true },
+    }),
+    db.enrollment.aggregate({
+      where: { status: { notIn: ["CANCELLED", "FAILED"] } },
+      _avg: { coursePriceAgorot: true },
+    }),
+  ]);
+
+  return {
+    pendingCount,
+    todayEnrollments,
+    todayRevenueAgorot: todayPaymentsAgg._sum.amountAgorot ?? 0,
+    avgEnrollmentAgorot: Math.round(overallAgg._avg.coursePriceAgorot ?? 0),
+  };
 }
 
 export async function getEnrollment(enrollmentNumber: string) {
@@ -97,6 +130,15 @@ export async function updateEnrollmentStatus(
       },
     }),
   ]);
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "enrollment.status_change",
+    entityType: "enrollment",
+    entityId: enrollment.id,
+    summary: `הרשמה ${enrollmentNumber}: ${enrollment.status} → ${newStatus}`,
+  });
+
   revalidatePath("/admin/enrollments");
   revalidatePath(`/admin/enrollments/${enrollmentNumber}`);
   return { ok: true };

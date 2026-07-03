@@ -5,6 +5,7 @@ import { AdminEnrollmentStatusBadge } from "@/components/admin/enrollment-status
 import { EnrollmentStatusForm } from "@/components/admin/enrollment-status-form";
 import { Breadcrumb } from "@/components/admin/breadcrumb";
 import { StatusHistory } from "@/components/admin/status-history";
+import { Card, CardContent } from "@/components/ui/card";
 import { formatAgorot } from "@/lib/format";
 
 export const metadata: Metadata = { title: "פרטי הרשמה | ניהול" };
@@ -43,65 +44,73 @@ export default async function AdminEnrollmentDetailPage({
         items={[{ label: "הרשמות לקורסים", href: "/admin/enrollments" }, { label: enrollment.enrollmentNumber }]}
       />
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">{enrollment.enrollmentNumber}</h1>
+        <h1 className="font-display text-2xl font-bold text-white">{enrollment.enrollmentNumber}</h1>
         <AdminEnrollmentStatusBadge status={enrollment.status} />
       </div>
 
-      <div className="mt-4">
-        <EnrollmentStatusForm enrollmentNumber={enrollment.enrollmentNumber} currentStatus={enrollment.status} />
-      </div>
+      <Card className="mt-4">
+        <CardContent className="p-4">
+          <EnrollmentStatusForm enrollmentNumber={enrollment.enrollmentNumber} currentStatus={enrollment.status} />
+        </CardContent>
+      </Card>
 
-      <dl className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-          <dt className="text-sm text-neutral-400">קורס</dt>
-          <dd>{enrollment.courseNameHeSnapshot}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-neutral-400">לקוח</dt>
-          <dd>{enrollment.customerName}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-neutral-400">אימייל</dt>
-          <dd>{enrollment.customerEmail}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-neutral-400">טלפון</dt>
-          <dd>{enrollment.customerPhone}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-neutral-400">משתמש רשום</dt>
-          <dd>{enrollment.user?.email ?? "אורח"}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-neutral-400">מחיר / שולם / יתרה</dt>
-          <dd>
-            {formatAgorot(enrollment.coursePriceAgorot, "he")} · {formatAgorot(enrollment.amountPaidAgorot, "he")} ·{" "}
-            {formatAgorot(balance, "he")}
-          </dd>
-        </div>
-      </dl>
+      <Card className="mt-6">
+        <CardContent className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
+          <div>
+            <dt className="text-sm text-neutral-400">קורס</dt>
+            <dd className="text-white">{enrollment.courseNameHeSnapshot}</dd>
+          </div>
+          <div>
+            <dt className="text-sm text-neutral-400">לקוח</dt>
+            <dd className="text-white">{enrollment.customerName}</dd>
+          </div>
+          <div>
+            <dt className="text-sm text-neutral-400">אימייל</dt>
+            <dd className="text-white">{enrollment.customerEmail}</dd>
+          </div>
+          <div>
+            <dt className="text-sm text-neutral-400">טלפון</dt>
+            <dd className="text-white">{enrollment.customerPhone}</dd>
+          </div>
+          <div>
+            <dt className="text-sm text-neutral-400">משתמש רשום</dt>
+            <dd className="text-white">{enrollment.user?.email ?? "אורח"}</dd>
+          </div>
+          <div>
+            <dt className="text-sm text-neutral-400">מחיר / שולם / יתרה</dt>
+            <dd className="text-white">
+              {formatAgorot(enrollment.coursePriceAgorot, "he")} · {formatAgorot(enrollment.amountPaidAgorot, "he")} ·{" "}
+              <span className="text-accent">{formatAgorot(balance, "he")}</span>
+            </dd>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold">תשלומים</h2>
-        <div className="mt-3 space-y-2">
-          {enrollment.payments.map((p) => (
-            <div key={p.id} className="flex items-center justify-between text-sm">
-              <span>
-                {KIND_LABELS[p.kind] ?? p.kind} · {formatAgorot(p.amountAgorot, "he")}
-              </span>
-              <span className="text-neutral-400">{PAYMENT_STATUS_LABELS[p.status] ?? p.status}</span>
-            </div>
-          ))}
-          {enrollment.payments.length === 0 && <p className="text-sm text-neutral-400">אין תשלומים.</p>}
-        </div>
-      </div>
+      <Card className="mt-6">
+        <CardContent className="p-5">
+          <h2 className="text-sm font-medium text-neutral-300">תשלומים</h2>
+          <div className="mt-3 space-y-2">
+            {enrollment.payments.map((p) => (
+              <div key={p.id} className="flex items-center justify-between text-sm">
+                <span className="text-neutral-300">
+                  {KIND_LABELS[p.kind] ?? p.kind} · {formatAgorot(p.amountAgorot, "he")}
+                </span>
+                <span className="text-neutral-400">{PAYMENT_STATUS_LABELS[p.status] ?? p.status}</span>
+              </div>
+            ))}
+            {enrollment.payments.length === 0 && <p className="text-sm text-neutral-400">אין תשלומים.</p>}
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold">היסטוריית סטטוס</h2>
-        <div className="mt-3">
-          <StatusHistory events={enrollment.statusEvents} labels={ENROLLMENT_STATUS_LABELS} />
-        </div>
-      </div>
+      <Card className="mt-6">
+        <CardContent className="p-5">
+          <h2 className="text-sm font-medium text-neutral-300">היסטוריית סטטוס</h2>
+          <div className="mt-4">
+            <StatusHistory events={enrollment.statusEvents} labels={ENROLLMENT_STATUS_LABELS} />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

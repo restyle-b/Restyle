@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { EnrollmentStatus } from "@prisma/client";
-import { listEnrollments } from "@/server/actions/admin/enrollments";
-import { AdminEnrollmentStatusBadge } from "@/components/admin/enrollment-status-badge";
+import { listEnrollments, getEnrollmentsOverview } from "@/server/actions/admin/enrollments";
+import { EnrollmentRow } from "@/components/admin/enrollments/enrollment-row";
 import { Pagination } from "@/components/admin/pagination";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableRow, TableHead } from "@/components/ui/table";
 import { adminInputClass } from "@/lib/admin/form-styles";
 import { formatAgorot } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -30,14 +32,48 @@ export default async function AdminEnrollmentsPage({
     ? (status as EnrollmentStatus)
     : undefined;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { enrollments, total, pageSize } = await listEnrollments({ statusFilter, search: q, page });
+  const [{ enrollments, total, pageSize }, overview] = await Promise.all([
+    listEnrollments({ statusFilter, search: q, page }),
+    getEnrollmentsOverview(),
+  ]);
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">הרשמות לקורסים</h1>
-      <p className="mt-1 text-neutral-400">{total} הרשמות בסינון הנוכחי. לחצו על הרשמה לפרטים ולשינוי סטטוס.</p>
+      <h1 className="font-display text-2xl font-bold text-white">הרשמות לקורסים</h1>
+      <p className="mt-1 text-sm text-neutral-400">{total} הרשמות בסינון הנוכחי.</p>
 
-      <form method="get" className="mt-6 flex flex-wrap items-center gap-2">
+      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-accent [font-variant-numeric:tabular-nums]">
+              {overview.pendingCount}
+            </div>
+            <div className="mt-1 text-xs text-neutral-400">ממתינות לתשלום</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-white [font-variant-numeric:tabular-nums]">
+              {overview.todayEnrollments}
+            </div>
+            <div className="mt-1 text-xs text-neutral-400">הרשמות היום</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-white">{formatAgorot(overview.todayRevenueAgorot, "he")}</div>
+            <div className="mt-1 text-xs text-neutral-400">נגבה היום</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-white">{formatAgorot(overview.avgEnrollmentAgorot, "he")}</div>
+            <div className="mt-1 text-xs text-neutral-400">שווי הרשמה ממוצע</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <form method="get" className="mt-8 flex flex-wrap items-center gap-2">
         {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
         <input
           type="search"
@@ -83,29 +119,30 @@ export default async function AdminEnrollmentsPage({
         ))}
       </div>
 
-      <div className="mt-6 space-y-3">
-        {enrollments.length === 0 && <p className="text-neutral-400">אין הרשמות בסינון זה.</p>}
-        {enrollments.map((e) => (
-          <Link
-            key={e.id}
-            href={`/admin/enrollments/${e.enrollmentNumber}`}
-            className="flex items-center justify-between gap-4 rounded-lg border border-line-dark p-4 hover:border-accent"
-          >
-            <div>
-              <p className="font-medium">{e.enrollmentNumber}</p>
-              <p className="text-sm text-neutral-400">
-                {e.courseNameHeSnapshot} · {e.customerName}
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-neutral-300">
-                {formatAgorot(e.amountPaidAgorot, "he")} / {formatAgorot(e.coursePriceAgorot, "he")}
-              </span>
-              <AdminEnrollmentStatusBadge status={e.status} />
-            </div>
-          </Link>
-        ))}
-      </div>
+      {enrollments.length === 0 ? (
+        <p className="mt-8 text-center text-neutral-400">אין הרשמות בסינון זה.</p>
+      ) : (
+        <div className="mt-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-8" />
+                <TableHead>מספר הרשמה</TableHead>
+                <TableHead>קורס / לקוח</TableHead>
+                <TableHead>מסלול</TableHead>
+                <TableHead>שולם / מחיר</TableHead>
+                <TableHead>תאריך</TableHead>
+                <TableHead>סטטוס</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {enrollments.map((enrollment) => (
+                <EnrollmentRow key={enrollment.id} enrollment={enrollment} />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
       <Pagination
         basePath="/admin/enrollments"
