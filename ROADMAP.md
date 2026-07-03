@@ -74,6 +74,16 @@ Branch `academy-phase-7` → PR #7. Deposit = per-course percentage (default 20%
 ## Phase 8 — Admin CMS ✅ (redesigned 2026-07-03)
 All content manageable at `/admin` (fixed Hebrew RTL, outside `[locale]`): site settings + opening hours, courses, testimonials, gallery, marketing/legal text blocks (`ContentBlock` merged into next-intl messages in `i18n/request.ts`), products/categories, orders, enrollments. Multilingual fields: Hebrew required, en/ar optional with fallback. `requireAdmin()` (session + role, fail-closed) in layout and in every action. **2026-07-03 redesign:** grouped nav with active state; real dashboard (stats + pending counts); two-step confirm before row deletion; shared form styles; breadcrumbs on nested pages; orders/enrollments search + pagination (previously hard-capped at latest 100 — real bug); `SiteSettings` and `OpeningHour` finally wired to the public site (were dead CRUD); opening hours reduced to locale-neutral `openTime/closeTime/closed` (day names derived via `Intl.DateTimeFormat`); **"Services" feature deleted entirely** (DB + admin + public page + nav) at user request. Phase 8.5 (role management UI) cancelled — single admin via SQL script.
 
+## Phase 8.6 — Admin panel premium redesign 🔄
+Plan: [`docs/features/admin-redesign.md`](./docs/features/admin-redesign.md). Full rethink (user request 2026-07-03, explicit "do not simply restyle") — SaaS-dashboard-grade (Shopify/Stripe/Linear/Vercel reference), continuing on `academy-phase-7`/PR #7. Key decisions: `Product` gets 3 new independent columns (`salePriceAgorot`, `available`, `featured` — visibility/availability/stock kept as separate axes); new cross-entity `ActivityLog` model (append-only audit trail, written alongside the existing `OrderStatusEvent`/`EnrollmentStatusEvent` rather than replacing them); adopting shadcn/ui primitives properly (Badge/Card/Table/Sheet/DropdownMenu/Dialog/Switch/Tooltip/`sonner` toasts — only `Button` existed before); products admin drops the "submit the whole array, delete whatever's missing" pattern for granular per-field server actions (this was a real latent bug: any row omitted from a resubmit was silently deleted). Delivery in 7 groups (A–G, see plan doc), each committed+pushed separately like this morning's admin round: A) shell+primitives, B) migration, C) Products & Inventory, D) Orders, E) Course Registrations, F) Activity/History page, G) polish + security + QA.
+- ⬜ A — Foundations (shell + component primitives + new deps)
+- ⬜ B — Data model (migration + schema updates, verified on local Postgres)
+- ⬜ C — Products & Inventory (inline editing, quick-add, filters, stock health)
+- ⬜ D — Orders (stat cards, payment-status filter, expandable rows, timeline)
+- ⬜ E — Course Registrations (same treatment as D)
+- ⬜ F — Activity/History (new page + unified timeline)
+- ⬜ G — Polish (motion, responsive pass, security review, QA, roadmap close-out)
+
 ## Phase 9 — Restyle app link (booking) ✅
 No booking system on the site — "Book now" CTAs deep-link to the Restyle app (`BookingLink`: Android→Google Play, else App Store), URLs now editable via admin SiteSettings.
 
