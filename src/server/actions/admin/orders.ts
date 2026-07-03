@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { OrderStatus, Prisma } from "@prisma/client";
+import type { OrderStatus, PaymentStatus, Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { ALLOWED_ORDER_TRANSITIONS } from "@/lib/admin/order-status-transitions";
 import { orderStatusSchema } from "@/lib/admin/order-status-schema";
 
@@ -11,14 +12,20 @@ export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
 const PAGE_SIZE = 25;
 
-export async function listOrders(options?: { statusFilter?: OrderStatus; search?: string; page?: number }) {
+export async function listOrders(options?: {
+  statusFilter?: OrderStatus;
+  paymentStatusFilter?: PaymentStatus;
+  search?: string;
+  page?: number;
+}) {
   await requireAdmin();
 
-  const { statusFilter, search, page = 1 } = options ?? {};
+  const { statusFilter, paymentStatusFilter, search, page = 1 } = options ?? {};
   const trimmedSearch = search?.trim();
 
   const where: Prisma.OrderWhereInput = {
     ...(statusFilter ? { status: statusFilter } : {}),
+    ...(paymentStatusFilter ? { payment: { status: paymentStatusFilter } } : {}),
     ...(trimmedSearch
       ? {
           OR: [
@@ -38,12 +45,40 @@ export async function listOrders(options?: { statusFilter?: OrderStatus; search?
       orderBy: { createdAt: "desc" },
       skip: (currentPage - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
-      include: { payment: true },
+      include: { payment: true, items: true, statusEvents: { orderBy: { createdAt: "desc" } } },
     }),
     db.order.count({ where }),
   ]);
 
   return { orders, total, page: currentPage, pageSize: PAGE_SIZE };
+}
+
+/** מדדים לכרטיסי הסיכום שבראש עמוד ההזמנות — לא תלויים בסינון הנוכחי. */
+export async function getOrdersOverview() {
+  await requireAdmin();
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [pendingCount, todayAgg, overallAgg] = await Promise.all([
+    db.order.count({ where: { status: "PENDING" } }),
+    db.order.aggregate({
+      where: { createdAt: { gte: startOfToday }, status: { notIn: ["CANCELLED", "FAILED"] } },
+      _sum: { totalAgorot: true },
+      _count: { _all: true },
+    }),
+    db.order.aggregate({
+      where: { status: { notIn: ["CANCELLED", "FAILED"] } },
+      _avg: { totalAgorot: true },
+    }),
+  ]);
+
+  return {
+    pendingCount,
+    todayOrders: todayAgg._count._all,
+    todayRevenueAgorot: todayAgg._sum.totalAgorot ?? 0,
+    avgOrderAgorot: Math.round(overallAgg._avg.totalAgorot ?? 0),
+  };
 }
 
 export async function getOrder(orderNumber: string) {
@@ -87,6 +122,15 @@ export async function updateOrderStatus(
       data: { orderId: order.id, fromStatus: order.status, toStatus: newStatus, changedBy: admin.email },
     }),
   ]);
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "order.status_change",
+    entityType: "order",
+    entityId: order.id,
+    summary: `הזמנה ${orderNumber}: ${order.status} → ${newStatus}`,
+  });
+
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${orderNumber}`);
   return { ok: true };

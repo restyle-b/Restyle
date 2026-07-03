@@ -1,5 +1,5 @@
-import type { OrderStatus } from "@prisma/client";
-import { cn } from "@/lib/utils";
+import type { OrderStatus, PaymentStatus } from "@prisma/client";
+import { Badge } from "@/components/ui/badge";
 
 // אדמין חי מחוץ ל-[locale] (עברית קבועה, בלי next-intl) — לכן תוויות
 // כאן קשיחות בעברית, בנפרד מ-src/components/shop/order-status-badge.tsx
@@ -13,19 +13,36 @@ const LABEL_BY_STATUS: Record<OrderStatus, string> = {
   FAILED: "נכשל",
 };
 
-const COLOR_BY_STATUS: Record<OrderStatus, string> = {
-  PENDING: "bg-yellow-900/60 text-yellow-200",
-  PAID: "bg-blue-900/60 text-blue-200",
-  FULFILLED: "bg-purple-900/60 text-purple-200",
-  COMPLETED: "bg-green-900/60 text-green-200",
-  CANCELLED: "bg-red-900/60 text-red-200",
-  FAILED: "bg-red-900/60 text-red-200",
+const TONE_BY_STATUS: Record<OrderStatus, "warning" | "info" | "purple" | "success" | "danger"> = {
+  PENDING: "warning",
+  PAID: "info",
+  FULFILLED: "purple",
+  COMPLETED: "success",
+  CANCELLED: "danger",
+  FAILED: "danger",
 };
 
 export function AdminOrderStatusBadge({ status }: { status: OrderStatus }) {
-  return (
-    <span className={cn("inline-block rounded-full px-3 py-1 text-xs font-medium", COLOR_BY_STATUS[status])}>
-      {LABEL_BY_STATUS[status]}
-    </span>
-  );
+  return <Badge tone={TONE_BY_STATUS[status]}>{LABEL_BY_STATUS[status]}</Badge>;
+}
+
+const PAYMENT_LABEL: Record<PaymentStatus, string> = {
+  PENDING: "תשלום ממתין",
+  SUCCEEDED: "שולם בהצלחה",
+  FAILED: "תשלום נכשל",
+  REFUNDED: "זוכה",
+  PARTIALLY_REFUNDED: "זוכה חלקית",
+};
+
+const PAYMENT_TONE: Record<PaymentStatus, "warning" | "success" | "danger" | "outline"> = {
+  PENDING: "warning",
+  SUCCEEDED: "success",
+  FAILED: "danger",
+  REFUNDED: "outline",
+  PARTIALLY_REFUNDED: "outline",
+};
+
+export function AdminPaymentStatusBadge({ status }: { status: PaymentStatus | null }) {
+  if (!status) return <Badge tone="outline">ללא תשלום</Badge>;
+  return <Badge tone={PAYMENT_TONE[status]}>{PAYMENT_LABEL[status]}</Badge>;
 }
