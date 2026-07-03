@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { siteSettingsSchema, openingHoursSchema } from "@/lib/admin/site-settings-schema";
 import { OPENING_HOURS_TAG } from "@/lib/content/get-opening-hours";
 import { SITE_SETTINGS_TAG } from "@/lib/content/get-site-settings";
@@ -77,6 +78,13 @@ export async function updateSiteSettings(input: unknown): Promise<AdminActionRes
     },
   });
 
+  await logActivity({
+    actorEmail: admin.email,
+    action: "admin.write",
+    entityType: "settings",
+    summary: "הגדרות אתר עודכנו",
+  });
+
   revalidateSiteSettingsPaths();
   revalidatePath("/admin/settings");
   return { ok: true };
@@ -88,7 +96,7 @@ export async function getOpeningHoursAdmin() {
 }
 
 export async function updateOpeningHours(input: unknown): Promise<AdminActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = openingHoursSchema.safeParse(input);
   if (!parsed.success) {
@@ -119,6 +127,13 @@ export async function updateOpeningHours(input: unknown): Promise<AdminActionRes
       }),
     ),
   );
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "admin.write",
+    entityType: "settings",
+    summary: "שעות פתיחה עודכנו",
+  });
 
   revalidateOpeningHoursPaths();
   revalidatePath("/admin/settings");

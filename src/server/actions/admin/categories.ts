@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { categorySchema, type CategoryInput } from "@/lib/admin/category-schema";
 import { generateSlug } from "@/lib/admin/slug";
 import { CATEGORIES_TAG } from "@/lib/content/get-categories";
@@ -29,7 +30,7 @@ export async function getCategories() {
 }
 
 export async function updateCategories(input: unknown): Promise<AdminActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = categorySchema.array().max(100).safeParse(input);
   if (!parsed.success) {
@@ -66,6 +67,13 @@ export async function updateCategories(input: unknown): Promise<AdminActionResul
         await tx.category.create({ data: { ...data, slug } });
       }
     }
+  });
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "admin.write",
+    entityType: "category",
+    summary: `קטגוריות עודכנו (${rows.length} שורות)`,
   });
 
   revalidatePublicPaths();

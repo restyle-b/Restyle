@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { contentBlocksSchema } from "@/lib/admin/content-schema";
 import { isEditableNamespace } from "@/lib/content/editable-namespaces";
 import { CONTENT_BLOCKS_TAG } from "@/lib/content/get-content-overrides";
@@ -68,6 +69,14 @@ export async function updateContentBlocks(
       }),
     ),
   );
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "admin.write",
+    entityType: "content",
+    entityId: namespace,
+    summary: `טקסטי אתר עודכנו: ${namespace} (${parsed.data.length} שדות)`,
+  });
 
   revalidateTag(CONTENT_BLOCKS_TAG);
   const basePath = NAMESPACE_PATHS[namespace];

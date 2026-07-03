@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { courseSchema, courseShekelsToAgorot, type CourseInput } from "@/lib/admin/courses-schema";
 import { generateSlug } from "@/lib/admin/slug";
 import { COURSES_TAG } from "@/lib/content/get-courses";
@@ -30,7 +31,7 @@ export async function getCourses() {
 }
 
 export async function updateCourses(input: unknown): Promise<AdminActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = courseSchema.array().max(100).safeParse(input);
   if (!parsed.success) {
@@ -86,6 +87,13 @@ export async function updateCourses(input: unknown): Promise<AdminActionResult> 
         await tx.course.create({ data: { ...data, slug } });
       }
     }
+  });
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "admin.write",
+    entityType: "course",
+    summary: `קורסים עודכנו (${rows.length} שורות)`,
   });
 
   revalidatePublicPaths();

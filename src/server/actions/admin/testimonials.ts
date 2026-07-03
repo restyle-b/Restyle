@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { testimonialSchema, type TestimonialInput } from "@/lib/admin/testimonials-schema";
 import { TESTIMONIALS_TAG } from "@/lib/content/get-testimonials";
 import { routing } from "@/i18n/routing";
@@ -28,7 +29,7 @@ export async function getTestimonials() {
 }
 
 export async function updateTestimonials(input: unknown): Promise<AdminActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = testimonialSchema.array().max(100).safeParse(input);
   if (!parsed.success) {
@@ -60,6 +61,13 @@ export async function updateTestimonials(input: unknown): Promise<AdminActionRes
         await tx.testimonial.create({ data });
       }
     }
+  });
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "admin.write",
+    entityType: "testimonial",
+    summary: `המלצות עודכנו (${rows.length} שורות)`,
   });
 
   revalidatePublicPaths();
