@@ -6,10 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { siteSettingsSchema, type SiteSettingsInput } from "@/lib/admin/site-settings-schema";
 import { updateSiteSettings } from "@/server/actions/admin/site-settings";
 import { buttonVariants } from "@/components/ui/button";
+import { adminInputClassLg as inputClass } from "@/lib/admin/form-styles";
 import { cn } from "@/lib/utils";
-
-const inputClass =
-  "w-full rounded-md border border-line-dark bg-ink-soft px-4 py-2.5 text-white placeholder:text-neutral-500 focus:border-accent focus:outline-none";
 
 const FIELDS: { name: keyof SiteSettingsInput; label: string; type?: string }[] = [
   { name: "phone", label: "טלפון" },

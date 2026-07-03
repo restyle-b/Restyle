@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getEnrollment } from "@/server/actions/admin/enrollments";
 import { AdminEnrollmentStatusBadge } from "@/components/admin/enrollment-status-badge";
 import { EnrollmentStatusForm } from "@/components/admin/enrollment-status-form";
+import { Breadcrumb } from "@/components/admin/breadcrumb";
 import { formatAgorot } from "@/lib/format";
 
 export const metadata: Metadata = { title: "פרטי הרשמה | ניהול" };
@@ -30,6 +31,9 @@ export default async function AdminEnrollmentDetailPage({
 
   return (
     <div className="max-w-3xl">
+      <Breadcrumb
+        items={[{ label: "הרשמות לקורסים", href: "/admin/enrollments" }, { label: enrollment.enrollmentNumber }]}
+      />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">{enrollment.enrollmentNumber}</h1>
         <AdminEnrollmentStatusBadge status={enrollment.status} />

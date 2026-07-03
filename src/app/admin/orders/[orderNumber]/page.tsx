@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getOrder } from "@/server/actions/admin/orders";
 import { AdminOrderStatusBadge } from "@/components/admin/order-status-badge";
 import { OrderStatusForm } from "@/components/admin/order-status-form";
+import { Breadcrumb } from "@/components/admin/breadcrumb";
 import { formatAgorot } from "@/lib/format";
 
 export const metadata: Metadata = { title: "פרטי הזמנה | ניהול" };
@@ -32,6 +33,7 @@ export default async function AdminOrderDetailPage({
 
   return (
     <div className="max-w-3xl">
+      <Breadcrumb items={[{ label: "הזמנות", href: "/admin/orders" }, { label: order.orderNumber }]} />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">{order.orderNumber}</h1>
         <AdminOrderStatusBadge status={order.status} />

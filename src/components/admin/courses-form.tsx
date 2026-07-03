@@ -7,14 +7,12 @@ import { z } from "zod";
 import { courseSchema, type CourseInput } from "@/lib/admin/courses-schema";
 import { updateCourses } from "@/server/actions/admin/courses";
 import { buttonVariants } from "@/components/ui/button";
+import { ConfirmRemoveButton } from "@/components/admin/confirm-remove-button";
+import { adminInputClass as inputClass, adminTextareaClass as textareaClass } from "@/lib/admin/form-styles";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({ rows: courseSchema.array() });
 type FormValues = { rows: CourseInput[] };
-
-const inputClass =
-  "w-full rounded-md border border-line-dark bg-ink-soft px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-accent focus:outline-none";
-const textareaClass = cn(inputClass, "min-h-[80px]");
 
 function emptyRow(order: number): CourseInput {
   return {
@@ -73,13 +71,7 @@ export function CoursesForm({ initialValues }: { initialValues: CourseInput[] })
           <div key={field.id} className="rounded-lg border border-line-dark p-4">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-sm text-neutral-400">קורס #{index + 1}</span>
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="text-sm text-red-400 hover:text-red-300"
-              >
-                הסרה
-              </button>
+              <ConfirmRemoveButton onRemove={() => remove(index)} />
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>

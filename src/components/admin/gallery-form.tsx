@@ -7,13 +7,12 @@ import { z } from "zod";
 import { galleryImageSchema, type GalleryImageInput } from "@/lib/admin/gallery-schema";
 import { updateGalleryImages } from "@/server/actions/admin/gallery";
 import { buttonVariants } from "@/components/ui/button";
+import { ConfirmRemoveButton } from "@/components/admin/confirm-remove-button";
+import { adminInputClass as inputClass } from "@/lib/admin/form-styles";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({ rows: galleryImageSchema.array() });
 type FormValues = { rows: GalleryImageInput[] };
-
-const inputClass =
-  "w-full rounded-md border border-line-dark bg-ink-soft px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-accent focus:outline-none";
 
 function emptyRow(order: number): GalleryImageInput {
   return { order, imageUrl: "", altHe: "", altEn: "", altAr: "", active: true };
@@ -49,13 +48,7 @@ export function GalleryForm({ initialValues }: { initialValues: GalleryImageInpu
           <div key={field.id} className="rounded-lg border border-line-dark p-4">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-sm text-neutral-400">תמונה #{index + 1}</span>
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="text-sm text-red-400 hover:text-red-300"
-              >
-                הסרה
-              </button>
+              <ConfirmRemoveButton onRemove={() => remove(index)} />
             </div>
             <input type="hidden" {...register(`rows.${index}.id`)} />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
