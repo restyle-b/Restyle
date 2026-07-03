@@ -120,6 +120,8 @@ export async function createOrder(
       paymentProvider: provider,
       guestLookupToken,
       items: { create: orderItemsData },
+      // רשומת פתיחה בהיסטוריית הסטטוס — כל הזמנה נולדת PENDING.
+      statusEvents: { create: { toStatus: "PENDING", changedBy: "system" } },
     },
   });
 

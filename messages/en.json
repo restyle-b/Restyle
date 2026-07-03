@@ -547,7 +547,8 @@
         "FAILED": "Failed",
         "REFUNDED": "Refunded",
         "PARTIALLY_REFUNDED": "Partially refunded"
-      }
+      },
+      "historyTitle": "Status history"
     },
     "lookup": {
       "title": "Check order status",

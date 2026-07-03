@@ -255,12 +255,28 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  items   OrderItem[]
-  payment Payment?
+  items        OrderItem[]
+  payment      Payment?
+  statusEvents OrderStatusEvent[]
 
   @@index([userId])
   @@index([customerEmail])
   @@map("orders")
+}
+
+// היסטוריית סטטוס להזמנה — כל מעבר נשמר (מי שינה: אדמין/תשלום/מערכת).
+// מוצגת גם למנהל (אדמין) וגם ללקוח. 2026-07-03.
+model OrderStatusEvent {
+  id         String       @id @default(cuid())
+  orderId    String
+  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+  changedBy  String? // אימייל אדמין / "payment" / "system"
+  createdAt  DateTime     @default(now())
+
+  @@index([orderId])
+  @@map("order_status_events")
 }
 
 // שורת פריט בהזמנה — snapshot של שם+מחיר בזמן הרכישה (לא JOIN חי ל-Product,
@@ -359,12 +375,28 @@ model Enrollment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  payments CoursePayment[]
+  payments     CoursePayment[]
+  statusEvents EnrollmentStatusEvent[]
 
   @@index([userId])
   @@index([customerEmail])
   @@index([courseId])
   @@map("enrollments")
+}
+
+// היסטוריית סטטוס להרשמה — כל מעבר נשמר (מי שינה: אדמין/תשלום/מערכת).
+// מוצגת גם למנהל (אדמין) וגם ללקוח. 2026-07-03.
+model EnrollmentStatusEvent {
+  id           String            @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment        @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  fromStatus   EnrollmentStatus?
+  toStatus     EnrollmentStatus
+  changedBy    String? // אימייל אדמין / "payment" / "system"
+  createdAt    DateTime          @default(now())
+
+  @@index([enrollmentId])
+  @@map("enrollment_status_events")
 }
 
 // תשלום קורס — רבים-ל-אחד להרשמה (מקדמה + יתרה). לעולם לא PAN/CVV.

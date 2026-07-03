@@ -547,7 +547,8 @@
         "FAILED": "נכשל",
         "REFUNDED": "זוכה",
         "PARTIALLY_REFUNDED": "זוכה חלקית"
-      }
+      },
+      "historyTitle": "היסטוריית סטטוס"
     },
     "lookup": {
       "title": "בדיקת סטטוס הזמנה",

@@ -53,7 +53,11 @@ export async function getEnrollment(enrollmentNumber: string) {
   await requireAdmin();
   return db.enrollment.findUnique({
     where: { enrollmentNumber },
-    include: { payments: { orderBy: { createdAt: "asc" } }, user: { select: { email: true } } },
+    include: {
+      payments: { orderBy: { createdAt: "asc" } },
+      user: { select: { email: true } },
+      statusEvents: { orderBy: { createdAt: "desc" } },
+    },
   });
 }
 
@@ -61,7 +65,7 @@ export async function updateEnrollmentStatus(
   enrollmentNumber: string,
   newStatusInput: EnrollmentStatus,
 ): Promise<AdminActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsed = enrollmentStatusSchema.safeParse(newStatusInput);
   if (!parsed.success) {
@@ -71,7 +75,7 @@ export async function updateEnrollmentStatus(
 
   const enrollment = await db.enrollment.findUnique({
     where: { enrollmentNumber },
-    select: { status: true },
+    select: { id: true, status: true },
   });
   if (!enrollment) {
     return { ok: false, error: "הרשמה לא נמצאה" };
@@ -82,7 +86,17 @@ export async function updateEnrollmentStatus(
     return { ok: false, error: `מעבר מ-${enrollment.status} ל-${newStatus} אינו מותר` };
   }
 
-  await db.enrollment.update({ where: { enrollmentNumber }, data: { status: newStatus } });
+  await db.$transaction([
+    db.enrollment.update({ where: { enrollmentNumber }, data: { status: newStatus } }),
+    db.enrollmentStatusEvent.create({
+      data: {
+        enrollmentId: enrollment.id,
+        fromStatus: enrollment.status,
+        toStatus: newStatus,
+        changedBy: admin.email,
+      },
+    }),
+  ]);
   revalidatePath("/admin/enrollments");
   revalidatePath(`/admin/enrollments/${enrollmentNumber}`);
   return { ok: true };

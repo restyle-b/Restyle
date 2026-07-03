@@ -50,7 +50,12 @@ export async function getOrder(orderNumber: string) {
   await requireAdmin();
   return db.order.findUnique({
     where: { orderNumber },
-    include: { items: true, payment: true, user: { select: { email: true } } },
+    include: {
+      items: true,
+      payment: true,
+      user: { select: { email: true } },
+      statusEvents: { orderBy: { createdAt: "desc" } },
+    },
   });
 }
 
@@ -58,7 +63,7 @@ export async function updateOrderStatus(
   orderNumber: string,
   newStatusInput: OrderStatus,
 ): Promise<AdminActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsedStatus = orderStatusSchema.safeParse(newStatusInput);
   if (!parsedStatus.success) {
@@ -66,7 +71,7 @@ export async function updateOrderStatus(
   }
   const newStatus = parsedStatus.data;
 
-  const order = await db.order.findUnique({ where: { orderNumber }, select: { status: true } });
+  const order = await db.order.findUnique({ where: { orderNumber }, select: { id: true, status: true } });
   if (!order) {
     return { ok: false, error: "הזמנה לא נמצאה" };
   }
@@ -76,7 +81,12 @@ export async function updateOrderStatus(
     return { ok: false, error: `מעבר מ-${order.status} ל-${newStatus} אינו מותר` };
   }
 
-  await db.order.update({ where: { orderNumber }, data: { status: newStatus } });
+  await db.$transaction([
+    db.order.update({ where: { orderNumber }, data: { status: newStatus } }),
+    db.orderStatusEvent.create({
+      data: { orderId: order.id, fromStatus: order.status, toStatus: newStatus, changedBy: admin.email },
+    }),
+  ]);
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${orderNumber}`);
   return { ok: true };

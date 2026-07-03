@@ -4,12 +4,20 @@ import { getEnrollment } from "@/server/actions/admin/enrollments";
 import { AdminEnrollmentStatusBadge } from "@/components/admin/enrollment-status-badge";
 import { EnrollmentStatusForm } from "@/components/admin/enrollment-status-form";
 import { Breadcrumb } from "@/components/admin/breadcrumb";
+import { StatusHistory } from "@/components/admin/status-history";
 import { formatAgorot } from "@/lib/format";
 
 export const metadata: Metadata = { title: "פרטי הרשמה | ניהול" };
 export const dynamic = "force-dynamic";
 
 const KIND_LABELS: Record<string, string> = { DEPOSIT: "מקדמה", BALANCE: "יתרה", FULL: "תשלום מלא" };
+const ENROLLMENT_STATUS_LABELS: Record<string, string> = {
+  PENDING: "ממתין לתשלום",
+  DEPOSIT_PAID: "מקדמה שולמה",
+  PAID: "שולם במלואו",
+  CANCELLED: "בוטל",
+  FAILED: "נכשל",
+};
 const PAYMENT_STATUS_LABELS: Record<string, string> = {
   PENDING: "ממתין",
   SUCCEEDED: "שולם",
@@ -85,6 +93,13 @@ export default async function AdminEnrollmentDetailPage({
             </div>
           ))}
           {enrollment.payments.length === 0 && <p className="text-sm text-neutral-400">אין תשלומים.</p>}
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold">היסטוריית סטטוס</h2>
+        <div className="mt-3">
+          <StatusHistory events={enrollment.statusEvents} labels={ENROLLMENT_STATUS_LABELS} />
         </div>
       </div>
     </div>

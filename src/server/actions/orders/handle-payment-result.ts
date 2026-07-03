@@ -37,6 +37,9 @@ export async function handlePaymentResult(
         data: { status: "FAILED", failureReason: result.reason },
       }),
       db.order.update({ where: { id: order.id }, data: { status: "FAILED" } }),
+      db.orderStatusEvent.create({
+        data: { orderId: order.id, fromStatus: order.status, toStatus: "FAILED", changedBy: "payment" },
+      }),
     ]);
     return { ok: true };
   }
@@ -56,6 +59,9 @@ export async function handlePaymentResult(
         data: { status: "FAILED", failureReason: "amount mismatch" },
       }),
       db.order.update({ where: { id: order.id }, data: { status: "FAILED" } }),
+      db.orderStatusEvent.create({
+        data: { orderId: order.id, fromStatus: order.status, toStatus: "FAILED", changedBy: "payment" },
+      }),
     ]);
     return { ok: false, reason: "amount mismatch" };
   }
@@ -71,6 +77,9 @@ export async function handlePaymentResult(
       },
     }),
     db.order.update({ where: { id: order.id }, data: { status: "PAID" } }),
+    db.orderStatusEvent.create({
+      data: { orderId: order.id, fromStatus: order.status, toStatus: "PAID", changedBy: "payment" },
+    }),
     ...order.items
       .filter((item) => item.productId)
       .map((item) =>

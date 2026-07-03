@@ -38,7 +38,7 @@ export default async function AccountOrderDetailPage({
   // הגיעו לכאן דרך הרשימה (IDOR defense, כל URL הזמנה ניתן להקלדה ישירה).
   const order = await db.order.findUnique({
     where: { orderNumber },
-    include: { items: true, payment: true },
+    include: { items: true, payment: true, statusEvents: { orderBy: { createdAt: "desc" } } },
   });
   if (!order || order.userId !== data.user.id) {
     notFound();
@@ -63,6 +63,11 @@ export default async function AccountOrderDetailPage({
       lineTotalAgorot: item.lineTotalAgorot,
     })),
     payment: order.payment ? { status: order.payment.status, last4: order.payment.last4 } : null,
+    statusEvents: order.statusEvents.map((event) => ({
+      id: event.id,
+      toStatus: event.toStatus,
+      createdAt: event.createdAt,
+    })),
   };
 
   return (

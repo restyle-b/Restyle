@@ -97,6 +97,8 @@ export async function createEnrollment(
       coursePriceAgorot,
       depositAgorot,
       paymentProvider: provider,
+      // רשומת פתיחה בהיסטוריית הסטטוס — כל הרשמה נולדת PENDING.
+      statusEvents: { create: { toStatus: "PENDING", changedBy: "system" } },
     },
   });
 

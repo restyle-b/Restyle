@@ -4,6 +4,7 @@ import { getOrder } from "@/server/actions/admin/orders";
 import { AdminOrderStatusBadge } from "@/components/admin/order-status-badge";
 import { OrderStatusForm } from "@/components/admin/order-status-form";
 import { Breadcrumb } from "@/components/admin/breadcrumb";
+import { StatusHistory } from "@/components/admin/status-history";
 import { formatAgorot } from "@/lib/format";
 
 export const metadata: Metadata = { title: "פרטי הזמנה | ניהול" };
@@ -20,6 +21,20 @@ const PAYMENT_STATUS_LABELS: Record<string, string> = {
 const DELIVERY_LABELS: Record<string, string> = {
   PICKUP: "איסוף עצמי",
   DELIVERY: "משלוח",
+};
+
+const ORDER_STATUS_LABELS: Record<string, string> = {
+  PENDING: "ממתין לתשלום",
+  PAID: "שולם",
+  FULFILLED: "מוכן/נשלח",
+  COMPLETED: "הושלם",
+  CANCELLED: "בוטל",
+  FAILED: "נכשל",
+};
+
+const PROVIDER_LABELS: Record<string, string> = {
+  mock: "תשלום מדומה (בדיקות)",
+  tranzila: "כרטיס אשראי (טרנזילה)",
 };
 
 export default async function AdminOrderDetailPage({
@@ -109,8 +124,8 @@ export default async function AdminOrderDetailPage({
           <h2 className="text-lg font-semibold">תשלום</h2>
           <dl className="mt-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
             <div>
-              <dt className="text-neutral-400">ספק</dt>
-              <dd>{order.payment.provider}</dd>
+              <dt className="text-neutral-400">אמצעי תשלום</dt>
+              <dd>{PROVIDER_LABELS[order.payment.provider] ?? order.payment.provider}</dd>
             </div>
             <div>
               <dt className="text-neutral-400">סטטוס</dt>
@@ -122,9 +137,21 @@ export default async function AdminOrderDetailPage({
                 <dd>**** {order.payment.last4}</dd>
               </div>
             )}
+            <div>
+              <dt className="text-neutral-400">חשבונית</dt>
+              {/* חשבונית מס תחובר בהמשך — ממתין לבחירת ספק חשבוניות + מספר עוסק (החלטת המשתמש 2026-07-01). */}
+              <dd className="text-neutral-500">תחובר בהמשך (ספק חשבוניות טרם נבחר)</dd>
+            </div>
           </dl>
         </div>
       )}
+
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold">היסטוריית סטטוס</h2>
+        <div className="mt-3">
+          <StatusHistory events={order.statusEvents} labels={ORDER_STATUS_LABELS} />
+        </div>
+      </div>
     </div>
   );
 }

@@ -547,7 +547,8 @@
         "FAILED": "فشل",
         "REFUNDED": "تم الاسترداد",
         "PARTIALLY_REFUNDED": "استرداد جزئي"
-      }
+      },
+      "historyTitle": "سجل الحالة"
     },
     "lookup": {
       "title": "تحقق من حالة الطلب",

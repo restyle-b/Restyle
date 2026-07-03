@@ -43,7 +43,17 @@ export async function handleEnrollmentPaymentResult(
       // כישלון התשלום הראשון (הרשמה עדיין PENDING) → ההרשמה נכשלה. אם כבר
       // שולמה מקדמה (DEPOSIT_PAID) וכשל תשלום יתרה — משאירים DEPOSIT_PAID.
       ...(enrollment.status === "PENDING"
-        ? [db.enrollment.update({ where: { id: enrollment.id }, data: { status: "FAILED" } })]
+        ? [
+            db.enrollment.update({ where: { id: enrollment.id }, data: { status: "FAILED" } }),
+            db.enrollmentStatusEvent.create({
+              data: {
+                enrollmentId: enrollment.id,
+                fromStatus: enrollment.status,
+                toStatus: "FAILED",
+                changedBy: "payment",
+              },
+            }),
+          ]
         : []),
     ]);
     return { ok: true };
@@ -80,6 +90,14 @@ export async function handleEnrollmentPaymentResult(
     db.enrollment.update({
       where: { id: enrollment.id },
       data: { amountPaidAgorot: newAmountPaid, status: newStatus },
+    }),
+    db.enrollmentStatusEvent.create({
+      data: {
+        enrollmentId: enrollment.id,
+        fromStatus: enrollment.status,
+        toStatus: newStatus,
+        changedBy: "payment",
+      },
     }),
   ]);
   // המקום "נתפס" מרגע DEPOSIT_PAID/PAID — נספר דינמית ב-getCourseBySlug/
