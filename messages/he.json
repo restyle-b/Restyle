@@ -253,7 +253,8 @@
     "eyebrow": "עבודות נבחרות",
     "title": "גלריה",
     "workImageLabel": "תמונת עבודה",
-    "studioImageLabel": "הסטודיו שלנו"
+    "studioImageLabel": "הסטודיו שלנו",
+    "instagramCta": "עוד עבודות באינסטגרם"
   },
   "locations": {
     "metaTitle": "מיקום ושעות",
@@ -268,7 +269,9 @@
     "emailLabel": "אימייל:",
     "quickContactHeading": "יצירת קשר מהירה",
     "bookingCta": "קביעת תור באפליקציה",
-    "mapTitle": "מפה — {address}"
+    "mapTitle": "מפה — {address}",
+    "openNow": "פתוח עכשיו",
+    "tileWhatsappSub": "מענה מהיר"
   },
   "privacy": {
     "metaTitle": "מדיניות פרטיות",
@@ -424,7 +427,8 @@
     "waze": "ניווט בוייז",
     "call": "התקשרו אלינו",
     "whatsapp": "וואטסאפ",
-    "whatsappMessage": "היי! אשמח לקבל פרטים על ReStyle."
+    "whatsappMessage": "היי! אשמח לקבל פרטים על ReStyle.",
+    "instagram": "אינסטגרם"
   },
   "floatingContact": {
     "whatsappAria": "צ'אט בוואטסאפ",

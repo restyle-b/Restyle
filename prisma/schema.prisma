@@ -122,6 +122,10 @@ model Testimonial {
   nameHe    String
   nameEn    String?
   nameAr    String?
+  // תפקיד/תיאור קצר להצגה "שם · תפקיד" (אופציונלי — לא כל המלצה צריכה אחד).
+  roleHe    String?
+  roleEn    String?
+  roleAr    String?
   quoteHe   String   @db.Text
   quoteEn   String?  @db.Text
   quoteAr   String?  @db.Text

@@ -253,7 +253,8 @@
     "eyebrow": "Selected Work",
     "title": "Gallery",
     "workImageLabel": "Work photo",
-    "studioImageLabel": "Our studio"
+    "studioImageLabel": "Our studio",
+    "instagramCta": "More work on Instagram"
   },
   "locations": {
     "metaTitle": "Location & Hours",
@@ -268,7 +269,9 @@
     "emailLabel": "Email:",
     "quickContactHeading": "Quick Contact",
     "bookingCta": "Book in the app",
-    "mapTitle": "Map — {address}"
+    "mapTitle": "Map — {address}",
+    "openNow": "Open now",
+    "tileWhatsappSub": "Fast reply"
   },
   "privacy": {
     "metaTitle": "Privacy Policy",
@@ -424,7 +427,8 @@
     "waze": "Navigate with Waze",
     "call": "Call Us",
     "whatsapp": "WhatsApp",
-    "whatsappMessage": "Hi! I would like more information about ReStyle."
+    "whatsappMessage": "Hi! I would like more information about ReStyle.",
+    "instagram": "Instagram"
   },
   "floatingContact": {
     "whatsappAria": "Chat on WhatsApp",

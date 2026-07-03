@@ -17,7 +17,19 @@ const inputClass =
 const textareaClass = cn(inputClass, "min-h-[80px]");
 
 function emptyRow(order: number): TestimonialInput {
-  return { order, nameHe: "", nameEn: "", nameAr: "", quoteHe: "", quoteEn: "", quoteAr: "", active: true };
+  return {
+    order,
+    nameHe: "",
+    nameEn: "",
+    nameAr: "",
+    roleHe: "",
+    roleEn: "",
+    roleAr: "",
+    quoteHe: "",
+    quoteEn: "",
+    quoteAr: "",
+    active: true,
+  };
 }
 
 export function TestimonialsForm({ initialValues }: { initialValues: TestimonialInput[] }) {
@@ -86,6 +98,24 @@ export function TestimonialsForm({ initialValues }: { initialValues: Testimonial
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-neutral-300">שם (ערבית)</label>
                 <input className={inputClass} {...register(`rows.${index}.nameAr`)} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  תפקיד (עברית) — אופציונלי
+                </label>
+                <input
+                  className={inputClass}
+                  placeholder="לדוגמה: בוגר האקדמיה"
+                  {...register(`rows.${index}.roleHe`)}
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">תפקיד (אנגלית)</label>
+                <input className={inputClass} {...register(`rows.${index}.roleEn`)} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">תפקיד (ערבית)</label>
+                <input className={inputClass} {...register(`rows.${index}.roleAr`)} />
               </div>
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-sm font-medium text-neutral-300">

@@ -253,7 +253,8 @@
     "eyebrow": "أعمال مختارة",
     "title": "معرض الصور",
     "workImageLabel": "صورة عمل",
-    "studioImageLabel": "الاستوديو الخاص بنا"
+    "studioImageLabel": "الاستوديو الخاص بنا",
+    "instagramCta": "المزيد من الأعمال على إنستغرام"
   },
   "locations": {
     "metaTitle": "الموقع وساعات العمل",
@@ -268,7 +269,9 @@
     "emailLabel": "البريد الإلكتروني:",
     "quickContactHeading": "تواصل سريع",
     "bookingCta": "حجز موعد في التطبيق",
-    "mapTitle": "خريطة — {address}"
+    "mapTitle": "خريطة — {address}",
+    "openNow": "مفتوح الآن",
+    "tileWhatsappSub": "رد سريع"
   },
   "privacy": {
     "metaTitle": "سياسة الخصوصية",
@@ -424,7 +427,8 @@
     "waze": "التنقل عبر Waze",
     "call": "اتصلوا بنا",
     "whatsapp": "واتساب",
-    "whatsappMessage": "مرحبًا! أرغب في الحصول على معلومات حول ريستايل."
+    "whatsappMessage": "مرحبًا! أرغب في الحصول على معلومات حول ريستايل.",
+    "instagram": "إنستغرام"
   },
   "floatingContact": {
     "whatsappAria": "محادثة عبر واتساب",

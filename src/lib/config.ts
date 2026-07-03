@@ -13,7 +13,7 @@ export const siteConfig = {
   },
 
   social: {
-    instagram: "#",
+    instagram: "https://www.instagram.com/avraham.hairartist",
     facebook: "#",
     whatsapp: "#",
   },

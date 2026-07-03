@@ -3,9 +3,15 @@ import { db } from "@/lib/db";
 
 export const TESTIMONIALS_TAG = "testimonials";
 
-export type TestimonialItem = { id: string; name: string; quote: string };
+export type TestimonialItem = { id: string; name: string; role: string | null; quote: string };
 
 function pick(locale: string, he: string, en: string | null, ar: string | null) {
+  if (locale === "en" && en) return en;
+  if (locale === "ar" && ar) return ar;
+  return he;
+}
+
+function pickNullable(locale: string, he: string | null, en: string | null, ar: string | null) {
   if (locale === "en" && en) return en;
   if (locale === "ar" && ar) return ar;
   return he;
@@ -31,12 +37,13 @@ export async function getTestimonials(locale: string): Promise<TestimonialItem[]
     return rows.map((r) => ({
       id: r.id,
       name: pick(locale, r.nameHe, r.nameEn, r.nameAr),
+      role: pickNullable(locale, r.roleHe, r.roleEn, r.roleAr),
       quote: pick(locale, r.quoteHe, r.quoteEn, r.quoteAr),
     }));
   }
 
   const messages = (await import(`../../../messages/${locale}.json`)).default;
-  return (messages.testimonialsData.items as { name: string; quote: string }[]).map(
-    (item, i) => ({ id: String(i), ...item }),
-  );
+  return (
+    messages.testimonialsData.items as { name: string; role?: string; quote: string }[]
+  ).map((item, i) => ({ id: String(i), role: null, ...item }));
 }

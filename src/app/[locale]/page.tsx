@@ -15,6 +15,7 @@ import { getServices } from "@/lib/content/get-services";
 import { getTestimonials } from "@/lib/content/get-testimonials";
 import { getGalleryImages } from "@/lib/content/get-gallery";
 import { getProducts } from "@/lib/content/get-products";
+import { cn } from "@/lib/utils";
 
 export default async function HomePage({
   params,
@@ -293,20 +294,41 @@ export default async function HomePage({
               title={t("testimonialsTitle")}
             />
           </Reveal>
-          {/* מפריד "קו גזירה" על רקע כהה — מוטיב המספריים */}
-          <CutLineDivider tone="dark" className="mx-auto mt-10 max-w-md" />
-          <div className="mt-6 grid gap-px sm:grid-cols-3">
-            {testimonials.map((item, i) => (
-              <Reveal key={item.id} delay={i * 80}>
-                <figure className="border-line-dark h-full border-t px-6 py-8 text-center">
-                  <span className="font-display text-accent text-4xl">&rdquo;</span>
-                  <blockquote className="mt-2 text-neutral-300">{item.quote}</blockquote>
-                  <figcaption className="font-display mt-4 text-sm font-semibold tracking-wide text-white uppercase">
-                    {item.name}
+          {/* פריסה א-סימטרית — ציטוט מוביל גדול + שני ציטוטים תומכים קטנים,
+              במקום 3 עמודות שוות-משקל (לחיזוק ה-social proof). */}
+          <div className="mt-10 grid items-start gap-12 md:grid-cols-[1.5fr_1fr]">
+            {testimonials[0] && (
+              <Reveal>
+                <figure className="border-cream border-s-2 ps-7">
+                  <blockquote className="font-display text-[clamp(1.4rem,2.4vw,1.9rem)] leading-snug font-semibold text-white">
+                    &rdquo;{testimonials[0].quote}&rdquo;
+                  </blockquote>
+                  <figcaption className="text-accent-soft mt-5 text-[13.5px] tracking-[0.12em] uppercase">
+                    {testimonials[0].name}
+                    {testimonials[0].role && ` · ${testimonials[0].role}`}
                   </figcaption>
                 </figure>
               </Reveal>
-            ))}
+            )}
+            {testimonials.length > 1 && (
+              <div className="flex flex-col">
+                {testimonials.slice(1, 3).map((item, i, side) => (
+                  <Reveal key={item.id} delay={80 + i * 80}>
+                    <figure
+                      className={cn(
+                        "border-line-dark border-t py-[22px]",
+                        i === side.length - 1 && "border-b",
+                      )}
+                    >
+                      <blockquote className="text-[15px] text-neutral-300">&rdquo;{item.quote}&rdquo;</blockquote>
+                      <figcaption className="mt-2.5 text-[12.5px] tracking-[0.12em] text-neutral-500 uppercase">
+                        {item.name}
+                      </figcaption>
+                    </figure>
+                  </Reveal>
+                ))}
+              </div>
+            )}
           </div>
         </Container>
       </section>
