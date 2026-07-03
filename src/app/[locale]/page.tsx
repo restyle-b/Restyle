@@ -15,6 +15,7 @@ import { getTestimonials } from "@/lib/content/get-testimonials";
 import { getGalleryImages } from "@/lib/content/get-gallery";
 import { getProducts } from "@/lib/content/get-products";
 import { getOpeningHours } from "@/lib/content/get-opening-hours";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 import { cn } from "@/lib/utils";
 
 export default async function HomePage({
@@ -25,6 +26,7 @@ export default async function HomePage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
   const hours = await getOpeningHours(locale);
+  const contact = await getSiteContactInfo();
   const testimonials = await getTestimonials(locale);
   const galleryImages = await getGalleryImages(locale);
   const featuredProducts = (await getProducts(locale)).slice(0, 4);
@@ -55,7 +57,11 @@ export default async function HomePage({
             {t("heroSubtitle")}
           </p>
           <div className="animate-fade-up mt-10 flex flex-wrap gap-4 [animation-delay:360ms]">
-            <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>
+            <BookingLink
+              className={buttonVariants({ size: "lg", variant: "light" })}
+              appStoreUrl={contact.appStoreUrl}
+              googlePlayUrl={contact.googlePlayUrl}
+            >
               {t("bookingCta")}
             </BookingLink>
             <Link href="/shop" className={buttonVariants({ variant: "outline", size: "lg" })}>
@@ -84,7 +90,11 @@ export default async function HomePage({
             <p className="mx-auto mt-3 max-w-md text-neutral-300">{t("ctaText")}</p>
           </Reveal>
           <Reveal className="mt-8">
-            <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>
+            <BookingLink
+              className={buttonVariants({ size: "lg", variant: "light" })}
+              appStoreUrl={contact.appStoreUrl}
+              googlePlayUrl={contact.googlePlayUrl}
+            >
               {t("ctaBooking")}
             </BookingLink>
           </Reveal>
@@ -312,11 +322,11 @@ export default async function HomePage({
               <dl className="mt-8 space-y-3 text-neutral-700">
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("addressLabel")}</dt>
-                  <dd>{siteConfig.contact.address}</dd>
+                  <dd>{contact.address}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("phoneLabel")}</dt>
-                  <dd>{siteConfig.contact.phone}</dd>
+                  <dd>{contact.phone}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("hoursLabel")}</dt>

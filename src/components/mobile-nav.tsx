@@ -13,7 +13,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/wordmark";
 import { navLinks } from "@/lib/config";
 
-export function MobileNav() {
+export function MobileNav({
+  appStoreUrl,
+  googlePlayUrl,
+}: {
+  appStoreUrl?: string;
+  googlePlayUrl?: string;
+}) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -149,6 +155,8 @@ export function MobileNav() {
               <BookingLink
                 className={`${buttonVariants({ size: "sm", variant: "light" })} w-full`}
                 onClick={() => setOpen(false)}
+                appStoreUrl={appStoreUrl}
+                googlePlayUrl={googlePlayUrl}
               >
                 {t("bookingCta")}
               </BookingLink>

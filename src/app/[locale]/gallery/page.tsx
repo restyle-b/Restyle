@@ -7,7 +7,7 @@ import { ImagePlaceholder } from "@/components/image-placeholder";
 import { InstagramIcon } from "@/components/icons/instagram-icon";
 import { buttonVariants } from "@/components/ui/button";
 import { getGalleryImages } from "@/lib/content/get-gallery";
-import { siteConfig } from "@/lib/config";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 
 export async function generateMetadata({
   params,
@@ -27,6 +27,7 @@ export default async function GalleryPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "gallery" });
   const images = await getGalleryImages(locale);
+  const contact = await getSiteContactInfo();
 
   return (
     <Container className="py-20">
@@ -63,7 +64,7 @@ export default async function GalleryPage({
 
       <div className="mt-12 flex justify-center">
         <a
-          href={siteConfig.social.instagram}
+          href={contact.instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
           className={buttonVariants({ size: "lg" })}

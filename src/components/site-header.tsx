@@ -15,7 +15,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { navLinks } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
+export function SiteHeader({
+  appStoreUrl,
+  googlePlayUrl,
+}: {
+  appStoreUrl?: string;
+  googlePlayUrl?: string;
+}) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const isRtl = locale !== "en";
@@ -100,10 +106,14 @@ export function SiteHeader() {
           <LocaleSwitcher className="hidden md:inline-flex" />
           <AccountIconLink className="hidden h-9 w-9 items-center justify-center rounded-full text-neutral-300 transition-colors hover:bg-current/10 hover:text-white md:flex" />
           <CartIconLink />
-          <BookingLink className={cn(buttonVariants({ size: "sm", variant: "light" }), "hidden md:inline-flex")}>
+          <BookingLink
+            className={cn(buttonVariants({ size: "sm", variant: "light" }), "hidden md:inline-flex")}
+            appStoreUrl={appStoreUrl}
+            googlePlayUrl={googlePlayUrl}
+          >
             {t("bookingCta")}
           </BookingLink>
-          <MobileNav />
+          <MobileNav appStoreUrl={appStoreUrl} googlePlayUrl={googlePlayUrl} />
         </div>
       </Container>
     </header>

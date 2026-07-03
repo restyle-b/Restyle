@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { siteSettingsSchema, openingHoursSchema } from "@/lib/admin/site-settings-schema";
 import { OPENING_HOURS_TAG } from "@/lib/content/get-opening-hours";
+import { SITE_SETTINGS_TAG } from "@/lib/content/get-site-settings";
 import { routing } from "@/i18n/routing";
 
 function revalidateOpeningHoursPaths() {
@@ -13,6 +14,19 @@ function revalidateOpeningHoursPaths() {
     const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
     revalidatePath(prefix || "/");
     revalidatePath(`${prefix}/locations`);
+  }
+}
+
+function revalidateSiteSettingsPaths() {
+  revalidateTag(SITE_SETTINGS_TAG);
+  for (const locale of routing.locales) {
+    const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+    // "layout" מרענן גם את ה-layout המשותף (header/footer/floating-contact)
+    // לכל הדפים תחתיו, לא רק את דף הבית עצמו.
+    revalidatePath(prefix || "/", "layout");
+    for (const path of ["/contact", "/locations", "/privacy", "/terms", "/gallery"]) {
+      revalidatePath(`${prefix}${path}`);
+    }
   }
 }
 
@@ -63,6 +77,7 @@ export async function updateSiteSettings(input: unknown): Promise<AdminActionRes
     },
   });
 
+  revalidateSiteSettingsPaths();
   revalidatePath("/admin/settings");
   return { ok: true };
 }

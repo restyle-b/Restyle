@@ -53,7 +53,7 @@ export function ContactTiles({
   tel: { href: string; sub: string };
   whatsapp: { href: string; sub: string };
   waze: { href: string; sub: string };
-  instagram: { href: string; sub: string };
+  instagram?: { href: string; sub: string };
   labels: { call: string; whatsapp: string; waze: string; instagram: string };
 }) {
   return (
@@ -81,15 +81,17 @@ export function ContactTiles({
           <div className="text-[12.5px] text-[#8a8578]">{waze.sub}</div>
         </div>
       </a>
-      <a href={instagram.href} target="_blank" rel="noopener noreferrer" className={tileClass}>
-        <InstagramIcon className={cn("h-5 w-5 shrink-0")} />
-        <div>
-          <div className="text-[14.5px] font-bold">{labels.instagram}</div>
-          <div className="text-[12.5px] text-[#8a8578]" dir="ltr">
-            {instagram.sub}
+      {instagram && (
+        <a href={instagram.href} target="_blank" rel="noopener noreferrer" className={tileClass}>
+          <InstagramIcon className={cn("h-5 w-5 shrink-0")} />
+          <div>
+            <div className="text-[14.5px] font-bold">{labels.instagram}</div>
+            <div className="text-[12.5px] text-[#8a8578]" dir="ltr">
+              {instagram.sub}
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
+      )}
     </div>
   );
 }

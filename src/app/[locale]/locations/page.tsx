@@ -7,9 +7,9 @@ import { BookingLink } from "@/components/booking-link";
 import { OpenNowBadge } from "@/components/locations/open-now-badge";
 import { ContactTiles } from "@/components/locations/contact-tiles";
 import { getContactLinks } from "@/lib/contact-links";
-import { siteConfig } from "@/lib/config";
 import type { Locale } from "@/i18n/routing";
 import { getOpeningHours, getOpeningHourRows } from "@/lib/content/get-opening-hours";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 
 export const dynamic = "force-static";
 
@@ -30,9 +30,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "locations" });
+  const contact = await getSiteContactInfo();
   return {
     title: t("metaTitle"),
-    description: t("metaDescription", { address: siteConfig.contact.address }),
+    description: t("metaDescription", { address: contact.address }),
   };
 }
 
@@ -45,8 +46,12 @@ export default async function LocationsPage({
   const locale = localeParam as Locale;
   const t = await getTranslations({ locale, namespace: "locations" });
   const tActions = await getTranslations({ locale, namespace: "contactActions" });
-  const [hours, hourRows] = await Promise.all([getOpeningHours(locale), getOpeningHourRows()]);
-  const contactLinks = getContactLinks(tActions("whatsappMessage"), locale);
+  const [hours, hourRows, contact] = await Promise.all([
+    getOpeningHours(locale),
+    getOpeningHourRows(),
+    getSiteContactInfo(),
+  ]);
+  const contactLinks = getContactLinks(tActions("whatsappMessage"), locale, contact);
 
   return (
     <Container className="py-20">
@@ -56,7 +61,7 @@ export default async function LocationsPage({
         <div className="space-y-8 text-neutral-300">
           <div>
             <h2 className="font-display text-lg font-bold text-white">{t("addressHeading")}</h2>
-            <p className="mt-2">{siteConfig.contact.address}</p>
+            <p className="mt-2">{contact.address}</p>
           </div>
 
           <div>
@@ -83,16 +88,16 @@ export default async function LocationsPage({
               <div className="flex gap-3">
                 <dt className="font-medium text-white">{t("phoneLabel")}</dt>
                 <dd>
-                  <a href={`tel:${siteConfig.contact.phone}`} className="hover:text-accent">
-                    {siteConfig.contact.phone}
+                  <a href={`tel:${contact.phone}`} className="hover:text-accent">
+                    {contact.phone}
                   </a>
                 </dd>
               </div>
               <div className="flex gap-3">
                 <dt className="font-medium text-white">{t("emailLabel")}</dt>
                 <dd>
-                  <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-accent">
-                    {siteConfig.contact.email}
+                  <a href={`mailto:${contact.email}`} className="hover:text-accent">
+                    {contact.email}
                   </a>
                 </dd>
               </div>
@@ -103,12 +108,12 @@ export default async function LocationsPage({
             <h2 className="font-display text-lg font-bold text-white">{t("quickContactHeading")}</h2>
             <div className="mt-3">
               <ContactTiles
-                tel={{ href: contactLinks.tel, sub: siteConfig.contact.phone }}
+                tel={{ href: contactLinks.tel, sub: contact.phone }}
                 whatsapp={{ href: contactLinks.whatsapp, sub: t("tileWhatsappSub") }}
-                waze={{ href: contactLinks.waze, sub: siteConfig.contact.address }}
+                waze={{ href: contactLinks.waze, sub: contact.address }}
                 instagram={{
-                  href: siteConfig.social.instagram,
-                  sub: instagramHandle(siteConfig.social.instagram),
+                  href: contact.instagramUrl,
+                  sub: instagramHandle(contact.instagramUrl),
                 }}
                 labels={{
                   call: tActions("call"),
@@ -120,13 +125,19 @@ export default async function LocationsPage({
             </div>
           </div>
 
-          <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>{t("bookingCta")}</BookingLink>
+          <BookingLink
+            className={buttonVariants({ size: "lg", variant: "light" })}
+            appStoreUrl={contact.appStoreUrl}
+            googlePlayUrl={contact.googlePlayUrl}
+          >
+            {t("bookingCta")}
+          </BookingLink>
         </div>
 
         <div className="overflow-hidden rounded-lg border border-line-dark">
           <iframe
             src={contactLinks.mapEmbed}
-            title={t("mapTitle", { address: siteConfig.contact.address })}
+            title={t("mapTitle", { address: contact.address })}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             sandbox="allow-scripts allow-same-origin allow-popups"

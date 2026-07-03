@@ -12,6 +12,7 @@ import { SkipToContent } from "@/components/skip-to-content";
 import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu";
 import { FloatingContact } from "@/components/floating-contact";
 import { CartProvider } from "@/lib/cart/cart-context";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 import "../globals.css";
 
 /**
@@ -77,6 +78,7 @@ export default async function RootLayout({
   }
 
   setRequestLocale(locale);
+  const contact = await getSiteContactInfo();
 
   return (
     <html
@@ -97,12 +99,12 @@ export default async function RootLayout({
           <CartProvider>
             <SkipToContent />
             <ScrollProgress />
-            <SiteHeader />
+            <SiteHeader appStoreUrl={contact.appStoreUrl} googlePlayUrl={contact.googlePlayUrl} />
             <main id="main" className="flex-1">
               {children}
             </main>
-            <SiteFooter />
-            <FloatingContact />
+            <SiteFooter locale={locale as Locale} contact={contact} />
+            <FloatingContact locale={locale as Locale} contact={contact} />
             <AccessibilityMenu />
           </CartProvider>
         </NextIntlClientProvider>

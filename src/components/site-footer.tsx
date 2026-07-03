@@ -1,14 +1,16 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/ui/container";
 import { BookingLink } from "@/components/booking-link";
 import { Wordmark } from "@/components/wordmark";
 import { navLinks, siteConfig } from "@/lib/config";
+import type { SiteContactInfo } from "@/lib/content/get-site-settings";
+import type { Locale } from "@/i18n/routing";
 
-export function SiteFooter() {
-  const tNav = useTranslations("nav");
-  const tLayout = useTranslations("layout");
-  const tFooter = useTranslations("footer");
+export async function SiteFooter({ locale, contact }: { locale: Locale; contact: SiteContactInfo }) {
+  const tNav = await getTranslations({ locale, namespace: "nav" });
+  const tLayout = await getTranslations({ locale, namespace: "layout" });
+  const tFooter = await getTranslations({ locale, namespace: "footer" });
 
   return (
     <footer className="border-t border-line-dark bg-ink-soft">
@@ -68,7 +70,11 @@ export function SiteFooter() {
         <div>
           <h3 className="text-sm font-semibold text-white">{tFooter("bookingHeading")}</h3>
           <p className="mt-4 text-sm text-neutral-400">{tFooter("bookingText")}</p>
-          <BookingLink className="mt-3 inline-block text-sm font-medium text-accent hover:underline">
+          <BookingLink
+            className="mt-3 inline-block text-sm font-medium text-accent hover:underline"
+            appStoreUrl={contact.appStoreUrl}
+            googlePlayUrl={contact.googlePlayUrl}
+          >
             {tFooter("downloadApp")}
           </BookingLink>
         </div>
