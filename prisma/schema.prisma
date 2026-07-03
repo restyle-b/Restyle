@@ -201,25 +201,32 @@ model Category {
 // מוצרי החנות.
 // ⚠️ imageUrl (לא imageKey/R2) — אותה מוסכמה כמו GalleryImage.imageUrl (ראה
 // שם למה). imageUrl ריק/null => מוצג ImagePlaceholder בציבורי.
+// שלושה צירים עצמאיים (Admin redesign, Phase 8.6, 2026-07-03): active=
+// visibility (מוצג בקטלוג הציבורי בכלל), available=availability (ניתן
+// לרכישה — override ידני, עצמאי ממלאי, לדוגמה "בקרוב" בלי להסתיר את הכרטיס),
+// stock=מלאי (בריאות מלאי נגזרת בזמן תצוגה, לא מאוחסנת).
 model Product {
-  id            String      @id @default(cuid())
-  slug          String      @unique
-  order         Int         @default(0)
-  nameHe        String
-  nameEn        String?
-  nameAr        String?
-  descriptionHe String      @db.Text
-  descriptionEn String?     @db.Text
-  descriptionAr String?     @db.Text
-  priceAgorot   Int
-  stock         Int         @default(0)
-  imageUrl      String?
-  categoryId    String?
-  category      Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  active        Boolean     @default(true)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  orderItems    OrderItem[]
+  id              String      @id @default(cuid())
+  slug            String      @unique
+  order           Int         @default(0)
+  nameHe          String
+  nameEn          String?
+  nameAr          String?
+  descriptionHe   String      @db.Text
+  descriptionEn   String?     @db.Text
+  descriptionAr   String?     @db.Text
+  priceAgorot     Int
+  salePriceAgorot Int? // מחיר מבצע — כשמוגדר ותקף (< priceAgorot), מוצג כ"במבצע"
+  stock           Int         @default(0)
+  available       Boolean     @default(true)
+  featured        Boolean     @default(false)
+  imageUrl        String?
+  categoryId      String?
+  category        Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  active          Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[]
 
   @@index([categoryId])
   @@map("products")
@@ -420,4 +427,27 @@ model CoursePayment {
   @@index([enrollmentId])
   @@index([provider, externalRef])
   @@map("course_payments")
+}
+
+// ===== Admin redesign (Phase 8.6): יומן פעילות מאוחד =====
+
+// יומן ביקורת אדמין אחד לכל הישויות — לא מחליף את OrderStatusEvent/
+// EnrollmentStatusEvent (אלה נשארים, מוצגים גם ללקוח); זהו מקור נוסף,
+// admin-only, append-only, כדי שעמוד "היסטוריית פעילות" ישאב ממקור אחד
+// בלבד במקום UNION בין כמה טבלאות. metadata — רק ערכים לא-רגישים
+// (before/after של שדות שהאדמין כבר רואה במסכים אחרים; לעולם לא נתוני כרטיס).
+model ActivityLog {
+  id         String   @id @default(cuid())
+  actorEmail String? // אימייל אדמין, או "system"/"payment" (כמו changedBy)
+  action     String // "product.create" | "product.update" | "product.stock_change" | "product.delete" | "order.status_change" | "enrollment.status_change" | "admin.write"
+  entityType String // "product" | "order" | "enrollment" | "course" | "testimonial" | "gallery" | "content" | "settings" | "category"
+  entityId   String?
+  summary    String // שורת תיאור קריאה-לאדם, מחושבת בזמן הכתיבה
+  metadata   Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("activity_log")
 }
