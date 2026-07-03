@@ -250,6 +250,103 @@ body {
   animation: float 2.4s var(--ease-in-out) infinite;
 }
 
+/* ── תנועת overlay (Admin) — Dialog/Sheet/DropdownMenu מבוססי Radix ──
+   האדמין נעול RTL תמיד (dir="rtl" קשיח, לא עוקב אחרי locale), לכן הכיוונים
+   כאן פיזיים (translateX) ולא לוגיים — "end" נפתח מצד שמאל, "start" מימין.
+   נשלט ע"י data-state של Radix, לא מחייב plugin. */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes dialog-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+@keyframes sheet-in-end {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-out-end {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes sheet-in-start {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-out-start {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+[data-slot="overlay"][data-state="open"] {
+  animation: overlay-in var(--dur-micro) var(--ease-out) both;
+}
+[data-slot="overlay"][data-state="closed"] {
+  animation: overlay-out var(--dur-micro) var(--ease-in-out) both;
+}
+[data-slot="dialog-content"][data-state="open"] {
+  animation: dialog-in var(--dur-micro) var(--ease-out) both;
+}
+[data-slot="dialog-content"][data-state="closed"] {
+  animation: dialog-out var(--dur-micro) var(--ease-in-out) both;
+}
+[data-slot="sheet-content"][data-side="end"][data-state="open"] {
+  animation: sheet-in-end var(--dur-element) var(--ease-out) both;
+}
+[data-slot="sheet-content"][data-side="end"][data-state="closed"] {
+  animation: sheet-out-end var(--dur-micro) var(--ease-in-out) both;
+}
+[data-slot="sheet-content"][data-side="start"][data-state="open"] {
+  animation: sheet-in-start var(--dur-element) var(--ease-out) both;
+}
+[data-slot="sheet-content"][data-side="start"][data-state="closed"] {
+  animation: sheet-out-start var(--dur-micro) var(--ease-in-out) both;
+}
+
 /* מספריים "נוסנות" — חיווי "גלול" ב-Hero.
    כל להב מסתובב סביב נקודת הציר המשותפת (ה"בורג", קואורדינטה 12,10 ב-viewBox 24x24).
    transform-box: view-box מאפשר להגדיר origin כאחוז מה-viewBox, ולא מה-bounding box
