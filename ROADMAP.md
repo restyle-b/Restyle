@@ -100,10 +100,11 @@ Plan: [`docs/features/pwa.md`](./docs/features/pwa.md). User request 2026-07-03:
 
 ## Phases 13-18 — Platform upgrade: account area + admin (epic) 🔄 resumed 2026-07-04
 Resumed same day as the pause. Schema migration for wishlist+addresses applied
-(production + local-verified, 0 drift). M2 (Phase 14) implemented by a parallel Sonnet
-agent in an isolated worktree, reviewed line-by-line by the orchestrator (diff scoped
-exactly to its brief, tsc/lint/test/build all re-verified independently before merge),
-fast-forward merged and pushed. M1 (Phase 13) still running in its own worktree.
+(production + local-verified, 0 drift). M1 and M2 both implemented by parallel Sonnet
+agents in isolated worktrees, each reviewed line-by-line by the orchestrator before
+merge (diff scoped exactly to its brief, tsc/lint/test/build re-verified independently,
+plus live Playwright verification against the local DB for M1). Both fast-forward
+merged and pushed.
 Master plan: [`docs/features/platform-upgrade.md`](./docs/features/platform-upgrade.md)
 (+ 4 analysis briefs in `docs/features/platform-upgrade/`). User request 2026-07-04:
 Shopify/Stripe-class management experience, mandated multi-agent workflow (4 Opus
@@ -111,10 +112,45 @@ analysis agents done → parallel Sonnet implementation per milestone → Opus r
 Locked decisions: single admin stays; curriculum/video skipped; invoices deferred;
 promotion engine full-but-staged (A: coupons+percent/fixed+free-shipping; B: BXGY/
 bundles/time-based later).
-- 🔄 **Phase 13 (M1)** — Account transformation: layout shell (RTL sidebar + mobile
-  bottom tabs), dashboard cards, profile editing, wishlist, addresses, `account` i18n
-  namespace, skeletons/empty states. Depends on `WishlistItem`/`UserAddress` migration
-  (✅ applied). In progress in an isolated agent worktree.
+- ✅ **Phase 13 (M1)** — Account transformation: new `account/layout.tsx` consolidating
+  the auth-redirect that was duplicated across 4 pages, RTL sidebar (desktop, `border-s`
+  opposite of admin's `border-e` — content is DOM-first for a11y, nav visually first via
+  `order-*`) + 5-tab mobile bottom bar with a "עוד" overflow `Sheet`, full `account` i18n
+  namespace (he/en/ar). Dashboard rebuilt as independently-`Suspense`-streamed cards
+  (recent orders, profile-completion nudge, courses, quick actions, wishlist preview,
+  recommended/recently-viewed rails) with every empty state per spec. `updateProfile`
+  action + `/account/profile` (name/phone editable, email read-only, links to the
+  existing reset-password flow — no new password UI). Wishlist: idempotent DB-truth
+  toggle (`WishlistItem`, race-safe via P2002) + heart button on `ProductCard` +
+  `/account/wishlist` with optimistic remove/undo. Address book: full CRUD, single-default
+  invariant enforced transactionally against the partial-unique index, IDOR-guarded
+  (every mutation re-checks `existing.userId !== userId`, same pattern as order-detail
+  ownership). **Orchestrator integration review caught 3 real bugs the agent's own
+  tsc/lint/test/build pass couldn't** (live Playwright verification against the local DB
+  is what surfaced them): (1) **crash** — the server layout passed bare Lucide icon
+  *component references* as a prop into a `"use client"` nav component; React rejects
+  unrendered function/forwardRef values crossing the Server→Client boundary
+  ("Functions cannot be passed directly to Client Components") — `/account` 500'd in
+  a live run despite type-checking fine. Fixed by moving the href→icon map into the
+  client component itself (matching the existing admin sidebar-nav pattern), passing
+  only strings down. (2) **day-theme contrast** — the shared `Card` primitive
+  (`bg-ink-soft/60`) and two dashboard cards' inner rows (`bg-ink/40`) use
+  opacity-modified token variants that the site's `[data-theme="day"]` override rules
+  didn't cover (only the non-opacity class was themed) — `Card` was built for the
+  always-dark admin panel and M1 is its first consumer under the theme-aware public
+  site, so this never surfaced before. Added the missing day-mode overrides. (3)
+  **mobile layout collision** — the new fixed bottom tab bar overlapped the site's
+  pre-existing floating WhatsApp/phone/accessibility buttons (measured via real bounding
+  boxes, not visible in a static screenshot) — added a stable `data-account-mobile-nav`
+  attribute + a `:has()` CSS rule (media-matched to the `md:hidden` breakpoint) that
+  raises the floating buttons only when the account tab bar is actually in the DOM,
+  with zero changes to the site-wide (Server Component) floating-contact component.
+  Also completed the `ConfirmDialog` promotion to `components/ui/` that the agent had
+  deliberately left as a flagged temporary duplicate (couldn't touch `admin/**` while
+  a sibling agent worked there in parallel) — deleted the admin copy, repointed its 3
+  importers. `tsc`/lint/34 tests/production build all green after every fix; live
+  end-to-end address creation verified against the local DB (day/night, RTL/EN,
+  desktop/mobile).
 - ✅ **Phase 14 (M2)** — Admin dashboard v2: `getDashboardOverview()` (today/7d/30d
   revenue with prior-period delta, AOV, customers count, low-stock count, 30-day daily
   series, top-5 products) built on pure/tested helpers (`dashboard-metrics.ts`,
@@ -167,3 +203,4 @@ Accessibility widget + `/accessibility` statement (IS 5568 / WCAG 2.0 AA), `/aca
 | 2026-07-04 | **Two follow-up requests, one session.** (1) User reported "admin login isn't working" on the Vercel preview. Investigation: production `users` table showed the user's own account (`haim_indyk@icloud.com`) is `role='USER'` (not the bug — by design, only the business account is `ADMIN`), but the actual `restyle.barbershop@outlook.com` admin account ALSO failed — sign-in succeeded (middleware confirmed a valid session, `GET /admin 200` not `307`, per Vercel runtime logs) yet the browser bounced back to `/login`, with a burst of marketing-page prefetches after each attempt and eventual full session loss (`/account` started 307-ing). Root cause: `LoginForm` used `router.push(next)` immediately followed by `router.refresh()` — `next` can point at `/admin`, a completely separate root `<html>` tree from `/login` ([locale] vs admin), and that client-router combo doesn't reliably survive crossing root layouts. Fixed by switching to a hard `window.location.href` navigation, guaranteeing a fresh top-level request through the middleware. Could not reproduce the exact failure on localhost (Vercel's Edge/Serverless split + real network timing aren't replicable there), but verified the new code completes the full login→admin path correctly with a local test admin account; all gates green. (2) User asked to run the migrations discussed earlier — confirmed via `_prisma_migrations` that only `20260703050000_product_inventory_and_activity_log` was still missing (the other 4 from the previous session were already in and checksum-matched), applied it via the MCP `apply_migration` tool with a matching `_prisma_migrations` row (checksum computed from the actual migration file), verified column types/defaults on `products` and RLS-enabled on `activity_log` directly via SQL. Production is now fully caught up — 13/13 migrations applied. | Merge/review PR #7; watch for admin-login confirmation from the user. |
 | 2026-07-04 | **Phase 12 — admin shortcut on `/account`** (user request, see Phase 12 above). New `getCurrentUser()` helper reused across the account page instead of duplicating `requireAdmin()`'s role-lookup pattern; conditional `ShieldCheck` + "Admin Panel" `Link` to `/admin`, admin-only. Caught+fixed a real bug while building it: initially used the i18n `Link` (would've produced `/en/admin`, a 404 — `/admin` is outside `[locale]`), swapped for plain `next/link`. `security` skill review: 0 Critical/High (server-rendered check only, no IDOR, `/admin` access still fully gated by the unmodified `requireAdmin()`+middleware). Verified visually with two local seeded test users (ADMIN sees the button, USER doesn't, USER hitting `/admin` directly still gets redirected). All gates green. | Merge/review PR #7 (now includes Phase 12 too). |
 | 2026-07-04 | **Phases 13-18 planning (platform-upgrade epic) — analysis completed, then PAUSED by user before implementation.** User requested a Shopify/Stripe-class redesign of account+admin with a mandated multi-agent workflow. Done: (1) scope locked via user answers — single admin stays, curriculum/video skipped, invoices deferred, promotion engine full-but-staged; (2) 4 Opus analysis agents ran in parallel; full reports persisted as implementation briefs in `docs/features/platform-upgrade/`: audit.md (headline gaps: no account shell, no profile-edit action anywhere, categories/courses still giant bulk forms, zero loading states app-wide, topbar re-runs stats every page), data-model.md (additive-only migrations: wishlist/addresses/inventory-ledger/notifications/lifecycle+SEO, all new tables RLS-private), promotion-engine.md (pure evaluator, round-once half-up, largest-remainder allocation, reserve-at-creation + FOR UPDATE + release-on-failure; critical finding: create-order has NO transaction today), ux-spec.md (Hebrew microcopy, bottom tab bar, mono SVG charts, bulk-actions bar, settings tabs); (3) B-vs-C schema conflicts reconciled in the master doc (Promotion+Coupon two-model split for bulk codes, C's semantics authoritative, no chart lib, schema orchestrator-only); (4) ROADMAP Phases 13-18 added. **No implementation code written.** | Resume at Phase 13 (M1): wishlist+addresses migration first, then parallel M1 account-shell + M2 admin-dashboard Sonnet agents (see ⏸️ Phases 13-18 pointer). |
+| 2026-07-04 | **Platform-upgrade epic resumed: M1+M2 built, reviewed, merged.** Applied the wishlist+addresses migration (production+local, 0 drift), then ran M1 (account area) and M2 (admin dashboard) as parallel Sonnet agents in isolated git worktrees per the epic's mandated multi-agent workflow. Reviewed both diffs personally before merging — scoped exactly to each brief, no schema/auth files touched by either agent. M2 merged clean on first pass. M1's own gates (tsc/lint/test/build) were green but **live Playwright verification against the local DB caught 3 real bugs invisible to static checks**: a Server→Client RSC boundary crash (bare Lucide icon component passed as a prop — 500 in a live run despite type-checking fine), a day-theme contrast gap on the shared `Card` primitive (its first consumer under the theme-aware public site, having been built for the always-dark admin), and a mobile layout collision between the new bottom tab bar and pre-existing floating contact/accessibility buttons (only visible via measured bounding boxes, not a screenshot). All three fixed, re-verified, and the flagged `ConfirmDialog` duplication was completed as a proper promotion to `components/ui/`. Both worktrees fast-forward merged and pushed; worktrees cleaned up. | Continue with Phase 15 (M3, catalog management) — needs the product/course lifecycle+SEO migration first (data-model.md item 1, not yet applied). |
