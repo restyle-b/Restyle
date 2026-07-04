@@ -23,6 +23,9 @@ next-env.d.ts
 .env.local
 .env.*.local
 
+# Claude Code agent worktrees (isolated copies for background subagents — local scratch, not project content)
+/.claude/worktrees/
+
 # misc
 .DS_Store
 *.pem
