@@ -25,9 +25,13 @@ const neverCache: RuntimeCaching[] = [
   {
     // מסיר prefix locale אופציונלי (/en, /ar — עברית ללא prefix) לפני ההשוואה,
     // כדי שנתיב אחד יכסה את כל השפות. "auth" תמיד ללא prefix (מחוץ ל-[locale]).
+    // "courses" כולל /courses/success ו-/courses/cancel — force-dynamic, מציגים
+    // enrollmentNumber/status/יתרה לתשלום שנשלפים מה-DB בזמן render; בלי החרגה
+    // כאן היו נופלים ל-marketingCaching (StaleWhileRevalidate) ונשמרים ב-Cache
+    // Storage — אותה בעיה בדיוק שבגללה cart/checkout/account מוחרגים.
     matcher: ({ url }) => {
       const path = url.pathname.replace(/^\/(en|ar)(?=\/|$)/, "");
-      return /^\/(cart|checkout|account|auth)(\/|$)/.test(path);
+      return /^\/(cart|checkout|account|auth|courses)(\/|$)/.test(path);
     },
     handler: new NetworkOnly(),
   },

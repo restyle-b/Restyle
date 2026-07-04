@@ -87,7 +87,12 @@ export const config = {
   // אחרת next-intl מנסה לפרש אותם כנתיב locale ומחזיר 404. PWA (docs/features/pwa.md):
   // אותה בעיה בדיוק הייתה קורית ל-sw.js/*.webmanifest בלי החרגה מפורשת — 404 בפועל,
   // אומת ידנית מול production build.
+  // בכוונה מוחרגים לפי נתיב מדויק (icons/, images/, שמות קובץ ספציפיים בשורש)
+  // ולא לפי סיומת גורפת (כמו `.*\.png$`) — סיומת גורפת הייתה עוקפת את בדיקת
+  // ה-session גם בתוך /admin/* או /account/* (למשל route עתידי שמחזיר תמונה/
+  // CSV/XML), ומסתמכת רק על שכבת ה-requireAdmin() בתוך ה-handler עצמו — בניגוד
+  // לעיקרון ה-defense-in-depth של הפרויקט (middleware + בדיקה בשרת, לא שכבה אחת).
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|sw\\.js|swe-worker-.*\\.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|webmanifest)$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml|sw\\.js|swe-worker-.*\\.js|icon\\.svg|restyle-logo\\.png|icons/|images/|.*\\.webmanifest$).*)",
   ],
 };
