@@ -98,13 +98,12 @@ Plan: [`docs/features/pwa.md`](./docs/features/pwa.md). User request 2026-07-03:
 - ✅ Group 2 — Service workers (serwist config, two SWs with distinct scopes, registration per layout, CSP `worker-src`/`manifest-src`); real bug found+fixed along the way: next-intl's middleware was 404-ing `/sw.js`/`*.webmanifest` (not in its static-file exclusion list), fixed via the middleware matcher.
 - ✅ Group 3 — `security` skill review found 2 real gaps, both fixed before close-out: (1) **High** — `/courses/success` and `/courses/cancel` are `force-dynamic` pages that render live enrollment status/number and payment balance from the DB, but weren't in the never-cache list, so they fell through to the broad marketing-pages `StaleWhileRevalidate` rule — meaning payment/PII data would land in Cache Storage on a shared device, the exact risk `/cart`/`/checkout`/`/account` were already excluded for. Fixed by adding `courses` to the never-cache path list in `src/app/sw.ts`. (2) **Medium** — the middleware's static-asset bypass matched by file extension anywhere in the URL (`.*\.(?:svg|png|...)$`), which would have silently skipped the session check for any *future* `/admin/*` or `/account/*` route ending in one of those extensions (an image proxy, a CSV/XML export), leaving only the in-handler `requireAdmin()` layer standing — a defense-in-depth regression. Fixed by scoping the bypass to the actual static paths (`icons/`, `images/`, named root files) instead of a global extension match. Both fixes re-verified: full quality gates green (`tsc` incl. worker tsconfig, lint, `npm test`), and a live dev-server curl pass confirming all static assets (`robots.txt`, `sitemap.xml`, `*.webmanifest`, `icons/*`, `images/*`, `icon.svg`) still resolve 200 and `/admin`+`/account` still redirect to `/login` without a session.
 
-## Phases 13-18 — Platform upgrade: account area + admin (epic) ⏸️ PAUSED — resume here
-**Paused by user 2026-07-04 right after the analysis/planning phase completed — no
-implementation code written yet.** To resume: read the master plan + the 4 briefs in
-`docs/features/platform-upgrade/`, then start **Phase 13 (M1)** — first step is the
-schema migration for wishlist + user_addresses (orchestrator-only, per reconciliation
-rule #11), then spawn the M1 account-shell Sonnet agent and the M2 admin-dashboard
-Sonnet agent in parallel (their file trees don't overlap; neither touches schema).
+## Phases 13-18 — Platform upgrade: account area + admin (epic) 🔄 resumed 2026-07-04
+Resumed same day as the pause. Schema migration for wishlist+addresses applied
+(production + local-verified, 0 drift). M2 (Phase 14) implemented by a parallel Sonnet
+agent in an isolated worktree, reviewed line-by-line by the orchestrator (diff scoped
+exactly to its brief, tsc/lint/test/build all re-verified independently before merge),
+fast-forward merged and pushed. M1 (Phase 13) still running in its own worktree.
 Master plan: [`docs/features/platform-upgrade.md`](./docs/features/platform-upgrade.md)
 (+ 4 analysis briefs in `docs/features/platform-upgrade/`). User request 2026-07-04:
 Shopify/Stripe-class management experience, mandated multi-agent workflow (4 Opus
@@ -112,11 +111,23 @@ analysis agents done → parallel Sonnet implementation per milestone → Opus r
 Locked decisions: single admin stays; curriculum/video skipped; invoices deferred;
 promotion engine full-but-staged (A: coupons+percent/fixed+free-shipping; B: BXGY/
 bundles/time-based later).
-- ⬜ **Phase 13 (M1)** — Account transformation: layout shell (RTL sidebar + mobile
+- 🔄 **Phase 13 (M1)** — Account transformation: layout shell (RTL sidebar + mobile
   bottom tabs), dashboard cards, profile editing, wishlist, addresses, `account` i18n
-  namespace, skeletons/empty states.
-- ⬜ **Phase 14 (M2)** — Admin dashboard v2: revenue/AOV/customers/low-stock KPIs,
-  2 hand-rolled SVG charts (monochrome), embedded activity feed, notification center v2.
+  namespace, skeletons/empty states. Depends on `WishlistItem`/`UserAddress` migration
+  (✅ applied). In progress in an isolated agent worktree.
+- ✅ **Phase 14 (M2)** — Admin dashboard v2: `getDashboardOverview()` (today/7d/30d
+  revenue with prior-period delta, AOV, customers count, low-stock count, 30-day daily
+  series, top-5 products) built on pure/tested helpers (`dashboard-metrics.ts`,
+  25 vitest cases) layered over the existing `getOrdersOverview`-style revenue
+  definition (extracted to a shared `NON_REVENUE_ORDER_STATUSES` constant instead of
+  duplicating it). Two hand-rolled monochrome SVG charts — revenue bars (own
+  `overflow-x-auto`, page body never scrolls) and top-products horizontal bars anchored
+  to the RTL-correct right edge regardless of DOM direction — both with the "little/zero
+  data" states specced (never looks broken on a near-empty shop). Activity feed embedded
+  via the existing `ActivityTimeline` (`limit` param added, no parallel query). Topbar's
+  per-navigation query lightened to a 2-count `getTopbarAlertCounts()` instead of the
+  full heavy aggregator. Notification-center persistence deferred to its own migration
+  (M5/M6) as planned — bell untouched. `tsc`/lint/25 tests/production build all green.
 - ⬜ **Phase 15 (M3)** — Catalog: products bulk actions + duplicate + preview + SEO/
   publishAt; categories + courses → table views with counts.
 - ⬜ **Phase 16 (M4)** — Promotion engine Stage A + coupons (reserve-at-creation,
