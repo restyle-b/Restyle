@@ -22,7 +22,7 @@ import { ProductStockCell } from "@/components/admin/products/product-stock-cell
 import { ProductToggleCell } from "@/components/admin/products/product-toggle-cell";
 import { ProductRowActions } from "@/components/admin/products/product-row-actions";
 import { ProductEditSheet } from "@/components/admin/products/product-edit-sheet";
-import { ConfirmDialog } from "@/components/admin/confirm-dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   deleteProduct,
   toggleProductActive,

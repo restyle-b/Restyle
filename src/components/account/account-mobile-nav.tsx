@@ -38,6 +38,9 @@ export function AccountMobileNav({ labels, isAdmin }: { labels: AccountNavLabels
   return (
     <>
       <nav
+        // data-account-mobile-nav: hook יציב (לא תלוי-שפה) ל-CSS ב-globals.css
+        // שמרים עליו את הכפתורים הצפים (יצירת קשר/נגישות) כדי שלא יתנגשו.
+        data-account-mobile-nav
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line-dark bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
         aria-label={labels.more}
       >

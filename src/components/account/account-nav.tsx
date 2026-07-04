@@ -1,13 +1,27 @@
 "use client";
 
 import NextLink from "next/link";
-import { ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Package, GraduationCap, Heart, MapPin, User, ShieldCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { cn } from "@/lib/utils";
 
-export type AccountNavItem = { href: string; label: string; icon: LucideIcon };
+export type AccountNavItem = { href: string; label: string };
+
+// אייקונים מוגדרים כאן, בקומפוננטת הלקוח עצמה — לא מועברים כ-prop משכבת ה-
+// server layout: קומפוננטת lucide-react היא function/forwardRef, ו-React
+// חוסם העברת רפרנס-פונקציה גולמי מ-Server ל-Client component (נתפס בפועל:
+// "Functions cannot be passed directly to Client Components"). אותו דפוס
+// בדיוק כמו components/admin/sidebar-nav.tsx (אייקונים מקומיים לקובץ ה-client).
+const ICON_BY_HREF: Record<string, LucideIcon> = {
+  "/account": LayoutDashboard,
+  "/account/orders": Package,
+  "/account/courses": GraduationCap,
+  "/account/wishlist": Heart,
+  "/account/addresses": MapPin,
+  "/account/profile": User,
+};
 
 /**
  * ניווט הסיידבר של האזור האישי — מראה זהה ללוגיקת ה-active של
@@ -31,7 +45,7 @@ export function AccountNav({
       <nav className="flex flex-1 flex-col gap-1">
         {items.map((item) => {
           const isActive = item.href === "/account" ? pathname === "/account" : pathname.startsWith(item.href);
-          const Icon = item.icon;
+          const Icon = ICON_BY_HREF[item.href] ?? LayoutDashboard;
           return (
             <Link
               key={item.href}

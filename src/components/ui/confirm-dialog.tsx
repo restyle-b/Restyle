@@ -14,14 +14,9 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /**
- * דיאלוג אישור לפעולות הרסניות (מחיקה, ביטול וכו').
- *
- * הערה: זו העתקה מקודמת (promote) של components/admin/confirm-dialog.tsx
- * לפי docs/features/platform-upgrade/ux-spec.md §A4b — ולא ההעברה המלאה
- * (מחיקת המקור + עדכון 3 הייבואים באדמין) שהיה אפשר לדמיין, כי milestone זה
- * אסור לו לגעת ב-src/components/admin/** (סוכן אחר עובד שם במקביל, worktree
- * נפרד). הכפילות הזמנית היא cleanup ידוע לגל השילוב (מחיקת המקור באדמין
- * ועדכון import אחרי שני ה-worktree-ים ממוזגים).
+ * דיאלוג אישור לפעולות הרסניות (מחיקה, ביטול וכו') — משותף לאדמין ולאזור
+ * האישי. הועבר מ-components/admin/confirm-dialog.tsx (ux-spec.md §A4b) בזמן
+ * שילוב שני milestones במקביל.
  */
 export function ConfirmDialog({
   open,

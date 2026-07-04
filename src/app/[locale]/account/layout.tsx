@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { LayoutDashboard, Package, GraduationCap, Heart, MapPin, User } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { AccountNav } from "@/components/account/account-nav";
 import { AccountMobileNav } from "@/components/account/account-mobile-nav";
@@ -35,12 +34,12 @@ export default async function AccountLayout({
   const isAdmin = user.role === "ADMIN";
 
   const items = [
-    { href: "/account", label: t("dashboard"), icon: LayoutDashboard },
-    { href: "/account/orders", label: t("orders"), icon: Package },
-    { href: "/account/courses", label: t("courses"), icon: GraduationCap },
-    { href: "/account/wishlist", label: t("wishlist"), icon: Heart },
-    { href: "/account/addresses", label: t("addresses"), icon: MapPin },
-    { href: "/account/profile", label: t("profile"), icon: User },
+    { href: "/account", label: t("dashboard") },
+    { href: "/account/orders", label: t("orders") },
+    { href: "/account/courses", label: t("courses") },
+    { href: "/account/wishlist", label: t("wishlist") },
+    { href: "/account/addresses", label: t("addresses") },
+    { href: "/account/profile", label: t("profile") },
   ];
 
   const labels = {
