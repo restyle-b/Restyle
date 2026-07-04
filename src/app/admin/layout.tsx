@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/admin/sidebar";
 import { Topbar } from "@/components/admin/topbar";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <html dir="rtl" lang="he">
       <body className="min-h-screen bg-ink text-white">
+        <RegisterServiceWorker scope="/admin" />
         <TooltipProvider delayDuration={300}>
           <div className="flex min-h-screen">
             <Sidebar />

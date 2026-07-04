@@ -34,3 +34,10 @@ yarn-error.log*
 
 # prisma (יתווסף ב-Phase 1C)
 # /prisma/migrations/dev.db
+
+# PWA — service worker מקומפל (serwist InjectManifest, נבנה מ-src/app/sw.ts
+# בכל build; מכיל precache manifest שמשתנה בכל פעם — לא נגרר ל-git).
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+/public/swe-worker-*.js.map

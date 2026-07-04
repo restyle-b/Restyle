@@ -13,6 +13,7 @@ import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu
 import { FloatingContact } from "@/components/floating-contact";
 import { CartProvider } from "@/lib/cart/cart-context";
 import { getSiteContactInfo } from "@/lib/content/get-site-settings";
+import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
 import "../globals.css";
 
 /**
@@ -106,6 +107,7 @@ export default async function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='day'&&t!=='night'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='night';}})();`,
           }}
         />
+        <RegisterServiceWorker scope="/" />
         <NextIntlClientProvider>
           <CartProvider>
             <SkipToContent />

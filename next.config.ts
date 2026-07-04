@@ -1,7 +1,19 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import withSerwistInit from "@serwist/next";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
+// PWA (ראה docs/features/pwa.md) — כבוי בפיתוח בכוונה (מניעת cache מבלבל
+// תוך כדי עבודה); register:false כי יש שני עצי <html> עצמאיים (אתר ציבורי
+// + אדמין) שכל אחד נרשם בעצמו ל-scope שלו (RegisterServiceWorker), ולא
+// לרישום האוטומטי הגלובלי היחיד של @serwist/next.
+const withSerwist = withSerwistInit({
+  swSrc: "src/app/sw.ts",
+  swDest: "public/sw.js",
+  register: false,
+  disable: process.env.NODE_ENV === "development",
+});
 
 /**
  * Content-Security-Policy.
@@ -24,6 +36,11 @@ const csp = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+  // PWA: worker-src/manifest-src היו נכללים ב-default-src 'self' ממילא
+  // (fallback לפי spec), אבל מוגדרים כאן במפורש כתיעוד-כוונה ובידוד משינויי
+  // default-src עתידיים — ראה docs/features/pwa.md.
+  "worker-src 'self'",
+  "manifest-src 'self'",
   "frame-src https://www.google.com https://maps.google.com",
   "frame-ancestors 'none'",
   "object-src 'none'",
@@ -60,4 +77,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default withSerwist(withNextIntl(nextConfig));

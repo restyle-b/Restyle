@@ -84,8 +84,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   // לא להריץ את ה-middleware על נכסים סטטיים וקבצי SEO (robots.txt/sitemap.xml),
-  // אחרת next-intl מנסה לפרש אותם כנתיב locale ומחזיר 404.
+  // אחרת next-intl מנסה לפרש אותם כנתיב locale ומחזיר 404. PWA (docs/features/pwa.md):
+  // אותה בעיה בדיוק הייתה קורית ל-sw.js/*.webmanifest בלי החרגה מפורשת — 404 בפועל,
+  // אומת ידנית מול production build.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|sw\\.js|swe-worker-.*\\.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|webmanifest)$).*)",
   ],
 };
