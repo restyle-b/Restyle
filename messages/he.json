@@ -577,6 +577,125 @@
       "profile": "הפרופיל שלי",
       "more": "עוד",
       "adminPanel": "פאנל ניהול"
+    },
+    "dashboard": {
+      "eyebrow": "האזור האישי שלך",
+      "greeting": "שלום, {firstName}",
+      "emailLabel": "אימייל",
+      "recentOrders": {
+        "title": "הזמנות אחרונות",
+        "trackOrder": "מעקב הזמנה",
+        "viewAll": "לכל ההזמנות",
+        "empty": "עדיין לא ביצעת הזמנות. שווה להתחיל 🙂",
+        "emptyCta": "למעבר לחנות"
+      },
+      "profileNudge": {
+        "title": "הפרופיל שלך כמעט מוכן",
+        "description": "עוד רגע וסיימת — זה עוזר לנו לשרת אותך טוב יותר.",
+        "missingName": "שם מלא",
+        "missingPhone": "טלפון",
+        "cta": "השלמת פרטים"
+      },
+      "courses": {
+        "title": "הקורסים שלי",
+        "viewAll": "לכל הקורסים",
+        "empty": "עדיין לא נרשמת לקורסים.",
+        "emptyCta": "גילוי הקורסים שלנו"
+      },
+      "quickActions": {
+        "title": "פעולות מהירות",
+        "booking": "קביעת תור",
+        "shop": "חזרה לחנות",
+        "courses": "הקורסים שלנו"
+      },
+      "wishlist": {
+        "title": "המועדפים שלי",
+        "viewAll": "לכל המועדפים",
+        "empty": "אין עדיין מועדפים. סמנו לב על מוצרים שאהבתם והם יופיעו כאן."
+      },
+      "recommended": {
+        "title": "מוצרים מומלצים"
+      },
+      "recentlyViewed": {
+        "title": "נצפו לאחרונה"
+      }
+    },
+    "profile": {
+      "title": "הפרופיל שלי",
+      "personalTitle": "פרטים אישיים",
+      "nameLabel": "שם מלא",
+      "phoneLabel": "טלפון",
+      "emailLabel": "אימייל",
+      "emailReadonlyNote": "האימייל מקושר לחשבון ההתחברות ואינו ניתן לשינוי כאן.",
+      "saveCta": "שמירת שינויים",
+      "saving": "שומר...",
+      "savedToast": "הפרטים נשמרו",
+      "securityTitle": "אבטחה",
+      "securityDescription": "לשינוי הסיסמה נשלח אליך קישור מאובטח למייל.",
+      "resetPasswordCta": "שליחת קישור לאיפוס סיסמה",
+      "addressesLinkCta": "ניהול כתובות שמורות",
+      "errors": {
+        "nameTooShort": "השם קצר מדי",
+        "phoneTooShort": "מספר הטלפון קצר מדי",
+        "invalidInput": "קלט לא תקין",
+        "rateLimited": "יותר מדי ניסיונות — נסו שוב בעוד דקה",
+        "notAuthenticated": "יש להתחבר כדי לעדכן פרופיל"
+      }
+    },
+    "addresses": {
+      "title": "כתובות",
+      "empty": "עדיין לא הוספת כתובות. כתובת שמורה תמלא את פרטי המשלוח אוטומטית בצ'קאאוט.",
+      "emptyCta": "הוספת כתובת",
+      "addCta": "הוספת כתובת",
+      "editCta": "עריכה",
+      "setDefaultCta": "הגדרה כברירת מחדל",
+      "deleteCta": "מחיקה",
+      "defaultBadge": "ברירת מחדל",
+      "deleteConfirmTitle": "מחיקת כתובת",
+      "deleteConfirmDescription": "למחוק את הכתובת? הפעולה אינה הפיכה.",
+      "form": {
+        "createTitle": "הוספת כתובת",
+        "editTitle": "עריכת כתובת",
+        "labelLabel": "כינוי (למשל בית/עבודה)",
+        "lineLabel": "כתובת",
+        "cityLabel": "עיר",
+        "notesLabel": "הערות (אופציונלי)",
+        "isDefaultLabel": "הגדרה כברירת מחדל",
+        "saveCta": "שמירה",
+        "saving": "שומר...",
+        "cancelCta": "ביטול"
+      },
+      "toasts": {
+        "created": "הכתובת נוספה",
+        "updated": "הכתובת עודכנה",
+        "deleted": "הכתובת נמחקה",
+        "defaultSet": "הכתובת הוגדרה כברירת מחדל"
+      },
+      "errors": {
+        "labelRequired": "יש להזין כינוי",
+        "lineRequired": "יש להזין כתובת",
+        "cityRequired": "יש להזין עיר",
+        "invalidInput": "קלט לא תקין",
+        "notFound": "הכתובת לא נמצאה",
+        "rateLimited": "יותר מדי ניסיונות — נסו שוב בעוד דקה",
+        "notAuthenticated": "יש להתחבר כדי לנהל כתובות"
+      }
+    },
+    "wishlist": {
+      "title": "המועדפים שלי",
+      "empty": "רשימת המועדפים ריקה",
+      "emptyDescription": "סמנו לב על מוצרים שאהבתם כדי לשמור אותם כאן.",
+      "emptyCta": "למעבר לחנות",
+      "removedToast": "הוסר מהמועדפים",
+      "undoCta": "ביטול",
+      "addedToast": "נוסף למועדפים",
+      "heartAdd": "הוספה למועדפים",
+      "heartRemove": "הסרה מהמועדפים",
+      "errors": {
+        "notAuthenticated": "יש להתחבר כדי לשמור מועדפים",
+        "invalidInput": "קלט לא תקין",
+        "rateLimited": "יותר מדי ניסיונות — נסו שוב בעוד דקה"
+      }
     }
   }
 }

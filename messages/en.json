@@ -577,6 +577,125 @@
       "profile": "My profile",
       "more": "More",
       "adminPanel": "Admin panel"
+    },
+    "dashboard": {
+      "eyebrow": "Your account",
+      "greeting": "Hi, {firstName}",
+      "emailLabel": "Email",
+      "recentOrders": {
+        "title": "Recent orders",
+        "trackOrder": "Track order",
+        "viewAll": "All orders",
+        "empty": "You haven't placed any orders yet. Why not start now? 🙂",
+        "emptyCta": "Go to shop"
+      },
+      "profileNudge": {
+        "title": "Your profile is almost ready",
+        "description": "Just a bit more — it helps us serve you better.",
+        "missingName": "Full name",
+        "missingPhone": "Phone",
+        "cta": "Complete details"
+      },
+      "courses": {
+        "title": "My courses",
+        "viewAll": "All courses",
+        "empty": "You haven't enrolled in any courses yet.",
+        "emptyCta": "Discover our courses"
+      },
+      "quickActions": {
+        "title": "Quick actions",
+        "booking": "Book an appointment",
+        "shop": "Back to shop",
+        "courses": "Our courses"
+      },
+      "wishlist": {
+        "title": "My wishlist",
+        "viewAll": "All wishlist items",
+        "empty": "No favorites yet. Heart products you love and they'll show up here."
+      },
+      "recommended": {
+        "title": "Recommended products"
+      },
+      "recentlyViewed": {
+        "title": "Recently viewed"
+      }
+    },
+    "profile": {
+      "title": "My profile",
+      "personalTitle": "Personal details",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "emailLabel": "Email",
+      "emailReadonlyNote": "Your email is linked to your login account and can't be changed here.",
+      "saveCta": "Save changes",
+      "saving": "Saving...",
+      "savedToast": "Your details were saved",
+      "securityTitle": "Security",
+      "securityDescription": "To change your password, we'll send a secure link to your email.",
+      "resetPasswordCta": "Send password reset link",
+      "addressesLinkCta": "Manage saved addresses",
+      "errors": {
+        "nameTooShort": "Name is too short",
+        "phoneTooShort": "Phone number is too short",
+        "invalidInput": "Invalid input",
+        "rateLimited": "Too many attempts — please try again in a minute",
+        "notAuthenticated": "Please sign in to update your profile"
+      }
+    },
+    "addresses": {
+      "title": "Addresses",
+      "empty": "You haven't added any addresses yet. A saved address will fill in your delivery details automatically at checkout.",
+      "emptyCta": "Add address",
+      "addCta": "Add address",
+      "editCta": "Edit",
+      "setDefaultCta": "Set as default",
+      "deleteCta": "Delete",
+      "defaultBadge": "Default",
+      "deleteConfirmTitle": "Delete address",
+      "deleteConfirmDescription": "Delete this address? This can't be undone.",
+      "form": {
+        "createTitle": "Add address",
+        "editTitle": "Edit address",
+        "labelLabel": "Label (e.g. Home/Work)",
+        "lineLabel": "Address",
+        "cityLabel": "City",
+        "notesLabel": "Notes (optional)",
+        "isDefaultLabel": "Set as default",
+        "saveCta": "Save",
+        "saving": "Saving...",
+        "cancelCta": "Cancel"
+      },
+      "toasts": {
+        "created": "Address added",
+        "updated": "Address updated",
+        "deleted": "Address deleted",
+        "defaultSet": "Address set as default"
+      },
+      "errors": {
+        "labelRequired": "Please enter a label",
+        "lineRequired": "Please enter an address",
+        "cityRequired": "Please enter a city",
+        "invalidInput": "Invalid input",
+        "notFound": "Address not found",
+        "rateLimited": "Too many attempts — please try again in a minute",
+        "notAuthenticated": "Please sign in to manage addresses"
+      }
+    },
+    "wishlist": {
+      "title": "My wishlist",
+      "empty": "Your wishlist is empty",
+      "emptyDescription": "Heart products you love to save them here.",
+      "emptyCta": "Go to shop",
+      "removedToast": "Removed from wishlist",
+      "undoCta": "Undo",
+      "addedToast": "Added to wishlist",
+      "heartAdd": "Add to wishlist",
+      "heartRemove": "Remove from wishlist",
+      "errors": {
+        "notAuthenticated": "Please sign in to save favorites",
+        "invalidInput": "Invalid input",
+        "rateLimited": "Too many attempts — please try again in a minute"
+      }
     }
   }
 }

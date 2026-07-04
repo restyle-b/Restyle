@@ -577,6 +577,125 @@
       "profile": "ملفي الشخصي",
       "more": "المزيد",
       "adminPanel": "لوحة الإدارة"
+    },
+    "dashboard": {
+      "eyebrow": "حسابك الشخصي",
+      "greeting": "مرحبًا، {firstName}",
+      "emailLabel": "البريد الإلكتروني",
+      "recentOrders": {
+        "title": "الطلبات الأخيرة",
+        "trackOrder": "تتبع الطلب",
+        "viewAll": "كل الطلبات",
+        "empty": "لم تقم بأي طلبات بعد. يستحق الأمر أن تبدأ 🙂",
+        "emptyCta": "الانتقال إلى المتجر"
+      },
+      "profileNudge": {
+        "title": "ملفك الشخصي على وشك الاكتمال",
+        "description": "خطوة أخيرة — هذا يساعدنا على خدمتك بشكل أفضل.",
+        "missingName": "الاسم الكامل",
+        "missingPhone": "الهاتف",
+        "cta": "إكمال البيانات"
+      },
+      "courses": {
+        "title": "دوراتي",
+        "viewAll": "كل الدورات",
+        "empty": "لم تسجل في أي دورة بعد.",
+        "emptyCta": "اكتشف دوراتنا"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "booking": "حجز موعد",
+        "shop": "العودة إلى المتجر",
+        "courses": "دوراتنا"
+      },
+      "wishlist": {
+        "title": "مفضلتي",
+        "viewAll": "كل المفضلة",
+        "empty": "لا توجد مفضلات بعد. أضف قلبًا على المنتجات التي أعجبتك وستظهر هنا."
+      },
+      "recommended": {
+        "title": "منتجات موصى بها"
+      },
+      "recentlyViewed": {
+        "title": "شوهدت مؤخرًا"
+      }
+    },
+    "profile": {
+      "title": "ملفي الشخصي",
+      "personalTitle": "البيانات الشخصية",
+      "nameLabel": "الاسم الكامل",
+      "phoneLabel": "الهاتف",
+      "emailLabel": "البريد الإلكتروني",
+      "emailReadonlyNote": "البريد الإلكتروني مرتبط بحساب الدخول ولا يمكن تغييره هنا.",
+      "saveCta": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "savedToast": "تم حفظ البيانات",
+      "securityTitle": "الأمان",
+      "securityDescription": "لتغيير كلمة المرور، سنرسل لك رابطًا آمنًا إلى بريدك الإلكتروني.",
+      "resetPasswordCta": "إرسال رابط إعادة تعيين كلمة المرور",
+      "addressesLinkCta": "إدارة العناوين المحفوظة",
+      "errors": {
+        "nameTooShort": "الاسم قصير جدًا",
+        "phoneTooShort": "رقم الهاتف قصير جدًا",
+        "invalidInput": "بيانات غير صالحة",
+        "rateLimited": "عدد محاولات كبير جدًا — حاول مرة أخرى بعد دقيقة",
+        "notAuthenticated": "يجب تسجيل الدخول لتحديث الملف الشخصي"
+      }
+    },
+    "addresses": {
+      "title": "العناوين",
+      "empty": "لم تُضِف أي عنوان بعد. العنوان المحفوظ يملأ تفاصيل التوصيل تلقائيًا عند الدفع.",
+      "emptyCta": "إضافة عنوان",
+      "addCta": "إضافة عنوان",
+      "editCta": "تعديل",
+      "setDefaultCta": "تعيين كافتراضي",
+      "deleteCta": "حذف",
+      "defaultBadge": "افتراضي",
+      "deleteConfirmTitle": "حذف العنوان",
+      "deleteConfirmDescription": "هل تريد حذف هذا العنوان؟ لا يمكن التراجع عن هذا الإجراء.",
+      "form": {
+        "createTitle": "إضافة عنوان",
+        "editTitle": "تعديل العنوان",
+        "labelLabel": "الاسم (مثل المنزل/العمل)",
+        "lineLabel": "العنوان",
+        "cityLabel": "المدينة",
+        "notesLabel": "ملاحظات (اختياري)",
+        "isDefaultLabel": "تعيين كافتراضي",
+        "saveCta": "حفظ",
+        "saving": "جارٍ الحفظ...",
+        "cancelCta": "إلغاء"
+      },
+      "toasts": {
+        "created": "تمت إضافة العنوان",
+        "updated": "تم تحديث العنوان",
+        "deleted": "تم حذف العنوان",
+        "defaultSet": "تم تعيين العنوان كافتراضي"
+      },
+      "errors": {
+        "labelRequired": "يرجى إدخال اسم للعنوان",
+        "lineRequired": "يرجى إدخال العنوان",
+        "cityRequired": "يرجى إدخال المدينة",
+        "invalidInput": "بيانات غير صالحة",
+        "notFound": "العنوان غير موجود",
+        "rateLimited": "عدد محاولات كبير جدًا — حاول مرة أخرى بعد دقيقة",
+        "notAuthenticated": "يجب تسجيل الدخول لإدارة العناوين"
+      }
+    },
+    "wishlist": {
+      "title": "مفضلتي",
+      "empty": "قائمة المفضلة فارغة",
+      "emptyDescription": "أضف قلبًا على المنتجات التي أعجبتك لحفظها هنا.",
+      "emptyCta": "الانتقال إلى المتجر",
+      "removedToast": "تمت الإزالة من المفضلة",
+      "undoCta": "تراجع",
+      "addedToast": "تمت الإضافة إلى المفضلة",
+      "heartAdd": "إضافة إلى المفضلة",
+      "heartRemove": "إزالة من المفضلة",
+      "errors": {
+        "notAuthenticated": "يجب تسجيل الدخول لحفظ المفضلة",
+        "invalidInput": "بيانات غير صالحة",
+        "rateLimited": "عدد محاولات كبير جدًا — حاول مرة أخرى بعد دقيقة"
+      }
     }
   }
 }
