@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { Link } from "@/i18n/navigation";
 import { OrderDetailCard, type OrderDetailData } from "@/components/shop/order-detail-card";
@@ -71,7 +70,7 @@ export default async function AccountOrderDetailPage({
   };
 
   return (
-    <Container className="py-20">
+    <>
       <SectionHeading light eyebrow={t("detail.title")} title={order.orderNumber} />
       <div className="mt-10 max-w-xl">
         <OrderDetailCard order={detail} />
@@ -79,6 +78,6 @@ export default async function AccountOrderDetailPage({
       <Link href="/account/orders" className="mt-10 inline-block text-sm text-neutral-400 hover:text-white">
         {t("backToOrders")}
       </Link>
-    </Container>
+    </>
   );
 }

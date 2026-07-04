@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { Link } from "@/i18n/navigation";
 import { OrderStatusBadge } from "@/components/shop/order-status-badge";
@@ -49,7 +48,7 @@ export default async function AccountOrdersPage({
   const completed = orders.filter((o) => !(IN_PROGRESS_STATUSES as readonly string[]).includes(o.status));
 
   return (
-    <Container className="py-20">
+    <>
       <SectionHeading light eyebrow={t("title")} title={t("title")} />
 
       {orders.length === 0 ? (
@@ -64,7 +63,7 @@ export default async function AccountOrdersPage({
       <Link href="/account" className="mt-10 inline-block text-sm text-neutral-400 hover:text-white">
         {t("backToAccount")}
       </Link>
-    </Container>
+    </>
   );
 }
 

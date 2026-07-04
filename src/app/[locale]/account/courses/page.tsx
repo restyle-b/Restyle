@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { Link } from "@/i18n/navigation";
 import { EnrollmentStatusBadge } from "@/components/courses/enrollment-status-badge";
@@ -42,7 +41,7 @@ export default async function AccountCoursesPage({
   });
 
   return (
-    <Container className="py-20">
+    <>
       <SectionHeading light eyebrow={t("myCourses.title")} title={t("myCourses.title")} />
 
       {enrollments.length === 0 ? (
@@ -90,6 +89,6 @@ export default async function AccountCoursesPage({
       <Link href="/account" className="mt-10 inline-block text-sm text-neutral-400 hover:text-white">
         {tOrders("backToAccount")}
       </Link>
-    </Container>
+    </>
   );
 }
