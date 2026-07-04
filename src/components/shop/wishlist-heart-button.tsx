@@ -18,10 +18,14 @@ export function WishlistHeartButton({
   productId,
   initialWishlisted = false,
   className,
+  onToggled,
 }: {
   productId: string;
   initialWishlisted?: boolean;
   className?: string;
+  /** נקרא מיידית עם המצב האופטימי (לפני תשובת השרת) — משמש את עמוד המועדפים
+   * להסרה אופטימית של הכרטיס מה-grid + טוסט undo, ראה ux-spec.md §A5. */
+  onToggled?: (wishlisted: boolean) => void;
 }) {
   const t = useTranslations("account.wishlist");
   const locale = useLocale();
@@ -33,6 +37,7 @@ export function WishlistHeartButton({
     e.stopPropagation();
     const optimisticNext = !wishlisted;
     setWishlisted(optimisticNext);
+    onToggled?.(optimisticNext);
     startTransition(async () => {
       const result = await toggleWishlistItem(productId, locale);
       if (result.ok) {

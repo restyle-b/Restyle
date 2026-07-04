@@ -19,11 +19,14 @@ export function ProductCard({
   locale,
   outOfStockLabel,
   wishlisted = false,
+  onWishlistToggled,
 }: {
   product: ProductItem;
   locale: string;
   outOfStockLabel: string;
   wishlisted?: boolean;
+  /** משמש את עמוד המועדפים להסרה אופטימית של הכרטיס מה-grid + טוסט undo. */
+  onWishlistToggled?: (wishlisted: boolean) => void;
 }) {
   const soldOut = product.stock <= 0 || !product.available;
 
@@ -33,6 +36,7 @@ export function ProductCard({
         productId={product.id}
         initialWishlisted={wishlisted}
         className="absolute top-3 start-3 z-10"
+        onToggled={onWishlistToggled}
       />
       <Link href={`/shop/${product.slug}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden bg-ink-soft">
