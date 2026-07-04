@@ -26,8 +26,46 @@ model User {
   updatedAt DateTime @updatedAt
   orders    Order[]
   enrollments Enrollment[]
+  wishlistItems WishlistItem[]
+  addresses     UserAddress[]
 
   @@map("users")
+}
+
+// רשימת משאלות — פריט אחד לכל (משתמש, מוצר). Cascade כפול: משתמש/מוצר שנמחקים
+// מוחקים את השורה (בניגוד ל-Order שתמיד שומר snapshot) — מועדף על מוצר שלא קיים
+// יותר הוא חסר משמעות. גישה דרך server action מאומת בלבד (RLS ללא policies).
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("wishlist_items")
+}
+
+// כתובות שמורות של משתמש — נוחות בלבד. הזמנה תמיד שומרת snapshot משלה
+// (addressLine/City/Notes ב-Order) — אין FK מההזמנה לכאן, כדי שעריכה/מחיקה
+// של כתובת שמורה לעולם לא תשנה הזמנה היסטורית. ברירת-מחדל יחידה נאכפת
+// ב-migration עם partial unique index (userId WHERE isDefault=true).
+model UserAddress {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String // "בית" / "עבודה" — טקסט חופשי
+  line      String
+  city      String
+  notes     String?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("user_addresses")
 }
 
 // הגדרות אתר גלובליות — שורה אחת בלבד (id קבוע = 1). Phase 8.1.
@@ -227,6 +265,7 @@ model Product {
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   orderItems      OrderItem[]
+  wishlistItems   WishlistItem[]
 
   @@index([categoryId])
   @@map("products")
