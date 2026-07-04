@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/container";
 import { Link } from "@/i18n/navigation";
 import { ProductImage } from "@/components/shop/product-image";
 import { AddToCartButton } from "@/components/shop/add-to-cart-button";
+import { RecordRecentlyViewed } from "@/components/shop/record-recently-viewed";
 import { formatAgorot } from "@/lib/format";
 import { getProductBySlug } from "@/lib/content/get-products";
 
@@ -33,6 +34,13 @@ export default async function ProductPage({
 
   return (
     <Container className="py-20 sm:py-28">
+      <RecordRecentlyViewed
+        productId={product.id}
+        slug={product.slug}
+        name={product.name}
+        imageUrl={product.imageUrl}
+        priceAgorot={product.effectivePriceAgorot}
+      />
       <Link
         href="/shop"
         className="link-underline text-sm text-neutral-400 transition-colors hover:text-white"

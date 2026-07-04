@@ -14,6 +14,7 @@ export type ProductItem = {
   onSale: boolean;
   stock: number;
   available: boolean;
+  featured: boolean;
   imageUrl: string | null;
   categorySlug: string | null;
 };
@@ -66,6 +67,7 @@ export async function getProducts(locale: string, categorySlug?: string): Promis
         onSale: effectivePriceAgorot < r.priceAgorot,
         stock: r.stock,
         available: r.available,
+        featured: r.featured,
         imageUrl: r.imageUrl,
         categorySlug: r.category?.slug ?? null,
       };
@@ -87,6 +89,7 @@ export async function getProductBySlug(locale: string, slug: string): Promise<Pr
     onSale: effectivePriceAgorot < row.priceAgorot,
     stock: row.stock,
     available: row.available,
+    featured: row.featured,
     imageUrl: row.imageUrl,
     categorySlug: row.category?.slug ?? null,
   };
