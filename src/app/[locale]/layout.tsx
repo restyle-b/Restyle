@@ -14,6 +14,7 @@ import { FloatingContact } from "@/components/floating-contact";
 import { CartProvider } from "@/lib/cart/cart-context";
 import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
+import { SiteToaster } from "@/components/site-toaster";
 import "../globals.css";
 
 /**
@@ -119,6 +120,7 @@ export default async function RootLayout({
             <SiteFooter locale={locale as Locale} contact={contact} />
             <FloatingContact locale={locale as Locale} contact={contact} />
             <AccessibilityMenu />
+            <SiteToaster />
           </CartProvider>
         </NextIntlClientProvider>
       </body>
