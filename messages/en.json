@@ -566,5 +566,17 @@
         "rateLimited": "Too many attempts. Please try again in a few minutes."
       }
     }
+  },
+  "account": {
+    "nav": {
+      "dashboard": "Overview",
+      "orders": "My orders",
+      "courses": "My courses",
+      "wishlist": "Wishlist",
+      "addresses": "Addresses",
+      "profile": "My profile",
+      "more": "More",
+      "adminPanel": "Admin panel"
+    }
   }
 }

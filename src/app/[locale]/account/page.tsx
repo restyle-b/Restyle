@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import NextLink from "next/link";
-import { ShieldCheck } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
-import { SignOutButton } from "@/components/auth/sign-out-button";
 import { Link } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/auth/current-user";
 
 export const metadata: Metadata = {
@@ -21,21 +17,15 @@ export const metadata: Metadata = {
 // שה-cookies() נקראת ומסמנת לעמוד שהוא דינמי).
 export const dynamic = "force-dynamic";
 
+// גרסה זמנית מפושטת (רק הסרת שכפול ה-auth+redirect לטובת account/layout.tsx) —
+// הדשבורד המלא (כרטיסי סקירה, wishlist, מוצרים מומלצים וכו') נבנה בקומיט הבא.
 export default async function AccountPage() {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getUser();
-
-  // הגנה כפולה — ה-middleware מפנה כבר ל-/login, אך לא לסמוך על שכבה אחת בלבד
-  if (!data.user) {
+  const user = await getCurrentUser();
+  if (!user) {
     redirect("/login?next=/account");
   }
 
-  const name = (data.user.user_metadata?.name as string | undefined) ?? data.user.email;
-
-  // הצגה בלבד — לא מנגנון אכיפה. הגישה בפועל ל-/admin עדיין נאכפת ב-requireAdmin()
-  // וב-middleware, בלי תלות בכפתור הזה.
-  const currentUser = await getCurrentUser();
-  const isAdmin = currentUser?.role === "ADMIN";
+  const name = user.name ?? user.email;
 
   return (
     <Container className="py-20">
@@ -44,7 +34,7 @@ export default async function AccountPage() {
       <dl className="mt-8 max-w-md space-y-3 text-neutral-300">
         <div className="flex gap-3">
           <dt className="font-medium text-white">אימייל:</dt>
-          <dd>{data.user.email}</dd>
+          <dd>{user.email}</dd>
         </div>
       </dl>
 
@@ -55,16 +45,6 @@ export default async function AccountPage() {
         <Link href="/account/courses" className={cn(buttonVariants({ size: "lg", variant: "outline" }))}>
           הקורסים שלי
         </Link>
-        {isAdmin && (
-          // /admin חי מחוץ ל-[locale] (לא מתורגם) — קישור אליו חייב להיות
-          // next/link רגיל, לא ה-Link המקומי של next-intl (שהיה מוסיף
-          // prefix שפה שגוי כמו "/en/admin", ראה src/middleware.ts NON_LOCALIZED_PREFIXES).
-          <NextLink href="/admin" className={cn(buttonVariants({ size: "lg", variant: "outline" }))}>
-            <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-            פאנל ניהול
-          </NextLink>
-        )}
-        <SignOutButton />
       </div>
     </Container>
   );

@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { EnrollmentStatusBadge } from "@/components/courses/enrollment-status-badge";
 import { PayBalanceButton } from "@/components/courses/pay-balance-button";
 import { formatAgorot } from "@/lib/format";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import { db } from "@/lib/db";
 
 export async function generateMetadata({
@@ -31,14 +31,13 @@ export default async function AccountCoursesPage({
   const t = await getTranslations({ locale, namespace: "academyCommerce" });
   const tOrders = await getTranslations({ locale, namespace: "orders" });
 
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) {
+  const user = await getCurrentUser();
+  if (!user) {
     redirect("/login?next=/account/courses");
   }
 
   const enrollments = await db.enrollment.findMany({
-    where: { userId: data.user.id },
+    where: { userId: user.id },
     orderBy: { createdAt: "desc" },
   });
 
