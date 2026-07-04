@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { logActivity } from "@/lib/admin/activity-log";
 import { ALLOWED_ORDER_TRANSITIONS } from "@/lib/admin/order-status-transitions";
 import { orderStatusSchema } from "@/lib/admin/order-status-schema";
+import { NON_REVENUE_ORDER_STATUSES } from "@/lib/admin/revenue-status";
 
 export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
@@ -63,12 +64,12 @@ export async function getOrdersOverview() {
   const [pendingCount, todayAgg, overallAgg] = await Promise.all([
     db.order.count({ where: { status: "PENDING" } }),
     db.order.aggregate({
-      where: { createdAt: { gte: startOfToday }, status: { notIn: ["CANCELLED", "FAILED"] } },
+      where: { createdAt: { gte: startOfToday }, status: { notIn: NON_REVENUE_ORDER_STATUSES } },
       _sum: { totalAgorot: true },
       _count: { _all: true },
     }),
     db.order.aggregate({
-      where: { status: { notIn: ["CANCELLED", "FAILED"] } },
+      where: { status: { notIn: NON_REVENUE_ORDER_STATUSES } },
       _avg: { totalAgorot: true },
     }),
   ]);
