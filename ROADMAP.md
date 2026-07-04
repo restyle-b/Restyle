@@ -98,6 +98,29 @@ Plan: [`docs/features/pwa.md`](./docs/features/pwa.md). User request 2026-07-03:
 - ✅ Group 2 — Service workers (serwist config, two SWs with distinct scopes, registration per layout, CSP `worker-src`/`manifest-src`); real bug found+fixed along the way: next-intl's middleware was 404-ing `/sw.js`/`*.webmanifest` (not in its static-file exclusion list), fixed via the middleware matcher.
 - ✅ Group 3 — `security` skill review found 2 real gaps, both fixed before close-out: (1) **High** — `/courses/success` and `/courses/cancel` are `force-dynamic` pages that render live enrollment status/number and payment balance from the DB, but weren't in the never-cache list, so they fell through to the broad marketing-pages `StaleWhileRevalidate` rule — meaning payment/PII data would land in Cache Storage on a shared device, the exact risk `/cart`/`/checkout`/`/account` were already excluded for. Fixed by adding `courses` to the never-cache path list in `src/app/sw.ts`. (2) **Medium** — the middleware's static-asset bypass matched by file extension anywhere in the URL (`.*\.(?:svg|png|...)$`), which would have silently skipped the session check for any *future* `/admin/*` or `/account/*` route ending in one of those extensions (an image proxy, a CSV/XML export), leaving only the in-handler `requireAdmin()` layer standing — a defense-in-depth regression. Fixed by scoping the bypass to the actual static paths (`icons/`, `images/`, named root files) instead of a global extension match. Both fixes re-verified: full quality gates green (`tsc` incl. worker tsconfig, lint, `npm test`), and a live dev-server curl pass confirming all static assets (`robots.txt`, `sitemap.xml`, `*.webmanifest`, `icons/*`, `images/*`, `icon.svg`) still resolve 200 and `/admin`+`/account` still redirect to `/login` without a session.
 
+## Phases 13-18 — Platform upgrade: account area + admin (epic) 🔄
+Master plan: [`docs/features/platform-upgrade.md`](./docs/features/platform-upgrade.md)
+(+ 4 analysis briefs in `docs/features/platform-upgrade/`). User request 2026-07-04:
+Shopify/Stripe-class management experience, mandated multi-agent workflow (4 Opus
+analysis agents done → parallel Sonnet implementation per milestone → Opus review wave).
+Locked decisions: single admin stays; curriculum/video skipped; invoices deferred;
+promotion engine full-but-staged (A: coupons+percent/fixed+free-shipping; B: BXGY/
+bundles/time-based later).
+- ⬜ **Phase 13 (M1)** — Account transformation: layout shell (RTL sidebar + mobile
+  bottom tabs), dashboard cards, profile editing, wishlist, addresses, `account` i18n
+  namespace, skeletons/empty states.
+- ⬜ **Phase 14 (M2)** — Admin dashboard v2: revenue/AOV/customers/low-stock KPIs,
+  2 hand-rolled SVG charts (monochrome), embedded activity feed, notification center v2.
+- ⬜ **Phase 15 (M3)** — Catalog: products bulk actions + duplicate + preview + SEO/
+  publishAt; categories + courses → table views with counts.
+- ⬜ **Phase 16 (M4)** — Promotion engine Stage A + coupons (reserve-at-creation,
+  FOR UPDATE, release-on-failure; 28-case evaluator vitest suite; security +
+  tranzila-payments skills mandatory).
+- ⬜ **Phase 17 (M5)** — Inventory: InventoryEvent ledger, low-stock alerts everywhere,
+  adjustment dialog, per-product history drawer.
+- ⬜ **Phase 18 (M6)** — Settings tabs (incl. editable shipping fee), UX polish pass,
+  final Opus review wave (architecture/security/a11y/responsive/performance) + QA.
+
 ## Stages 1/1.1/1.2 — Marketing completion ✅
 Accessibility widget + `/accessibility` statement (IS 5568 / WCAG 2.0 AA), `/academy` content page, `/locations`, quick-contact buttons (floating WhatsApp/phone + Waze/tel/WhatsApp rows, `contact-links.ts` single source), `/privacy` + `/terms`, favicon, real brand logo asset, Brevo email verified in production, Lighthouse pass (a11y/BP 100, perf 88-95, SEO 100 after `force-static` fix on 6 pages).
 

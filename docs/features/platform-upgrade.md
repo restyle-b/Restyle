@@ -50,11 +50,51 @@ topbar re-runs `getDashboardStats()` on every admin page load (blocking).
 status menus/badges/StatusHistory, overview actions, `logActivity`, upload route +
 ImageUploadButton, `unstable_cache` + tag revalidation pattern, form-styles, agorot helpers.
 
-## Data model (Opus agent B) — TO MERGE
+## Analysis reports (full briefs in ./platform-upgrade/)
+- **[audit.md](./platform-upgrade/audit.md)** — line-level current-state audit (agent A).
+- **[data-model.md](./platform-upgrade/data-model.md)** — Prisma additions for all new
+  domains, additive-only, RLS Pattern B for every new table (agent B).
+- **[promotion-engine.md](./platform-upgrade/promotion-engine.md)** — money-critical
+  evaluation semantics: pure evaluator, largest-remainder line allocation, round-once
+  half-up, reserve-at-creation redemption with FOR UPDATE + release-on-failure (agent C).
+- **[ux-spec.md](./platform-upgrade/ux-spec.md)** — screen-by-screen UX with Hebrew
+  microcopy, RTL rules, empty/loading states (agent D).
 
-## Promotion engine design (Opus agent C) — TO MERGE
+## Reconciliation — tech-lead decisions where agents B and C diverged
 
-## UX/IA spec (Opus agent D) — TO MERGE
+Agents B and C independently designed the promotions schema. Final authoritative shape:
+
+1. **Two-model split wins (agent B): `Promotion` (the benefit) + `Coupon` (codes) +
+   `CouponRedemption`.** Decisive reason: the requirements include *bulk coupon
+   generation* — N single-use codes pointing at one benefit. Agent C's single-model
+   design (nullable `code` on Promotion) would need N promotion rows for N codes.
+   Automatic promotions = `Promotion.automatic = true` with no coupons.
+2. **Field names from agent C** (clearer): `percentBp` (basis points, 1000 = 10%),
+   `amountAgorot`, `freeShippingMinSubtotalAgorot`. Kind enum: `PromotionKind
+   { PERCENT, FIXED_AMOUNT, FREE_SHIPPING }` (+ stage-B members added later).
+3. **`appliesTo` enum from agent C** (`SHOP` now, `COURSES` later) — courses excluded
+   from Stage A (deposit/balance split makes discount semantics ambiguous).
+4. **Usage limits live on `Coupon`** (`usageLimit`, `perCustomerLimit`, `usedCount`) —
+   per-code semantics; automatic promotions have no usage counting in Stage A.
+   The FOR UPDATE lock is taken on the **coupon** row.
+5. **Stage-B dormant fields on `Promotion`** (agent C): `priority`, `stackable`,
+   `conditions Json?` (never money in JSON — agent B's rule).
+6. **Eligibility restrictions: implicit Prisma M2M relations** on Promotion↔Product /
+   Promotion↔Category (agent B) — referential integrity + cascade beat `String[]`.
+7. **`appliesToSaleItems Boolean @default(true)`** kept from agent B (common Israeli
+   "לא כולל פריטי מבצע" case; evaluator excludes on-sale lines from the base when false).
+8. **Order/OrderItem fields from agent C**: `discountAgorot`, `appliedCouponCode`,
+   `appliedPromotions Json?` (display snapshot), `freeShipping`, and
+   `OrderItem.lineDiscountAgorot` (line-level allocation is mandatory — refunds later).
+9. **Everything semantic from agent C is authoritative**: evaluation pipeline, rounding,
+   stacking, free-shipping-on-pre-discount-subtotal, reserve-at-creation +
+   release-on-terminal-failure, the 28-case vitest plan.
+10. **Charts: no new dependency** — hand-rolled monochrome SVG (admin-only, two simple
+    charts; full RTL control; dataviz-skill mono guidance).
+11. **Orchestration rule for implementation agents**: schema/migration changes are done
+    by the orchestrator only (no parallel schema edits); implementation agents NEVER
+    touch `src/lib/supabase/server.ts` / `src/middleware.ts` (no auth-bypass hacks in
+    agent hands — end-to-end verification is done centrally by the orchestrator).
 
 ## Milestones
 - **M1 (Phase 13)** — Customer account transformation: `account/layout.tsx` shell (RTL
