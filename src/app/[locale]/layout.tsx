@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Assistant, Cairo } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -42,6 +42,13 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0e0e0e" },
+    { media: "(prefers-color-scheme: light)", color: "#fafaf8" },
+  ],
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -62,6 +69,10 @@ export async function generateMetadata({
       type: "website",
       locale: OG_LOCALES[locale as Locale] ?? OG_LOCALES[routing.defaultLocale],
     },
+    // PWA — אפליקציה נפרדת מהאדמין (שני עצי <html> עצמאיים, ראה docs/features/pwa.md).
+    manifest: "/site.webmanifest",
+    appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.name },
+    icons: { apple: "/icons/site-apple-touch.png" },
   };
 }
 

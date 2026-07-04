@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { Sidebar } from "@/components/admin/sidebar";
 import { Topbar } from "@/components/admin/topbar";
@@ -9,6 +9,14 @@ import "../globals.css";
 export const metadata: Metadata = {
   title: "ניהול | ReStyle",
   robots: { index: false, follow: false },
+  // PWA נפרד לגמרי מהאתר הציבורי (עץ <html> משלו, ראה docs/features/pwa.md).
+  manifest: "/admin.webmanifest",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "ReStyle ניהול" },
+  icons: { apple: "/icons/admin-apple-touch.png" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#e5e5e5",
 };
 
 // תלוי ב-cookies()/Supabase בכל בקשה — אסור רינדור סטטי בזמן build.
