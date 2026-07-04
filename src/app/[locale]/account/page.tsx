@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import NextLink from "next/link";
+import { ShieldCheck } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { SignOutButton } from "@/components/auth/sign-out-button";
@@ -7,6 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/current-user";
 
 export const metadata: Metadata = {
   title: "אזור אישי",
@@ -29,6 +32,11 @@ export default async function AccountPage() {
 
   const name = (data.user.user_metadata?.name as string | undefined) ?? data.user.email;
 
+  // הצגה בלבד — לא מנגנון אכיפה. הגישה בפועל ל-/admin עדיין נאכפת ב-requireAdmin()
+  // וב-middleware, בלי תלות בכפתור הזה.
+  const currentUser = await getCurrentUser();
+  const isAdmin = currentUser?.role === "ADMIN";
+
   return (
     <Container className="py-20">
       <SectionHeading light eyebrow="האזור האישי שלך" title={`שלום, ${name}`} />
@@ -47,6 +55,15 @@ export default async function AccountPage() {
         <Link href="/account/courses" className={cn(buttonVariants({ size: "lg", variant: "outline" }))}>
           הקורסים שלי
         </Link>
+        {isAdmin && (
+          // /admin חי מחוץ ל-[locale] (לא מתורגם) — קישור אליו חייב להיות
+          // next/link רגיל, לא ה-Link המקומי של next-intl (שהיה מוסיף
+          // prefix שפה שגוי כמו "/en/admin", ראה src/middleware.ts NON_LOCALIZED_PREFIXES).
+          <NextLink href="/admin" className={cn(buttonVariants({ size: "lg", variant: "outline" }))}>
+            <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+            פאנל ניהול
+          </NextLink>
+        )}
         <SignOutButton />
       </div>
     </Container>
