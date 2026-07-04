@@ -6,11 +6,18 @@ import { db } from "@/lib/db";
 
 const PAGE_SIZE = 30;
 
-export async function listActivity(options?: { entityType?: string; search?: string; page?: number }) {
+export async function listActivity(options?: {
+  entityType?: string;
+  search?: string;
+  page?: number;
+  /** דורס את גודל העמוד — משמש להטמעת "פעילות אחרונה" מצומצמת בדשבורד (limit=5). */
+  limit?: number;
+}) {
   await requireAdmin();
 
-  const { entityType, search, page = 1 } = options ?? {};
+  const { entityType, search, page = 1, limit } = options ?? {};
   const trimmedSearch = search?.trim();
+  const pageSize = limit ?? PAGE_SIZE;
 
   const where: Prisma.ActivityLogWhereInput = {
     ...(entityType ? { entityType } : {}),
@@ -29,8 +36,8 @@ export async function listActivity(options?: { entityType?: string; search?: str
     db.activityLog.findMany({
       where,
       orderBy: { createdAt: "desc" },
-      skip: (currentPage - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
+      skip: (currentPage - 1) * pageSize,
+      take: pageSize,
     }),
     db.activityLog.count({ where }),
     db.activityLog.findMany({ distinct: ["entityType"], select: { entityType: true }, orderBy: { entityType: "asc" } }),
@@ -40,7 +47,7 @@ export async function listActivity(options?: { entityType?: string; search?: str
     events,
     total,
     page: currentPage,
-    pageSize: PAGE_SIZE,
+    pageSize,
     entityTypes: entityTypeRows.map((r) => r.entityType),
   };
 }
