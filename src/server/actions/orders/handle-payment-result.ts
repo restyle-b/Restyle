@@ -82,29 +82,42 @@ export async function handlePaymentResult(
     return { ok: false, reason: "amount mismatch" };
   }
 
-  await db.$transaction([
-    db.payment.update({
-      where: { id: order.payment.id },
+  // טרנזקציה אינטראקטיבית (לא מערך) — כדי שכל ירידת מלאי תדע את ה-resultingStock
+  // שלה עצמה (Phase 17 / M5, InventoryEvent.resultingStock הוא snapshot, לא נגזר
+  // אחר-כך). מלאי יורד **רק כאן** (בתשלום מאומת), כמו קודם.
+  await db.$transaction(async (tx) => {
+    await tx.payment.update({
+      where: { id: order.payment!.id },
       data: {
         status: "SUCCEEDED",
         externalRef: result.providerRef,
         last4: result.last4,
         rawResponseMeta: { verifiedAt: new Date().toISOString() },
       },
-    }),
-    db.order.update({ where: { id: order.id }, data: { status: "PAID" } }),
-    db.orderStatusEvent.create({
+    });
+    await tx.order.update({ where: { id: order.id }, data: { status: "PAID" } });
+    await tx.orderStatusEvent.create({
       data: { orderId: order.id, fromStatus: order.status, toStatus: "PAID", changedBy: "payment" },
-    }),
-    ...order.items
-      .filter((item) => item.productId)
-      .map((item) =>
-        db.product.update({
-          where: { id: item.productId! },
-          data: { stock: { decrement: item.quantity } },
-        }),
-      ),
-  ]);
+    });
+
+    for (const item of order.items) {
+      if (!item.productId) continue;
+      const updated = await tx.product.update({
+        where: { id: item.productId },
+        data: { stock: { decrement: item.quantity } },
+      });
+      await tx.inventoryEvent.create({
+        data: {
+          productId: item.productId,
+          delta: -item.quantity,
+          reason: "SALE",
+          resultingStock: updated.stock,
+          orderId: order.id,
+          actorEmail: "payment",
+        },
+      });
+    }
+  });
 
   await sendPaymentConfirmationEmail(order.customerEmail, order.customerName, order.orderNumber, order.totalAgorot);
 

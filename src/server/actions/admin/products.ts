@@ -255,25 +255,54 @@ export async function updateProductSalePrice(
 }
 
 /** עדכון מלאי inline — action ייעודי (לא "product.update" כללי) כדי שהיסטוריית הפעילות תבליט שינויי מלאי. */
-export async function updateProductStock(id: string, stock: number): Promise<AdminActionResult> {
+/**
+ * עדכון מלאי ידני (עריכה inline בטבלה, ולוח ה"התאמה" העתידי) — כותב גם
+ * InventoryEvent (Phase 17 / M5). ה-stock הנוכחי נקרא **בתוך** הטרנזקציה,
+ * לא מ-`existing` שנשלף מחוץ לה — אחרת delta מחושב מול ערך מיושן ועלול
+ * "לבלוע" ירידת SALE מקבילה (handle-payment-result). reason נגזר מסימן
+ * ה-delta: RESTOCK לחיובי, MANUAL_ADJUST לשלילי/אפס.
+ */
+export async function updateProductStock(id: string, stock: number, note?: string): Promise<AdminActionResult> {
   const admin = await requireAdmin();
 
-  const existing = await db.product.findUnique({ where: { id } });
+  const existing = await db.product.findUnique({ where: { id }, select: { id: true, nameHe: true } });
   if (!existing) return { ok: false, error: "מוצר לא נמצא" };
 
   const parsed = stockQuantitySchema.safeParse(stock);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "כמות לא תקינה" };
   }
+  const newStock = parsed.data;
+  const trimmedNote = note?.trim() || null;
 
-  await db.product.update({ where: { id }, data: { stock: parsed.data } });
+  const previousStock = await db.$transaction(async (tx) => {
+    const current = await tx.product.findUniqueOrThrow({ where: { id }, select: { stock: true } });
+    const delta = newStock - current.stock;
+
+    await tx.product.update({ where: { id }, data: { stock: newStock } });
+
+    if (delta !== 0) {
+      await tx.inventoryEvent.create({
+        data: {
+          productId: id,
+          delta,
+          reason: delta > 0 ? "RESTOCK" : "MANUAL_ADJUST",
+          resultingStock: newStock,
+          actorEmail: admin.email,
+          note: trimmedNote,
+        },
+      });
+    }
+
+    return current.stock;
+  });
 
   await logActivity({
     actorEmail: admin.email,
     action: "product.stock_change",
     entityType: "product",
     entityId: id,
-    summary: `מלאי "${existing.nameHe}" עודכן: ${existing.stock} → ${parsed.data}`,
+    summary: `מלאי "${existing.nameHe}" עודכן: ${previousStock} → ${newStock}`,
   });
 
   revalidatePublicPaths();
