@@ -17,7 +17,7 @@ export async function handlePaymentResult(
 ): Promise<HandlePaymentResultOutcome> {
   const order = await db.order.findUnique({
     where: { id: result.orderId },
-    include: { payment: true, items: true },
+    include: { payment: true, items: true, couponRedemption: true },
   });
 
   if (!order || !order.payment) {
@@ -30,6 +30,20 @@ export async function handlePaymentResult(
     return { ok: true };
   }
 
+  // שחרור מימוש קופון ששמור להזמנה זו (reserve-at-creation) — נקרא משני
+  // הענפים הבאים (FAILED / אי-התאמת סכום) בלבד, לעולם לא בענף SUCCEEDED
+  // (הזמנה ששולמה בפועל שומרת על המימוש שלה לצמיתות). ראה
+  // docs/features/platform-upgrade/promotion-engine.md §4-§5.
+  const releaseCouponOps = order.couponRedemption
+    ? [
+        db.couponRedemption.delete({ where: { id: order.couponRedemption.id } }),
+        db.coupon.update({
+          where: { id: order.couponRedemption.couponId },
+          data: { usedCount: { decrement: 1 } },
+        }),
+      ]
+    : [];
+
   if (!result.ok) {
     await db.$transaction([
       db.payment.update({
@@ -40,6 +54,7 @@ export async function handlePaymentResult(
       db.orderStatusEvent.create({
         data: { orderId: order.id, fromStatus: order.status, toStatus: "FAILED", changedBy: "payment" },
       }),
+      ...releaseCouponOps,
     ]);
     return { ok: true };
   }
@@ -62,6 +77,7 @@ export async function handlePaymentResult(
       db.orderStatusEvent.create({
         data: { orderId: order.id, fromStatus: order.status, toStatus: "FAILED", changedBy: "payment" },
       }),
+      ...releaseCouponOps,
     ]);
     return { ok: false, reason: "amount mismatch" };
   }

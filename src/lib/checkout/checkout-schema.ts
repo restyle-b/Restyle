@@ -18,6 +18,8 @@ export function createCheckoutSchema(messages: CheckoutSchemaMessages) {
       addressLine: z.string().trim().max(200).optional().or(z.literal("")),
       addressCity: z.string().trim().max(100).optional().or(z.literal("")),
       addressNotes: z.string().trim().max(500).optional().or(z.literal("")),
+      /** קוד קופון אופציונלי (Phase 16/M4) — מאומת מחדש בשרת בתוך הטרנזקציה, לעולם לא נסמך על הקליינט. */
+      couponCode: z.string().trim().max(40).optional().or(z.literal("")),
       /** שדה honeypot — אמור להישאר ריק; בוטים ממלאים אותו */
       company: z.string().max(0).optional().or(z.literal("")),
     })

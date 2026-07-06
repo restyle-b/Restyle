@@ -107,7 +107,10 @@ export async function updateOrderStatus(
   }
   const newStatus = parsedStatus.data;
 
-  const order = await db.order.findUnique({ where: { orderNumber }, select: { id: true, status: true } });
+  const order = await db.order.findUnique({
+    where: { orderNumber },
+    select: { id: true, status: true, couponRedemption: { select: { id: true, couponId: true } } },
+  });
   if (!order) {
     return { ok: false, error: "הזמנה לא נמצאה" };
   }
@@ -117,11 +120,27 @@ export async function updateOrderStatus(
     return { ok: false, error: `מעבר מ-${order.status} ל-${newStatus} אינו מותר` };
   }
 
+  // ביטול ע"י אדמין = כישלון סופי לצורך מבצעים/קופונים, בדיוק כמו FAILED
+  // מ-handle-payment-result — משחררים מימוש קופון ששמור (reserve-at-creation)
+  // כדי שהקוד יהיה זמין שוב. **לא** משחזרים מימוש אם CANCELLED→PENDING
+  // (un-cancel) — זה נשאר scope עתידי (ראה promotion-engine.md §4).
+  const releaseCouponOps =
+    newStatus === "CANCELLED" && order.couponRedemption
+      ? [
+          db.couponRedemption.delete({ where: { id: order.couponRedemption.id } }),
+          db.coupon.update({
+            where: { id: order.couponRedemption.couponId },
+            data: { usedCount: { decrement: 1 } },
+          }),
+        ]
+      : [];
+
   await db.$transaction([
     db.order.update({ where: { orderNumber }, data: { status: newStatus } }),
     db.orderStatusEvent.create({
       data: { orderId: order.id, fromStatus: order.status, toStatus: newStatus, changedBy: admin.email },
     }),
+    ...releaseCouponOps,
   ]);
 
   await logActivity({

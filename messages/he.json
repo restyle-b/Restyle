@@ -482,7 +482,9 @@
       "emptyCart": "העגלה ריקה או שהנתונים שנשלחו אינם תקינים.",
       "productUnavailable": "אחד המוצרים בעגלה כבר אינו זמין.",
       "insufficientStock": "אין מספיק מלאי עבור \"{name}\".",
-      "paymentInitFailed": "פתיחת התשלום נכשלה. נסו שוב."
+      "paymentInitFailed": "פתיחת התשלום נכשלה. נסו שוב.",
+      "couponNotFound": "קוד הקופון אינו קיים.",
+      "couponInvalid": "לא ניתן להחיל את הקופון."
     },
     "mockPay": {
       "title": "סימולציית תשלום (מצב פיתוח)",

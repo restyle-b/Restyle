@@ -482,7 +482,9 @@
       "emptyCart": "Your cart is empty or the submitted data is invalid.",
       "productUnavailable": "One of the items in your cart is no longer available.",
       "insufficientStock": "Not enough stock for \"{name}\".",
-      "paymentInitFailed": "Failed to start payment. Please try again."
+      "paymentInitFailed": "Failed to start payment. Please try again.",
+      "couponNotFound": "This coupon code does not exist.",
+      "couponInvalid": "This coupon cannot be applied."
     },
     "mockPay": {
       "title": "Simulated payment (dev mode)",
