@@ -131,6 +131,20 @@ model Course {
   updatedAt     DateTime @updatedAt
   enrollments   Enrollment[]
 
+  // מחזור חיים (Platform upgrade, Phase 15): publishAt=null → מתפרסם מיד עם
+  // active. publishAt עתידי + active=true → "מתוזמן". active=false → טיוטה
+  // (נגזר בקוד, לא מאוחסן). אותו דפוס בדיוק כמו Product.
+  publishAt DateTime?
+
+  // SEO per-locale — נופל ל-nameHe/descriptionHe כשריק (נגזר בקוד).
+  seoTitleHe       String?
+  seoTitleEn       String?
+  seoTitleAr       String?
+  seoDescriptionHe String? @db.Text
+  seoDescriptionEn String? @db.Text
+  seoDescriptionAr String? @db.Text
+
+  @@index([active, publishAt])
   @@map("courses")
 }
 
@@ -267,7 +281,21 @@ model Product {
   orderItems      OrderItem[]
   wishlistItems   WishlistItem[]
 
+  // מחזור חיים (Platform upgrade, Phase 15): publishAt=null → מתפרסם מיד עם
+  // active. publishAt עתידי + active=true → "מתוזמן". active=false → טיוטה
+  // (נגזר בקוד, לא מאוחסן — לא מתנגש עם available/stock, ציר רביעי עצמאי).
+  publishAt DateTime?
+
+  // SEO per-locale — נופל ל-nameHe/descriptionHe כשריק (נגזר בקוד).
+  seoTitleHe       String?
+  seoTitleEn       String?
+  seoTitleAr       String?
+  seoDescriptionHe String? @db.Text
+  seoDescriptionEn String? @db.Text
+  seoDescriptionAr String? @db.Text
+
   @@index([categoryId])
+  @@index([active, publishAt])
   @@map("products")
 }
 
