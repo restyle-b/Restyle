@@ -71,7 +71,7 @@ model UserAddress {
 
 // הגדרות אתר גלובליות — שורה אחת בלבד (id קבוע = 1). Phase 8.1.
 model SiteSettings {
-  id            Int      @id @default(1)
+  id            Int     @id @default(1)
   phone         String
   email         String
   address       String
@@ -80,8 +80,13 @@ model SiteSettings {
   facebookUrl   String?
   appStoreUrl   String?
   googlePlayUrl String?
-  updatedAt     DateTime @updatedAt
-  updatedById   String?
+
+  // מלאי (Platform upgrade, Phase 17 / M5). קבוע ה-fallback (LOW_STOCK_THRESHOLD
+  // ב-product-schema.ts) משמש רק כברירת מחדל לפני שהאדמין שינה את הערך כאן.
+  lowStockThreshold Int @default(5)
+
+  updatedAt   DateTime @updatedAt
+  updatedById String?
 
   @@map("site_settings")
 }
@@ -283,6 +288,7 @@ model Product {
   orderItems      OrderItem[]
   wishlistItems   WishlistItem[]
   promotionLinks  PromotionProduct[]
+  inventoryEvents InventoryEvent[]
 
   // מחזור חיים (Platform upgrade, Phase 15): publishAt=null → מתפרסם מיד עם
   // active. publishAt עתידי + active=true → "מתוזמן". active=false → טיוטה
@@ -300,6 +306,36 @@ model Product {
   @@index([categoryId])
   @@index([active, publishAt])
   @@map("products")
+}
+
+// יומן מלאי (Platform upgrade, Phase 17 / M5) — כל שינוי stock נכתב לכאן
+// (delta חתום + resultingStock כ-snapshot), לא רק ל-Product.stock עצמו.
+// מלאי "שמור" (הזמנות PENDING) מחושב תמיד ב-read מ-OrderItem, לא מאוחסן כאן —
+// פחות משטח race, ונאמן לעיצוב הקיים של "ירידת מלאי רק בתשלום מאומת".
+enum InventoryReason {
+  SALE // ירידת מלאי בתשלום מאומת (handle-payment-result, אותה טרנזקציה)
+  RESTOCK // חידוש מלאי ידני (delta חיובי)
+  MANUAL_ADJUST // תיקון ידני (delta שלילי, לא מכירה)
+  ORDER_CANCELLED // החזרת מלאי בביטול הזמנה ששולמה
+
+  @@map("inventory_reason")
+}
+
+model InventoryEvent {
+  id             String          @id @default(cuid())
+  productId      String
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  delta          Int
+  reason         InventoryReason
+  resultingStock Int
+  orderId        String?
+  order          Order?          @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  actorEmail     String? // אימייל אדמין, או "payment"/"system"
+  note           String?
+  createdAt      DateTime        @default(now())
+
+  @@index([productId, createdAt])
+  @@map("inventory_events")
 }
 
 // הזמנה — אורח או משתמש רשום (userId אופציונלי, guest checkout מותר).
@@ -344,6 +380,7 @@ model Order {
   payment          Payment?
   statusEvents     OrderStatusEvent[]
   couponRedemption CouponRedemption?
+  inventoryEvents  InventoryEvent[]
 
   @@index([userId])
   @@index([customerEmail])
