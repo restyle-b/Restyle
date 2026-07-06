@@ -106,7 +106,9 @@ export function CouponsTable({ promotionId, coupons }: { promotionId: string; co
             <TableBody>
               {coupons.map((coupon) => (
                 <TableRow key={coupon.id}>
-                  <TableCell className="font-mono font-medium text-white">{coupon.code}</TableCell>
+                  <TableCell className="font-mono font-medium text-white [direction:ltr] text-right">
+                    {coupon.code}
+                  </TableCell>
                   <TableCell>
                     {coupon.usedCount}
                     {coupon.usageLimit !== null ? ` / ${coupon.usageLimit}` : " (ללא הגבלה)"}

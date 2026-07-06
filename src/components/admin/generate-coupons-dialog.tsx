@@ -92,7 +92,7 @@ export function GenerateCouponsDialog({
 
         {generatedCodes ? (
           <div className="flex flex-col gap-3">
-            <div className="max-h-64 overflow-y-auto rounded-md border border-line-dark p-3 font-mono text-sm text-neutral-200">
+            <div className="max-h-64 overflow-y-auto rounded-md border border-line-dark p-3 font-mono text-sm text-neutral-200 [direction:ltr] text-left">
               {generatedCodes.map((code) => (
                 <div key={code}>{code}</div>
               ))}
