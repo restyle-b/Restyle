@@ -85,6 +85,10 @@ model SiteSettings {
   // ב-product-schema.ts) משמש רק כברירת מחדל לפני שהאדמין שינה את הערך כאן.
   lowStockThreshold Int @default(5)
 
+  // דמי משלוח (Platform upgrade, Phase 18 / M6). קבוע ה-fallback
+  // (DELIVERY_FEE_AGOROT ב-lib/checkout/shipping.ts) משמש רק כברירת מחדל.
+  shippingFeeAgorot Int @default(4000)
+
   updatedAt   DateTime @updatedAt
   updatedById String?
 
