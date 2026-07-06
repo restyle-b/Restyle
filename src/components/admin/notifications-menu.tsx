@@ -12,15 +12,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-/** פעמון התראות — הזמנות/הרשמות ממתינות לתשלום/טיפול. ספירה בלבד (ללא push/realtime). */
+/** פעמון התראות — הזמנות/הרשמות ממתינות לתשלום/טיפול + מלאי נמוך. ספירה בלבד (ללא push/realtime). */
 export function NotificationsMenu({
   pendingOrders,
   pendingEnrollments,
+  lowStockProducts,
 }: {
   pendingOrders: number;
   pendingEnrollments: number;
+  lowStockProducts: number;
 }) {
-  const total = pendingOrders + pendingEnrollments;
+  const total = pendingOrders + pendingEnrollments + lowStockProducts;
 
   return (
     <DropdownMenu>
@@ -61,6 +63,14 @@ export function NotificationsMenu({
                 <Link href="/admin/enrollments?status=PENDING" className="flex-col items-start gap-0.5">
                   <span className="font-medium text-white">{pendingEnrollments} הרשמות ממתינות לתשלום</span>
                   <span className="text-xs text-neutral-500">לחצו לצפייה בהרשמות</span>
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {lowStockProducts > 0 && (
+              <DropdownMenuItem asChild>
+                <Link href="/admin/products?stock=low" className="flex-col items-start gap-0.5">
+                  <span className="font-medium text-white">{lowStockProducts} מוצרים במלאי נמוך</span>
+                  <span className="text-xs text-neutral-500">לחצו לצפייה במוצרים</span>
                 </Link>
               </DropdownMenuItem>
             )}

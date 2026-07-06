@@ -39,7 +39,11 @@ export async function getEligibilityOptions() {
   return { products, categories };
 }
 
-/** מבצע בודד + זכאות מלאה (מזהי מוצרים/קטגוריות) + קופונים, לעריכה. */
+/**
+ * מבצע בודד + זכאות מלאה (מזהי מוצרים/קטגוריות) + קופונים, לעריכה. קופונים
+ * מוגבלים ל-200 האחרונים — bulk generation יכול לצבור אלפי קודים על מבצע
+ * אחד (אין תקרה על כמות ה-runs), אותה תקרה בדיוק כמו getProductInventoryHistory.
+ */
 export async function getPromotion(id: string) {
   await requireAdmin();
   return db.promotion.findUnique({
@@ -47,7 +51,7 @@ export async function getPromotion(id: string) {
     include: {
       eligibleProducts: { select: { productId: true } },
       eligibleCategories: { select: { categoryId: true } },
-      coupons: { orderBy: { createdAt: "desc" } },
+      coupons: { orderBy: { createdAt: "desc" }, take: 200 },
     },
   });
 }
@@ -240,9 +244,10 @@ export async function togglePromotionActive(id: string, valueInput: boolean): Pr
 }
 
 /**
- * מימושים של מבצע — דרך הקופונים שלו בלבד (Stage A: מבצעים אוטומטיים לא
- * נספרים עדיין, ראה reconciliation §4 ב-platform-upgrade.md). מוחזר גם עבור
- * מבצע ללא קופונים (רשימה ריקה) — לא שגיאה.
+ * מימושים אחרונים של מבצע — דרך הקופונים שלו בלבד (Stage A: מבצעים אוטומטיים
+ * לא נספרים עדיין, ראה reconciliation §4 ב-platform-upgrade.md). מוגבל ל-50
+ * האחרונים (תואם את הכותרת "מימושים אחרונים" בעמוד — לא רשימה מלאה/היסטורית).
+ * מוחזר גם עבור מבצע ללא קופונים (רשימה ריקה) — לא שגיאה.
  */
 export async function getPromotionRedemptions(promotionId: string) {
   await requireAdmin();
@@ -253,6 +258,7 @@ export async function getPromotionRedemptions(promotionId: string) {
   return db.couponRedemption.findMany({
     where: { coupon: { promotionId } },
     orderBy: { createdAt: "desc" },
+    take: 50,
     include: {
       coupon: { select: { code: true } },
       order: { select: { orderNumber: true, customerName: true, customerEmail: true, totalAgorot: true } },

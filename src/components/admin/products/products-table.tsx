@@ -52,20 +52,29 @@ const STOCK_FILTER_LABEL: Record<StockFilter, string> = {
   out: "אזל",
 };
 
+function isStockFilter(value: string | undefined): value is StockFilter {
+  return value === "all" || value === "healthy" || value === "low" || value === "out";
+}
+
 export function ProductsTable({
   products,
   categories,
   lowStockThreshold,
+  initialStockFilter,
 }: {
   products: ProductRow[];
   categories: Category[];
   /** נקרא מ-SiteSettings בשרת (page.tsx) — ראה lib/admin/low-stock.ts. */
   lowStockThreshold: number;
+  /** מדשבורד האדמין (?stock=low/out) — ראה app/admin/products/page.tsx. */
+  initialStockFilter?: string;
 }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [stockFilter, setStockFilter] = useState<StockFilter>("all");
+  const [stockFilter, setStockFilter] = useState<StockFilter>(
+    isStockFilter(initialStockFilter) ? initialStockFilter : "all",
+  );
   const [featuredOnly, setFeaturedOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("order");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");

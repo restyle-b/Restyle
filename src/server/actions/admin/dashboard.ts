@@ -64,12 +64,14 @@ export async function getDashboardStats() {
 export async function getTopbarAlertCounts() {
   await requireAdmin();
 
-  const [pendingOrders, pendingEnrollments] = await Promise.all([
+  const lowStockThreshold = await getLowStockThreshold();
+  const [pendingOrders, pendingEnrollments, lowStockProducts] = await Promise.all([
     db.order.count({ where: { status: "PENDING" } }),
     db.enrollment.count({ where: { status: "PENDING" } }),
+    db.product.count({ where: { active: true, stock: { lte: lowStockThreshold } } }),
   ]);
 
-  return { pendingOrders, pendingEnrollments };
+  return { pendingOrders, pendingEnrollments, lowStockProducts };
 }
 
 export type TopProductRow = { id: string; nameHe: string; revenueAgorot: number };

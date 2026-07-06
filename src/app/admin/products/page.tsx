@@ -6,12 +6,17 @@ import { ProductsTable } from "@/components/admin/products/products-table";
 export const metadata: Metadata = { title: "מוצרים | ניהול" };
 export const dynamic = "force-dynamic";
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ stock?: string }>;
+}) {
   // page.tsx יושב תחת admin/layout.tsx (requireAdmin ברמת ה-layout); getProducts/
   // getCategoriesForSelect עדיין בודקים הרשאה בעצמם (defense in depth, אותה
   // קונבנציה כמו שאר האדמין). getLowStockThreshold היא helper פנימי בלבד
   // (לא server action חשוף), נקראת ישירות מה-server component.
-  const [products, categories, lowStockThreshold] = await Promise.all([
+  const [{ stock }, products, categories, lowStockThreshold] = await Promise.all([
+    searchParams,
     getProducts(),
     getCategoriesForSelect(),
     getLowStockThreshold(),
@@ -24,7 +29,12 @@ export default async function AdminProductsPage() {
         עריכה ישירה מהרשימה — מחיר, מחיר מבצע, מלאי, זמינות, נראות והבלטה נשמרים מיד, בלי לפתוח דף נפרד.
       </p>
       <div className="mt-6">
-        <ProductsTable products={products} categories={categories} lowStockThreshold={lowStockThreshold} />
+        <ProductsTable
+          products={products}
+          categories={categories}
+          lowStockThreshold={lowStockThreshold}
+          initialStockFilter={stock}
+        />
       </div>
     </div>
   );
