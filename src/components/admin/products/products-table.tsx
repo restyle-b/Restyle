@@ -22,6 +22,8 @@ import { ProductStockCell } from "@/components/admin/products/product-stock-cell
 import { ProductToggleCell } from "@/components/admin/products/product-toggle-cell";
 import { ProductRowActions } from "@/components/admin/products/product-row-actions";
 import { ProductEditSheet } from "@/components/admin/products/product-edit-sheet";
+import { ProductStockAdjustSheet } from "@/components/admin/products/product-stock-adjust-sheet";
+import { ProductInventoryHistorySheet } from "@/components/admin/products/product-inventory-history-sheet";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   deleteProduct,
@@ -50,7 +52,16 @@ const STOCK_FILTER_LABEL: Record<StockFilter, string> = {
   out: "אזל",
 };
 
-export function ProductsTable({ products, categories }: { products: ProductRow[]; categories: Category[] }) {
+export function ProductsTable({
+  products,
+  categories,
+  lowStockThreshold,
+}: {
+  products: ProductRow[];
+  categories: Category[];
+  /** נקרא מ-SiteSettings בשרת (page.tsx) — ראה lib/admin/low-stock.ts. */
+  lowStockThreshold: number;
+}) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -62,6 +73,8 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductRow | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<ProductRow | null>(null);
+  const [adjustingStockProduct, setAdjustingStockProduct] = useState<ProductRow | null>(null);
+  const [historyProduct, setHistoryProduct] = useState<ProductRow | null>(null);
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
@@ -69,16 +82,16 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
 
   const stockCounts = useMemo(() => {
     const counts: Record<StockFilter, number> = { all: products.length, healthy: 0, low: 0, out: 0 };
-    for (const p of products) counts[getStockHealth(p.stock)]++;
+    for (const p of products) counts[getStockHealth(p.stock, lowStockThreshold)]++;
     return counts;
-  }, [products]);
+  }, [products, lowStockThreshold]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     let rows = products.filter((p) => {
       if (q && !`${p.nameHe} ${p.nameEn ?? ""} ${p.nameAr ?? ""}`.toLowerCase().includes(q)) return false;
       if (categoryFilter && p.categoryId !== categoryFilter) return false;
-      if (stockFilter !== "all" && getStockHealth(p.stock) !== stockFilter) return false;
+      if (stockFilter !== "all" && getStockHealth(p.stock, lowStockThreshold) !== stockFilter) return false;
       if (featuredOnly && !p.featured) return false;
       return true;
     });
@@ -105,7 +118,7 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
     });
 
     return rows;
-  }, [products, search, categoryFilter, stockFilter, featuredOnly, sortKey, sortDir]);
+  }, [products, search, categoryFilter, stockFilter, featuredOnly, sortKey, sortDir, lowStockThreshold]);
 
   // סקופ הבחירה הוא תמיד הסט המסונן/מוצג הנוכחי — לא כל המוצרים. כשהפילטר
   // משתנה (חיפוש/קטגוריה/מלאי/מובלטים), מזהים שכבר לא מופיעים מוסרים מהבחירה
@@ -347,7 +360,7 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
                     <ProductSalePriceCell id={product.id} salePriceAgorot={product.salePriceAgorot} />
                   </TableCell>
                   <TableCell>
-                    <ProductStockCell id={product.id} stock={product.stock} />
+                    <ProductStockCell id={product.id} stock={product.stock} lowStockThreshold={lowStockThreshold} />
                   </TableCell>
                   <TableCell>
                     <ProductToggleCell
@@ -382,6 +395,8 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
                       }}
                       onDeleteRequest={() => setDeletingProduct(product)}
                       onDuplicate={() => handleDuplicate(product)}
+                      onAdjustStock={() => setAdjustingStockProduct(product)}
+                      onViewInventoryHistory={() => setHistoryProduct(product)}
                     />
                   </TableCell>
                 </TableRow>
@@ -421,6 +436,22 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
               }
             : null
         }
+      />
+
+      <ProductStockAdjustSheet
+        open={adjustingStockProduct !== null}
+        onOpenChange={(open) => !open && setAdjustingStockProduct(null)}
+        product={
+          adjustingStockProduct
+            ? { id: adjustingStockProduct.id, nameHe: adjustingStockProduct.nameHe, stock: adjustingStockProduct.stock }
+            : null
+        }
+      />
+
+      <ProductInventoryHistorySheet
+        open={historyProduct !== null}
+        onOpenChange={(open) => !open && setHistoryProduct(null)}
+        product={historyProduct ? { id: historyProduct.id, nameHe: historyProduct.nameHe } : null}
       />
 
       <ConfirmDialog

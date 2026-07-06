@@ -158,13 +158,23 @@ export function shekelsToAgorot(priceShekels: string): number {
   return Math.round(Number(priceShekels) * 100);
 }
 
-/** בריאות מלאי נגזרת — לא מאוחסנת. סף "מלאי נמוך" קבוע בכוונה (v1). */
+/**
+ * בריאות מלאי נגזרת — לא מאוחסנת. LOW_STOCK_THRESHOLD הוא רק ברירת מחדל
+ * (fallback) — הערך האמיתי חי ב-SiteSettings.lowStockThreshold (Phase 17 /
+ * M5) ונקרא דרך getLowStockThreshold ב-lib/admin/low-stock.ts. הקובץ הזה
+ * נשאר client-safe בכוונה (מיובא מ-products-table.tsx/stock-health-badge.tsx)
+ * ולכן לא ניגש ל-DB ישירות — הקורא (server component/action) אחראי להביא את
+ * הסף האמיתי ולהעביר אותו כפרמטר.
+ */
 export const LOW_STOCK_THRESHOLD = 5;
 
 export type StockHealth = "out" | "low" | "healthy";
 
-export function getStockHealth(stock: number): StockHealth {
+export function getStockHealth(stock: number, threshold: number = LOW_STOCK_THRESHOLD): StockHealth {
   if (stock <= 0) return "out";
-  if (stock <= LOW_STOCK_THRESHOLD) return "low";
+  if (stock <= threshold) return "low";
   return "healthy";
 }
+
+/** הערה חופשית ב"התאמת מלאי" (Sheet) — אופציונלי, אותה מגבלת אורך כמו שדות תיאור. */
+export const stockAdjustNoteSchema = optionalText(500);

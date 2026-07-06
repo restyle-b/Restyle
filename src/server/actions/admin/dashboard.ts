@@ -2,7 +2,7 @@
 
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
-import { LOW_STOCK_THRESHOLD } from "@/lib/admin/product-schema";
+import { getLowStockThreshold } from "@/lib/admin/low-stock";
 import { NON_REVENUE_ORDER_STATUSES } from "@/lib/admin/revenue-status";
 import {
   bucketDailyRevenue,
@@ -86,14 +86,13 @@ export async function getDashboardOverview() {
   const now = new Date();
   const start60d = addDays(startOfDay(now), -59);
 
-  const [ordersLast60d, customersCount, lowStockCount, topItemsRaw] = await Promise.all([
+  const [ordersLast60d, customersCount, lowStockThreshold, topItemsRaw] = await Promise.all([
     db.order.findMany({
       where: { createdAt: { gte: start60d }, status: { notIn: NON_REVENUE_ORDER_STATUSES } },
       select: { createdAt: true, totalAgorot: true },
     }),
     db.user.count(),
-    // stock<=סף כולל גם "אזל" (0) וגם "נמוך" — שתיהן דורשות תשומת לב בדשבורד.
-    db.product.count({ where: { active: true, stock: { lte: LOW_STOCK_THRESHOLD } } }),
+    getLowStockThreshold(),
     db.orderItem.groupBy({
       by: ["productId"],
       where: {
@@ -105,6 +104,12 @@ export async function getDashboardOverview() {
       take: 5,
     }),
   ]);
+
+  // stock<=סף כולל גם "אזל" (0) וגם "נמוך" — שתיהן דורשות תשומת לב בדשבורד.
+  // הסף עצמו נקרא מ-SiteSettings (עם fallback) לפני השאילתה, לא קבוע קשיח.
+  const lowStockCount = await db.product.count({
+    where: { active: true, stock: { lte: lowStockThreshold } },
+  });
 
   const revenue = summarizeRevenueWindows(ordersLast60d, now);
   const dailyRevenue30d = bucketDailyRevenue(

@@ -2,6 +2,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
+import type { InventoryReason } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { logActivity } from "@/lib/admin/activity-log";
@@ -307,6 +308,49 @@ export async function updateProductStock(id: string, stock: number, note?: strin
 
   revalidatePublicPaths();
   return { ok: true };
+}
+
+export type InventoryHistoryEvent = {
+  id: string;
+  delta: number;
+  reason: InventoryReason;
+  resultingStock: number;
+  actorEmail: string | null;
+  note: string | null;
+  createdAt: Date;
+  orderNumber: string | null;
+};
+
+/**
+ * היסטוריית מלאי מלאה למוצר (Phase 17 / M5) — קריאה בלבד, ל"היסטוריית מלאי"
+ * ב-Sheet. מהחדש לישן, מוגבל ל-200 אירועים אחרונים (inventory_events היא
+ * טבלת יומן שגדלה ללא הגבלה — לא נשלפת במלואה לעולם). orderNumber (לא
+ * orderId) מוחזר כדי שהלקוח יוכל לקשר ישירות ל-/admin/orders/[orderNumber]
+ * בלי שאילתה נוספת.
+ */
+export async function getProductInventoryHistory(productId: string): Promise<InventoryHistoryEvent[]> {
+  await requireAdmin();
+
+  const product = await db.product.findUnique({ where: { id: productId }, select: { id: true } });
+  if (!product) return [];
+
+  const events = await db.inventoryEvent.findMany({
+    where: { productId },
+    orderBy: { createdAt: "desc" },
+    take: 200,
+    include: { order: { select: { orderNumber: true } } },
+  });
+
+  return events.map((event) => ({
+    id: event.id,
+    delta: event.delta,
+    reason: event.reason,
+    resultingStock: event.resultingStock,
+    actorEmail: event.actorEmail,
+    note: event.note,
+    createdAt: event.createdAt,
+    orderNumber: event.order?.orderNumber ?? null,
+  }));
 }
 
 async function toggleProductFlag(

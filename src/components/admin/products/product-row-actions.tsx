@@ -1,10 +1,11 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2, Copy, ExternalLink } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Copy, ExternalLink, PackagePlus, History } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -14,11 +15,15 @@ export function ProductRowActions({
   onEdit,
   onDeleteRequest,
   onDuplicate,
+  onAdjustStock,
+  onViewInventoryHistory,
 }: {
   product: { slug: string; active: boolean; publishAt: Date | null };
   onEdit: () => void;
   onDeleteRequest: () => void;
   onDuplicate: () => void;
+  onAdjustStock: () => void;
+  onViewInventoryHistory: () => void;
 }) {
   // "מתפרסם" = active וגם (לא מתוזמן, או שהתזמון כבר עבר) — אותה נוסחה כמו
   // ה-WHERE הציבורי ב-get-products.ts, מחושבת כאן מקומית מנתוני השורה עצמה.
@@ -49,6 +54,16 @@ export function ProductRowActions({
           <Copy className="h-4 w-4" />
           שכפול
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={onAdjustStock}>
+          <PackagePlus className="h-4 w-4" />
+          התאמת מלאי
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onViewInventoryHistory}>
+          <History className="h-4 w-4" />
+          היסטוריית מלאי
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         {isPublished ? (
           <DropdownMenuItem onSelect={handlePreview}>
             <ExternalLink className="h-4 w-4" />

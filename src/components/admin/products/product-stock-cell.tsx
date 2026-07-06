@@ -4,7 +4,15 @@ import { updateProductStock } from "@/server/actions/admin/products";
 import { InlineEditableCell } from "@/components/admin/products/inline-editable-cell";
 import { StockHealthBadge } from "@/components/admin/products/stock-health-badge";
 
-export function ProductStockCell({ id, stock }: { id: string; stock: number }) {
+export function ProductStockCell({
+  id,
+  stock,
+  lowStockThreshold,
+}: {
+  id: string;
+  stock: number;
+  lowStockThreshold?: number;
+}) {
   return (
     <div className="flex items-center gap-2">
       <InlineEditableCell
@@ -18,7 +26,7 @@ export function ProductStockCell({ id, stock }: { id: string; stock: number }) {
           return updateProductStock(id, num);
         }}
       />
-      <StockHealthBadge stock={stock} />
+      <StockHealthBadge stock={stock} threshold={lowStockThreshold} />
     </div>
   );
 }
