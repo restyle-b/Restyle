@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Package,
   Tags,
+  Percent,
   ShoppingCart,
   GraduationCap,
   BookOpen,
@@ -27,6 +28,7 @@ const NAV_GROUPS = [
     links: [
       { href: "/admin/products", label: "מוצרים", icon: Package },
       { href: "/admin/categories", label: "קטגוריות", icon: Tags },
+      { href: "/admin/promotions", label: "מבצעים וקופונים", icon: Percent },
     ],
   },
   {
