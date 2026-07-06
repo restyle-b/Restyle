@@ -15,7 +15,11 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const course = await getCourseBySlug(locale, slug);
   if (!course) return {};
-  return { title: course.name, description: course.description };
+  // SEO ייעודי (Phase 15 / M3) נופל לשם/תיאור הרגילים כשלא הוגדר באדמין.
+  return {
+    title: course.seoTitle ?? course.name,
+    description: course.seoDescription ?? course.description,
+  };
 }
 
 // שאילתה חיה (מקומות פנויים) — לא לרנדר סטטית.

@@ -20,12 +20,28 @@ export type CourseDetail = CourseItem & {
   syllabus: string | null;
   capacity: number | null; // null → ללא הגבלת מקומות
   seatsRemaining: number | null; // null → ללא הגבלה
+  // SEO per-locale (Phase 15 / M3) — null אם לא הוגדר לאף locale; הצרכן
+  // (generateMetadata) נופל ל-name/description במקרה הזה.
+  seoTitle: string | null;
+  seoDescription: string | null;
 };
 
 function pick(locale: string, he: string, en: string | null, ar: string | null) {
   if (locale === "en" && en) return en;
   if (locale === "ar" && ar) return ar;
   return he;
+}
+
+/** כמו pick, אבל לשדות אופציונליים (SEO) — he עצמו יכול להיות null/ריק, ואז מחזיר null. */
+function pickOptional(
+  locale: string,
+  he: string | null,
+  en: string | null,
+  ar: string | null,
+): string | null {
+  if (locale === "en" && en) return en;
+  if (locale === "ar" && ar) return ar;
+  return he || null;
 }
 
 async function fetchCourses() {
@@ -115,6 +131,8 @@ export async function getCourseBySlug(locale: string, slug: string): Promise<Cou
       syllabus: pick(locale, row.syllabusHe ?? "", row.syllabusEn, row.syllabusAr) || null,
       capacity: row.capacity,
       seatsRemaining,
+      seoTitle: pickOptional(locale, row.seoTitleHe, row.seoTitleEn, row.seoTitleAr),
+      seoDescription: pickOptional(locale, row.seoDescriptionHe, row.seoDescriptionEn, row.seoDescriptionAr),
     };
   }
 
@@ -135,5 +153,7 @@ export async function getCourseBySlug(locale: string, slug: string): Promise<Cou
     syllabus: null,
     capacity: null,
     seatsRemaining: null,
+    seoTitle: null,
+    seoDescription: null,
   };
 }
