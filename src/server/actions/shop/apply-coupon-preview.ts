@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cartItemsSchema } from "@/lib/checkout/checkout-schema";
-import { DELIVERY_FEE_AGOROT } from "@/lib/checkout/shipping";
+import { getShippingFeeAgorot } from "@/lib/checkout/shipping";
 import { getEffectivePriceAgorot } from "@/lib/shop/pricing";
 import { evaluatePromotions, type AppliedPromotion, type EvalLine } from "@/lib/promotions/evaluate";
 import { fetchActiveAutomaticPromotions, fetchCouponRowByCode } from "@/lib/promotions/fetch-promotion-data";
@@ -91,9 +91,9 @@ export async function applyCouponPreview(
   }
 
   const now = new Date();
-  const shippingFeeAgorot = parsedInput.data.deliveryMethod === "DELIVERY" ? DELIVERY_FEE_AGOROT : 0;
 
-  const [automaticPromotions, couponRow] = await Promise.all([
+  const [shippingFeeAgorot, automaticPromotions, couponRow] = await Promise.all([
+    parsedInput.data.deliveryMethod === "DELIVERY" ? getShippingFeeAgorot(db) : Promise.resolve(0),
     fetchActiveAutomaticPromotions(db, now),
     fetchCouponRowByCode(db, parsedInput.data.code),
   ]);

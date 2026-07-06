@@ -9,7 +9,7 @@ import { db } from "@/lib/db";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createCheckoutSchema, cartItemsSchema } from "@/lib/checkout/checkout-schema";
-import { DELIVERY_FEE_AGOROT } from "@/lib/checkout/shipping";
+import { getShippingFeeAgorot } from "@/lib/checkout/shipping";
 import { generateOrderNumber } from "@/lib/checkout/order-number";
 import { getPaymentProvider } from "@/lib/payments/get-provider";
 import { getEffectivePriceAgorot } from "@/lib/shop/pricing";
@@ -133,7 +133,8 @@ export async function createOrder(
         });
       }
 
-      const shippingFeeAgorot = parsedForm.data.deliveryMethod === "DELIVERY" ? DELIVERY_FEE_AGOROT : 0;
+      const shippingFeeAgorot =
+        parsedForm.data.deliveryMethod === "DELIVERY" ? await getShippingFeeAgorot(tx) : 0;
       const now = new Date();
 
       // --- 2. re-fetch קופון (אם נשלח) + מבצעים אוטומטיים פעילים ---
