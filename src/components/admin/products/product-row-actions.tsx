@@ -1,20 +1,34 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Copy, ExternalLink } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 export function ProductRowActions({
+  product,
   onEdit,
   onDeleteRequest,
+  onDuplicate,
 }: {
+  product: { slug: string; active: boolean; publishAt: Date | null };
   onEdit: () => void;
   onDeleteRequest: () => void;
+  onDuplicate: () => void;
 }) {
+  // "מתפרסם" = active וגם (לא מתוזמן, או שהתזמון כבר עבר) — אותה נוסחה כמו
+  // ה-WHERE הציבורי ב-get-products.ts, מחושבת כאן מקומית מנתוני השורה עצמה.
+  const isPublished = product.active && (product.publishAt === null || product.publishAt.getTime() <= Date.now());
+
+  function handlePreview() {
+    if (!isPublished) return;
+    window.open(`/shop/${product.slug}`, "_blank", "noopener,noreferrer");
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,6 +45,28 @@ export function ProductRowActions({
           <Pencil className="h-4 w-4" />
           עריכת פרטים מלאים
         </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onDuplicate}>
+          <Copy className="h-4 w-4" />
+          שכפול
+        </DropdownMenuItem>
+        {isPublished ? (
+          <DropdownMenuItem onSelect={handlePreview}>
+            <ExternalLink className="h-4 w-4" />
+            תצוגה מקדימה
+          </DropdownMenuItem>
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <DropdownMenuItem disabled onSelect={(e) => e.preventDefault()}>
+                  <ExternalLink className="h-4 w-4" />
+                  תצוגה מקדימה
+                </DropdownMenuItem>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>זמין לתצוגה לאחר פרסום</TooltipContent>
+          </Tooltip>
+        )}
         <DropdownMenuItem onSelect={onDeleteRequest} destructive>
           <Trash2 className="h-4 w-4" />
           מחיקה

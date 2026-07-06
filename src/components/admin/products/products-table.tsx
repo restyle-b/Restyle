@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@prisma/client";
-import { Plus, Eye, ShoppingBag, Star, Search } from "lucide-react";
+import { Plus, Eye, ShoppingBag, Star, Search, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   Table,
@@ -28,8 +28,13 @@ import {
   toggleProductActive,
   toggleProductAvailable,
   toggleProductFeatured,
+  bulkSetProductActive,
+  bulkSetProductFeatured,
+  bulkDeleteProducts,
+  duplicateProduct,
+  type BulkActionResult,
 } from "@/server/actions/admin/products";
-import { getStockHealth, type StockHealth } from "@/lib/admin/product-schema";
+import { getStockHealth, utcToJerusalemLocal, type StockHealth } from "@/lib/admin/product-schema";
 import { adminInputClass } from "@/lib/admin/form-styles";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +62,10 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductRow | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<ProductRow | null>(null);
+
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const headerCheckboxRef = useRef<HTMLInputElement>(null);
 
   const stockCounts = useMemo(() => {
     const counts: Record<StockFilter, number> = { all: products.length, healthy: 0, low: 0, out: 0 };
@@ -97,6 +106,83 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
 
     return rows;
   }, [products, search, categoryFilter, stockFilter, featuredOnly, sortKey, sortDir]);
+
+  // סקופ הבחירה הוא תמיד הסט המסונן/מוצג הנוכחי — לא כל המוצרים. כשהפילטר
+  // משתנה (חיפוש/קטגוריה/מלאי/מובלטים), מזהים שכבר לא מופיעים מוסרים מהבחירה
+  // כדי שפעולת bulk לעולם לא תפעל בשקט על שורות שהוסתרו.
+  const filteredIds = useMemo(() => new Set(filtered.map((p) => p.id)), [filtered]);
+  useEffect(() => {
+    setSelected((prev) => {
+      const next = new Set([...prev].filter((id) => filteredIds.has(id)));
+      return next.size === prev.size ? prev : next;
+    });
+  }, [filteredIds]);
+
+  const selectedInFilteredCount = useMemo(
+    () => filtered.reduce((count, p) => count + (selected.has(p.id) ? 1 : 0), 0),
+    [filtered, selected],
+  );
+  const allFilteredSelected = filtered.length > 0 && selectedInFilteredCount === filtered.length;
+  const someFilteredSelected = selectedInFilteredCount > 0 && !allFilteredSelected;
+
+  useEffect(() => {
+    if (headerCheckboxRef.current) headerCheckboxRef.current.indeterminate = someFilteredSelected;
+  }, [someFilteredSelected]);
+
+  function toggleRowSelected(id: string, checked: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  function handleSelectAllChange(checked: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      for (const p of filtered) {
+        if (checked) next.add(p.id);
+        else next.delete(p.id);
+      }
+      return next;
+    });
+  }
+
+  function clearSelection() {
+    setSelected(new Set());
+  }
+
+  async function runBulkAction(action: (ids: string[]) => Promise<BulkActionResult>, verb: string) {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    const result = await action(ids);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    if (result.failed > 0) {
+      toast.warning("חלק מהפעולות נכשלו");
+    } else {
+      toast.success(`${result.succeeded} מוצרים ${verb}`);
+    }
+    clearSelection();
+    router.refresh();
+  }
+
+  async function handleBulkDelete() {
+    await runBulkAction(bulkDeleteProducts, "נמחקו");
+  }
+
+  async function handleDuplicate(product: ProductRow) {
+    const result = await duplicateProduct(product.id);
+    if (result.ok) {
+      toast.success("המוצר שוכפל");
+      router.refresh();
+    } else {
+      toast.error(result.error);
+    }
+  }
 
   async function handleDelete() {
     if (!deletingProduct) return;
@@ -203,6 +289,16 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10">
+                  <input
+                    ref={headerCheckboxRef}
+                    type="checkbox"
+                    checked={allFilteredSelected}
+                    onChange={(e) => handleSelectAllChange(e.target.checked)}
+                    aria-label="בחירת כל המוצרים המוצגים"
+                    className="h-4 w-4 rounded border-line-dark bg-transparent accent-accent"
+                  />
+                </TableHead>
                 <TableHead>מוצר</TableHead>
                 <TableHead>מחיר</TableHead>
                 <TableHead>מחיר מבצע</TableHead>
@@ -216,6 +312,19 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
             <TableBody>
               {filtered.map((product) => (
                 <TableRow key={product.id}>
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      checked={selected.has(product.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        toggleRowSelected(product.id, e.target.checked);
+                      }}
+                      aria-label={`בחירת ${product.nameHe}`}
+                      className="h-4 w-4 rounded border-line-dark bg-transparent accent-accent"
+                    />
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <ProductImage
@@ -266,11 +375,13 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
                   </TableCell>
                   <TableCell>
                     <ProductRowActions
+                      product={{ slug: product.slug, active: product.active, publishAt: product.publishAt }}
                       onEdit={() => {
                         setEditingProduct(product);
                         setSheetOpen(true);
                       }}
                       onDeleteRequest={() => setDeletingProduct(product)}
+                      onDuplicate={() => handleDuplicate(product)}
                     />
                   </TableCell>
                 </TableRow>
@@ -300,6 +411,13 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
                 imageUrl: editingProduct.imageUrl ?? "",
                 categoryId: editingProduct.categoryId ?? "",
                 active: editingProduct.active,
+                publishAt: utcToJerusalemLocal(editingProduct.publishAt),
+                seoTitleHe: editingProduct.seoTitleHe ?? "",
+                seoTitleEn: editingProduct.seoTitleEn ?? "",
+                seoTitleAr: editingProduct.seoTitleAr ?? "",
+                seoDescriptionHe: editingProduct.seoDescriptionHe ?? "",
+                seoDescriptionEn: editingProduct.seoDescriptionEn ?? "",
+                seoDescriptionAr: editingProduct.seoDescriptionAr ?? "",
               }
             : null
         }
@@ -313,7 +431,75 @@ export function ProductsTable({ products, categories }: { products: ProductRow[]
         confirmLabel="מחיקה"
         onConfirm={handleDelete}
       />
+
+      <ConfirmDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        title={`מחיקת ${selected.size} מוצרים`}
+        description={`הפעולה תמחק ${selected.size} מוצרים לצמיתות ואינה הפיכה.`}
+        confirmLabel="מחיקה"
+        onConfirm={handleBulkDelete}
+      />
+
+      {selected.size > 0 && (
+        <div
+          className={cn(
+            "fixed inset-x-4 bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-line-dark bg-ink-soft/95 px-4 py-2.5 shadow-lg backdrop-blur sm:inset-x-0 sm:w-fit",
+            "animate-[overlay-in_var(--dur-micro)_var(--ease-out)_both]",
+          )}
+        >
+          <span className="px-2 text-sm font-medium whitespace-nowrap text-white">{selected.size} נבחרו</span>
+          <BulkActionPill onClick={() => runBulkAction((ids) => bulkSetProductActive(ids, true), "עודכנו")}>
+            הפעלה
+          </BulkActionPill>
+          <BulkActionPill onClick={() => runBulkAction((ids) => bulkSetProductActive(ids, false), "עודכנו")}>
+            השבתה
+          </BulkActionPill>
+          <BulkActionPill onClick={() => runBulkAction((ids) => bulkSetProductFeatured(ids, true), "עודכנו")}>
+            הבלטה
+          </BulkActionPill>
+          <BulkActionPill onClick={() => runBulkAction((ids) => bulkSetProductFeatured(ids, false), "עודכנו")}>
+            ביטול הבלטה
+          </BulkActionPill>
+          <BulkActionPill destructive onClick={() => setBulkDeleteOpen(true)}>
+            מחיקה
+          </BulkActionPill>
+          <button
+            type="button"
+            onClick={clearSelection}
+            aria-label="ניקוי בחירה"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
     </div>
+  );
+}
+
+function BulkActionPill({
+  onClick,
+  destructive,
+  children,
+}: {
+  onClick: () => void;
+  destructive?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "rounded-full border px-3.5 py-1.5 text-sm whitespace-nowrap transition-colors",
+        destructive
+          ? "border-red-900/60 text-red-400 hover:bg-red-500/10"
+          : "border-line-dark text-neutral-200 hover:bg-white/10",
+      )}
+    >
+      {children}
+    </button>
   );
 }
 

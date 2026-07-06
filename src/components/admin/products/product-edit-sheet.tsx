@@ -37,6 +37,13 @@ function emptyValues(): ProductDetailsInput {
     imageUrl: "",
     categoryId: "",
     active: true,
+    publishAt: "",
+    seoTitleHe: "",
+    seoTitleEn: "",
+    seoTitleAr: "",
+    seoDescriptionHe: "",
+    seoDescriptionEn: "",
+    seoDescriptionAr: "",
   };
 }
 
@@ -54,6 +61,7 @@ export function ProductEditSheet({
 }) {
   const router = useRouter();
   const [showMore, setShowMore] = useState(false);
+  const [showSeo, setShowSeo] = useState(false);
   const {
     register,
     handleSubmit,
@@ -72,6 +80,7 @@ export function ProductEditSheet({
     if (next) {
       reset(product ?? emptyValues());
       setShowMore(false);
+      setShowSeo(false);
     }
     onOpenChange(next);
   }
@@ -225,6 +234,90 @@ export function ProductEditSheet({
                 <input type="checkbox" {...register("active")} />
                 נראה בחנות הציבורית
               </label>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setShowSeo((v) => !v)}
+            className="flex items-center gap-1.5 text-sm text-neutral-400 hover:text-white"
+          >
+            <ChevronDown className={cn("h-4 w-4 transition-transform", showSeo && "rotate-180")} />
+            SEO ותזמון פרסום
+          </button>
+
+          {showSeo && (
+            <div className="flex flex-col gap-4 border-t border-line-dark pt-4">
+              <div>
+                <label htmlFor="product-publishAt" className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  תזמון פרסום
+                </label>
+                <input
+                  id="product-publishAt"
+                  type="datetime-local"
+                  className={inputClass}
+                  {...register("publishAt")}
+                />
+                <p className="mt-1 text-xs text-neutral-500">מוצג בשעון ישראל; ריק = מתפרסם מיד עם ההפעלה</p>
+                {errors.publishAt && <p className="mt-1 text-sm text-red-400">{errors.publishAt.message}</p>}
+              </div>
+              <div>
+                <label htmlFor="product-seoTitleHe" className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  כותרת SEO (עברית)
+                </label>
+                <input id="product-seoTitleHe" className={inputClass} {...register("seoTitleHe")} />
+              </div>
+              <div>
+                <label htmlFor="product-seoTitleEn" className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  כותרת SEO (אנגלית)
+                </label>
+                <input id="product-seoTitleEn" className={inputClass} {...register("seoTitleEn")} />
+              </div>
+              <div>
+                <label htmlFor="product-seoTitleAr" className="mb-1.5 block text-sm font-medium text-neutral-300">
+                  כותרת SEO (ערבית)
+                </label>
+                <input id="product-seoTitleAr" className={inputClass} {...register("seoTitleAr")} />
+              </div>
+              <div>
+                <label
+                  htmlFor="product-seoDescriptionHe"
+                  className="mb-1.5 block text-sm font-medium text-neutral-300"
+                >
+                  תיאור SEO (עברית)
+                </label>
+                <textarea
+                  id="product-seoDescriptionHe"
+                  className={cn(textareaClass, "min-h-16")}
+                  {...register("seoDescriptionHe")}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="product-seoDescriptionEn"
+                  className="mb-1.5 block text-sm font-medium text-neutral-300"
+                >
+                  תיאור SEO (אנגלית)
+                </label>
+                <textarea
+                  id="product-seoDescriptionEn"
+                  className={cn(textareaClass, "min-h-16")}
+                  {...register("seoDescriptionEn")}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="product-seoDescriptionAr"
+                  className="mb-1.5 block text-sm font-medium text-neutral-300"
+                >
+                  תיאור SEO (ערבית)
+                </label>
+                <textarea
+                  id="product-seoDescriptionAr"
+                  className={cn(textareaClass, "min-h-16")}
+                  {...register("seoDescriptionAr")}
+                />
+              </div>
             </div>
           )}
 
