@@ -52,7 +52,9 @@ export async function createEnrollment(
 
   // קריאה חיה לקורס — לא סומכים על מחיר/מקדמה מהקליינט.
   const course = await db.course.findUnique({ where: { id: parsed.data.courseId } });
-  if (!course || !course.active || course.priceAgorot == null) {
+  // publishAt עתידי = "מתוזמן" — לא ניתן להרשמה גם דרך POST ישיר (Phase 15).
+  const isScheduled = course?.publishAt != null && course.publishAt > new Date();
+  if (!course || !course.active || course.priceAgorot == null || isScheduled) {
     return { ok: false, error: t("courseUnavailable") };
   }
 

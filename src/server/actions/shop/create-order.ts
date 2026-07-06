@@ -60,7 +60,13 @@ export async function createOrder(
   // חישוב מחיר בשרת בלבד — קריאה חיה למוצרים פעילים, לא סומכים על שום דבר מהקליינט.
   const productIds = parsedCart.data.map((i) => i.productId);
   const products = await db.product.findMany({
-    where: { id: { in: productIds }, active: true, available: true },
+    // publishAt עתידי = "מתוזמן" — לא ניתן לרכישה גם דרך POST ישיר (Phase 15).
+    where: {
+      id: { in: productIds },
+      active: true,
+      available: true,
+      OR: [{ publishAt: null }, { publishAt: { lte: new Date() } }],
+    },
   });
   const productsById = new Map(products.map((p) => [p.id, p]));
 

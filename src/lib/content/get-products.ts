@@ -28,7 +28,9 @@ function pick(locale: string, he: string, en: string | null, ar: string | null) 
 async function fetchProducts() {
   try {
     return await db.product.findMany({
-      where: { active: true },
+      // publishAt=null → מתפרסם מיד עם active; עתידי → "מתוזמן" ומוסתר עד אז
+      // (Phase 15). מכסה גם את רשימת הקטלוג וגם getProductBySlug למטה.
+      where: { active: true, OR: [{ publishAt: null }, { publishAt: { lte: new Date() } }] },
       orderBy: { order: "asc" },
       include: { category: { select: { slug: true } } },
     });

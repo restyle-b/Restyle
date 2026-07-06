@@ -30,7 +30,11 @@ function pick(locale: string, he: string, en: string | null, ar: string | null) 
 
 async function fetchCourses() {
   try {
-    return await db.course.findMany({ where: { active: true }, orderBy: { order: "asc" } });
+    return await db.course.findMany({
+      // publishAt=null → מתפרסם מיד עם active; עתידי → "מתוזמן" ומוסתר עד אז (Phase 15).
+      where: { active: true, OR: [{ publishAt: null }, { publishAt: { lte: new Date() } }] },
+      orderBy: { order: "asc" },
+    });
   } catch (err) {
     console.error("[content] failed to load courses:", err);
     return [];
@@ -85,7 +89,12 @@ export async function getCourseBySlug(locale: string, slug: string): Promise<Cou
     row = null;
   }
 
-  if (row && row.active) {
+  // בדיקה מפורשת (לא מכוסה ע"י ה-cache של fetchCourses — זו findUnique נפרדת):
+  // מרחיב את תנאי הנראות הקיים (row.active) כך שיכלול גם publishAt עתידי
+  // ("מתוזמן", Phase 15) — אותה נפילה ל-fallback כמו שקורה היום ל-active=false,
+  // בלי לשנות את ההתנהגות הקיימת עבור המקרה הזה.
+  const isVisible = Boolean(row?.active) && (row?.publishAt == null || row.publishAt <= new Date());
+  if (row && isVisible) {
     let seatsRemaining: number | null = null;
     if (row.capacity != null) {
       const taken = await db.enrollment.count({
