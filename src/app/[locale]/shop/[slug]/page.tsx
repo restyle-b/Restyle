@@ -9,6 +9,14 @@ import { RecordRecentlyViewed } from "@/components/shop/record-recently-viewed";
 import { formatAgorot } from "@/lib/format";
 import { getProductBySlug } from "@/lib/content/get-products";
 
+// בוחר שדה SEO לפי locale, כמו pick() הפנימי של get-products.ts, אבל nullable —
+// ריק בשדה הספציפי (או שלא הוגדר SEO כלל) נופל לשם/תיאור המוצר בקריאה למטה.
+function pickSeoField(locale: string, he: string | null, en: string | null, ar: string | null): string | null {
+  if (locale === "en" && en) return en;
+  if (locale === "ar" && ar) return ar;
+  return he;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -17,7 +25,12 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const product = await getProductBySlug(locale, slug);
   if (!product) return {};
-  return { title: product.name, description: product.description };
+  const title =
+    pickSeoField(locale, product.seoTitleHe, product.seoTitleEn, product.seoTitleAr) ?? product.name;
+  const description =
+    pickSeoField(locale, product.seoDescriptionHe, product.seoDescriptionEn, product.seoDescriptionAr) ??
+    product.description;
+  return { title, description };
 }
 
 export default async function ProductPage({

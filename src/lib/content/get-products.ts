@@ -17,6 +17,15 @@ export type ProductItem = {
   featured: boolean;
   imageUrl: string | null;
   categorySlug: string | null;
+  publishAt: Date | null;
+  // SEO per-locale — גולמי (לא ניגזר ל-locale הנוכחי); הצרכן (generateMetadata)
+  // אחראי ל-fallback לשם/תיאור כשריק.
+  seoTitleHe: string | null;
+  seoTitleEn: string | null;
+  seoTitleAr: string | null;
+  seoDescriptionHe: string | null;
+  seoDescriptionEn: string | null;
+  seoDescriptionAr: string | null;
 };
 
 function pick(locale: string, he: string, en: string | null, ar: string | null) {
@@ -72,6 +81,13 @@ export async function getProducts(locale: string, categorySlug?: string): Promis
         featured: r.featured,
         imageUrl: r.imageUrl,
         categorySlug: r.category?.slug ?? null,
+        publishAt: r.publishAt,
+        seoTitleHe: r.seoTitleHe,
+        seoTitleEn: r.seoTitleEn,
+        seoTitleAr: r.seoTitleAr,
+        seoDescriptionHe: r.seoDescriptionHe,
+        seoDescriptionEn: r.seoDescriptionEn,
+        seoDescriptionAr: r.seoDescriptionAr,
       };
     });
 }
@@ -94,5 +110,12 @@ export async function getProductBySlug(locale: string, slug: string): Promise<Pr
     featured: row.featured,
     imageUrl: row.imageUrl,
     categorySlug: row.category?.slug ?? null,
+    publishAt: row.publishAt,
+    seoTitleHe: row.seoTitleHe,
+    seoTitleEn: row.seoTitleEn,
+    seoTitleAr: row.seoTitleAr,
+    seoDescriptionHe: row.seoDescriptionHe,
+    seoDescriptionEn: row.seoDescriptionEn,
+    seoDescriptionAr: row.seoDescriptionAr,
   };
 }

@@ -43,6 +43,13 @@ export async function getWishlistProducts(userId: string, locale: string, limit?
       featured: p.featured,
       imageUrl: p.imageUrl,
       categorySlug: p.category?.slug ?? null,
+      publishAt: p.publishAt,
+      seoTitleHe: p.seoTitleHe,
+      seoTitleEn: p.seoTitleEn,
+      seoTitleAr: p.seoTitleAr,
+      seoDescriptionHe: p.seoDescriptionHe,
+      seoDescriptionEn: p.seoDescriptionEn,
+      seoDescriptionAr: p.seoDescriptionAr,
     };
   });
 }
