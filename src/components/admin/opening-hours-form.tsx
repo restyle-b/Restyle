@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,17 +18,28 @@ type FormValues = { rows: OpeningHourInput[] };
 
 const DAY_NAMES = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 
-export function OpeningHoursForm({ initialValues }: { initialValues: OpeningHourInput[] }) {
+export function OpeningHoursForm({
+  initialValues,
+  onDirtyChange,
+}: {
+  initialValues: OpeningHourInput[];
+  onDirtyChange?: (dirty: boolean) => void;
+}) {
   const [serverMessage, setServerMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { rows: initialValues },
   });
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
 
   async function onSubmit(values: FormValues) {
     setServerMessage(null);
@@ -36,6 +47,7 @@ export function OpeningHoursForm({ initialValues }: { initialValues: OpeningHour
     setServerMessage(
       result.ok ? { ok: true, text: "נשמר בהצלחה" } : { ok: false, text: result.error },
     );
+    if (result.ok) reset(values);
   }
 
   return (

@@ -4,7 +4,11 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
 import { logActivity } from "@/lib/admin/activity-log";
-import { siteSettingsSchema, openingHoursSchema } from "@/lib/admin/site-settings-schema";
+import {
+  siteSettingsSchema,
+  openingHoursSchema,
+  shippingFeeShekelsToAgorot,
+} from "@/lib/admin/site-settings-schema";
 import { OPENING_HOURS_TAG } from "@/lib/content/get-opening-hours";
 import { SITE_SETTINGS_TAG } from "@/lib/content/get-site-settings";
 import { routing } from "@/i18n/routing";
@@ -51,6 +55,16 @@ export async function updateSiteSettings(input: unknown): Promise<AdminActionRes
   }
 
   const data = parsed.data;
+  // שני השדות אופציונליים ב-input (ראה site-settings-schema.ts) — כשהם חסרים
+  // (למשל טופס פרטי הקשר, שלא נוגע בהם) משאירים undefined כדי ש-Prisma ידלג
+  // על העמודה (upsert/update) ולא יאפס אותה לברירת המחדל של הסכימה.
+  const shippingFeeAgorot =
+    data.shippingFeeShekels !== undefined
+      ? shippingFeeShekelsToAgorot(data.shippingFeeShekels)
+      : undefined;
+  const lowStockThreshold =
+    data.lowStockThreshold !== undefined ? Number(data.lowStockThreshold) : undefined;
+
   await db.siteSettings.upsert({
     where: { id: 1 },
     create: {
@@ -63,6 +77,8 @@ export async function updateSiteSettings(input: unknown): Promise<AdminActionRes
       facebookUrl: toNullable(data.facebookUrl),
       appStoreUrl: toNullable(data.appStoreUrl),
       googlePlayUrl: toNullable(data.googlePlayUrl),
+      shippingFeeAgorot,
+      lowStockThreshold,
       updatedById: admin.id,
     },
     update: {
@@ -74,6 +90,8 @@ export async function updateSiteSettings(input: unknown): Promise<AdminActionRes
       facebookUrl: toNullable(data.facebookUrl),
       appStoreUrl: toNullable(data.appStoreUrl),
       googlePlayUrl: toNullable(data.googlePlayUrl),
+      shippingFeeAgorot,
+      lowStockThreshold,
       updatedById: admin.id,
     },
   });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { siteSettingsSchema, type SiteSettingsInput } from "@/lib/admin/site-settings-schema";
@@ -20,16 +20,27 @@ const FIELDS: { name: keyof SiteSettingsInput; label: string; type?: string }[] 
   { name: "googlePlayUrl", label: "קישור Google Play", type: "url" },
 ];
 
-export function SiteSettingsForm({ initialValues }: { initialValues: SiteSettingsInput }) {
+export function SiteSettingsForm({
+  initialValues,
+  onDirtyChange,
+}: {
+  initialValues: SiteSettingsInput;
+  onDirtyChange?: (dirty: boolean) => void;
+}) {
   const [serverMessage, setServerMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<SiteSettingsInput>({
     resolver: zodResolver(siteSettingsSchema),
     defaultValues: initialValues,
   });
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
 
   async function onSubmit(values: SiteSettingsInput) {
     setServerMessage(null);
@@ -37,6 +48,7 @@ export function SiteSettingsForm({ initialValues }: { initialValues: SiteSetting
     setServerMessage(
       result.ok ? { ok: true, text: "נשמר בהצלחה" } : { ok: false, text: result.error },
     );
+    if (result.ok) reset(values);
   }
 
   return (

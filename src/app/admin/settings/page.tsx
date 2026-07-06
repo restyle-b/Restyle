@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getSiteSettings, getOpeningHoursAdmin } from "@/server/actions/admin/site-settings";
 import { siteConfig } from "@/lib/config";
-import { SiteSettingsForm } from "@/components/admin/site-settings-form";
-import { OpeningHoursForm } from "@/components/admin/opening-hours-form";
+import { SettingsTabs } from "@/components/admin/settings-tabs";
 
 export const metadata: Metadata = { title: "הגדרות אתר | ניהול" };
 export const dynamic = "force-dynamic";
@@ -16,6 +16,9 @@ const DEFAULT_DAYS = [
   { dayOrder: 5, closed: false, openTime: "09:00", closeTime: "14:00" },
   { dayOrder: 6, closed: true, openTime: "", closeTime: "" },
 ] as const;
+
+const DEFAULT_SHIPPING_FEE_AGOROT = 4000;
+const DEFAULT_LOW_STOCK_THRESHOLD = 5;
 
 export default async function AdminSettingsPage() {
   const [settings, hours] = await Promise.all([getSiteSettings(), getOpeningHoursAdmin()]);
@@ -41,14 +44,18 @@ export default async function AdminSettingsPage() {
         }))
       : DEFAULT_DAYS.map((d) => ({ ...d }));
 
+  const shippingFeeAgorot = settings?.shippingFeeAgorot ?? DEFAULT_SHIPPING_FEE_AGOROT;
+  const lowStockThreshold = settings?.lowStockThreshold ?? DEFAULT_LOW_STOCK_THRESHOLD;
+
   return (
-    <div className="space-y-12">
-      <div>
-        <h1 className="text-2xl font-semibold">הגדרות אתר</h1>
-        <p className="mt-1 text-neutral-400">פרטי קשר וקישורים שמוצגים בכל האתר.</p>
-        <div className="mt-6 max-w-xl">
-          <SiteSettingsForm
-            initialValues={{
+    <div>
+      <h1 className="text-2xl font-semibold">הגדרות אתר</h1>
+      <p className="mt-1 text-neutral-400">ניהול פרטי האתר, שעות הפתיחה, המשלוח והמלאי.</p>
+
+      <div className="mt-6">
+        <Suspense>
+          <SettingsTabs
+            initialSettings={{
               phone: initialSettings.phone,
               email: initialSettings.email,
               address: initialSettings.address,
@@ -58,18 +65,13 @@ export default async function AdminSettingsPage() {
               appStoreUrl: initialSettings.appStoreUrl ?? "",
               googlePlayUrl: initialSettings.googlePlayUrl ?? "",
             }}
+            initialHours={initialHours}
+            initialShipping={{
+              shippingFeeShekels: String(shippingFeeAgorot / 100),
+              lowStockThreshold: String(lowStockThreshold),
+            }}
           />
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-xl font-semibold">שעות פתיחה</h2>
-        <p className="mt-1 text-neutral-400">
-          שעות זהות בכל השפות — לסמן &quot;סגור&quot; ליום חופש.
-        </p>
-        <div className="mt-6">
-          <OpeningHoursForm initialValues={initialHours} />
-        </div>
+        </Suspense>
       </div>
     </div>
   );
