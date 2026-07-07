@@ -42,7 +42,7 @@ export function PayBalanceButton({
         type="button"
         onClick={onClick}
         disabled={isSubmitting}
-        className={cn(buttonVariants({ size: "sm" }))}
+        className={cn(buttonVariants({ size: "sm", variant: "light" }))}
       >
         {isSubmitting ? "..." : t("payCta")}
       </button>

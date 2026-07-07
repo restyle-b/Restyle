@@ -353,7 +353,7 @@ export function CheckoutForm() {
       <button
         type="submit"
         disabled={isSubmitting || items.length === 0}
-        className={cn(buttonVariants({ size: "lg" }), "w-full justify-center")}
+        className={cn(buttonVariants({ size: "lg", variant: "light" }), "w-full justify-center")}
       >
         {isSubmitting && (
           <svg

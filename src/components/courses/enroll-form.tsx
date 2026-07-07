@@ -198,7 +198,7 @@ export function EnrollForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className={cn(buttonVariants({ size: "lg" }), "w-full justify-center")}
+          className={cn(buttonVariants({ size: "lg", variant: "light" }), "w-full justify-center")}
         >
           {isSubmitting ? t("submitting") : t("submit")}
         </button>

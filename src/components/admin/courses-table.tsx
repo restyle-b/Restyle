@@ -85,7 +85,7 @@ export function CoursesTable({ courses }: { courses: CourseRow[] }) {
             setEditingCourse(null);
             setSheetOpen(true);
           }}
-          className={cn(buttonVariants({ size: "md" }))}
+          className={cn(buttonVariants({ size: "md", variant: "light" }))}
         >
           <Plus className="h-4 w-4" />
           קורס חדש

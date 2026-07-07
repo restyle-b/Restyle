@@ -100,7 +100,7 @@ export default function OrderLookupPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
+            className={cn(buttonVariants({ size: "lg", variant: "light" }), "w-full sm:w-auto")}
           >
             {isSubmitting ? t("submitting") : t("submit")}
           </button>

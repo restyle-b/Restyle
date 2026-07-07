@@ -64,7 +64,7 @@ export default async function CheckoutCancelPage({
 
       <div className="mt-10 flex flex-wrap justify-center gap-4">
         {!isPaid && (
-          <Link href="/checkout" className={cn(buttonVariants({ size: "lg" }))}>
+          <Link href="/checkout" className={cn(buttonVariants({ size: "lg", variant: "light" }))}>
             {t("cancel.retry")}
           </Link>
         )}

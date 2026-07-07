@@ -25,7 +25,7 @@ export default function CartPage() {
       {items.length === 0 ? (
         <div className="mt-12 text-center">
           <p className="text-neutral-400">{t("empty")}</p>
-          <Link href="/shop" className={cn(buttonVariants({ size: "lg" }), "mt-6")}>
+          <Link href="/shop" className={cn(buttonVariants({ size: "lg", variant: "light" }), "mt-6")}>
             {t("continueShopping")}
           </Link>
         </div>
@@ -98,7 +98,7 @@ export default function CartPage() {
 
           <Link
             href="/checkout"
-            className={cn(buttonVariants({ size: "lg" }), "w-full justify-center")}
+            className={cn(buttonVariants({ size: "lg", variant: "light" }), "w-full justify-center")}
           >
             {t("checkoutCta")}
           </Link>

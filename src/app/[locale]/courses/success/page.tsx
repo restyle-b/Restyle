@@ -83,7 +83,7 @@ export default async function CourseSuccessPage({
       )}
 
       <div className="mt-10 flex flex-wrap justify-center gap-4">
-        <Link href="/account/courses" className={cn(buttonVariants({ size: "lg" }))}>
+        <Link href="/account/courses" className={cn(buttonVariants({ size: "lg", variant: "light" }))}>
           {t("success.viewMyCourses")}
         </Link>
         <Link href="/academy" className={cn(buttonVariants({ size: "lg", variant: "outline" }))}>

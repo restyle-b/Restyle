@@ -67,7 +67,7 @@ export default async function GalleryPage({
           href={contact.instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={buttonVariants({ size: "lg" })}
+          className={buttonVariants({ size: "lg", variant: "light" })}
         >
           <InstagramIcon className="h-4 w-4" />
           {t("instagramCta")}

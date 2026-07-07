@@ -80,7 +80,7 @@ export function CouponsTable({ promotionId, coupons }: { promotionId: string; co
               setEditingCoupon(null);
               setSheetOpen(true);
             }}
-            className={cn(buttonVariants({ size: "md" }))}
+            className={cn(buttonVariants({ size: "md", variant: "light" }))}
           >
             <Plus className="h-4 w-4" />
             קופון בודד

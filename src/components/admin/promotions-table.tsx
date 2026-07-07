@@ -107,7 +107,7 @@ export function PromotionsTable({ promotions }: { promotions: PromotionRow[] }) 
     <div>
       <div className="flex items-center justify-between gap-3">
         <p className="text-neutral-400">{promotions.length} מבצעים</p>
-        <button type="button" onClick={handleCreate} className={cn(buttonVariants({ size: "md" }))}>
+        <button type="button" onClick={handleCreate} className={cn(buttonVariants({ size: "md", variant: "light" }))}>
           <Plus className="h-4 w-4" />
           מבצע חדש
         </button>

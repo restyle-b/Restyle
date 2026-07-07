@@ -46,7 +46,7 @@ export function AddToCartButton({
           setAdded(true);
           window.setTimeout(() => setAdded(false), 1500);
         }}
-        className={cn(buttonVariants({ size: "lg" }), "mt-6")}
+        className={cn(buttonVariants({ size: "lg", variant: "light" }), "mt-6")}
       >
         {added ? tShop("addToCart") + " ✓" : tShop("addToCart")}
       </button>

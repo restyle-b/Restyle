@@ -109,7 +109,7 @@ export function GenerateCouponsDialog({
               <button
                 type="button"
                 onClick={() => handleOpenChange(false)}
-                className={cn(buttonVariants({ size: "sm" }))}
+                className={cn(buttonVariants({ size: "sm", variant: "light" }))}
               >
                 סגירה
               </button>
@@ -181,7 +181,7 @@ export function GenerateCouponsDialog({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={cn(buttonVariants({ size: "sm" }))}
+                className={cn(buttonVariants({ size: "sm", variant: "light" }))}
               >
                 {isSubmitting ? "יוצר..." : "יצירה"}
               </button>

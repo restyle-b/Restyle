@@ -74,7 +74,7 @@ function MockPayContent() {
           type="button"
           disabled={isProcessing}
           onClick={() => simulate("success")}
-          className={cn(buttonVariants({ size: "lg" }))}
+          className={cn(buttonVariants({ size: "lg", variant: "light" }))}
         >
           {isProcessing ? t("processing") : t("successButton")}
         </button>
