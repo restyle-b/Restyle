@@ -307,11 +307,14 @@ function buildSimpleDiscountFields(row: Pick<SimpleCouponInput, "discountType" |
   };
 }
 
-/** רשימת קופונים לעמוד השטוח /admin/coupons — כל שורת Coupon עם פרטי ה-Promotion שמאחוריה. */
+/** רשימת קופונים לעמוד השטוח /admin/coupons — כל שורת Coupon עם פרטי ה-Promotion שמאחוריה.
+ * מוגבל ל-500 האחרונים (כמו getPromotion/getPromotionRedemptions) — הרשימה יכולה לצבור
+ * אלפי קודים אם נעשה שימוש בעבר ב"יצירה בכמות", שאין לה תקרה על כמות ה-runs. */
 export async function getSimpleCoupons() {
   await requireAdmin();
   return db.coupon.findMany({
     orderBy: { createdAt: "desc" },
+    take: 500,
     include: {
       promotion: {
         select: {
