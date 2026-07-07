@@ -9,7 +9,7 @@ import { BookingLink } from "@/components/booking-link";
 import { Wordmark } from "@/components/wordmark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { CartIconLink } from "@/components/cart/cart-icon-link";
-import { AccountIconLink } from "@/components/account/account-icon-link";
+import { AccountNavLink } from "@/components/account/account-nav-link";
 import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { navLinks } from "@/lib/config";
@@ -94,8 +94,9 @@ export function SiteHeader({
 
         <div className="flex items-center gap-4">
           {/* במובייל השורה העליונה נשארת רק ללוגו+עגלה+המבורגר (בקשת המשתמש —
-              עומס חזותי); שאר הפריטים (מצב יום/לילה, שפה, קביעת תור) עדיין
-              נגישים בתוך תפריט ההמבורגר, ואזור אישי נגיש דרך קישור בתפריט. */}
+              עומס חזותי); מצב יום/לילה+שפה+קביעת תור נגישים בתפריט ההמבורגר.
+              אזור אישי מקבל מקום ייעודי ובולט בתחתית התפריט (לא עוד קישור
+              רגיל ברשימה) — ראה mobile-nav.tsx. */}
           <div className="hidden md:block">
             <ThemeToggle
               dayLabel={t("themeDay")}
@@ -104,7 +105,7 @@ export function SiteHeader({
             />
           </div>
           <LocaleSwitcher className="hidden md:inline-flex" />
-          <AccountIconLink className="hidden h-9 w-9 items-center justify-center rounded-full text-neutral-300 transition-colors hover:bg-current/10 hover:text-white md:flex" />
+          <AccountNavLink className="hidden md:inline-flex" />
           <CartIconLink />
           <BookingLink
             className={cn(buttonVariants({ size: "sm", variant: "light" }), "hidden md:inline-flex")}
