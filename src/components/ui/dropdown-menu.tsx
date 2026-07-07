@@ -41,7 +41,7 @@ export function DropdownMenuItem({
       className={cn(
         "flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-sm outline-none transition-colors select-none",
         "data-[highlighted]:bg-white/10",
-        destructive ? "text-red-400 data-[highlighted]:text-red-300" : "text-neutral-200 data-[highlighted]:text-white",
+        destructive ? "text-red-400 data-[highlighted]:text-red-300" : "text-neutral-300 data-[highlighted]:text-white",
         inset && "ps-8",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
@@ -61,7 +61,7 @@ export function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       checked={checked}
       className={cn(
-        "relative flex cursor-pointer items-center gap-2 rounded-md py-2 ps-8 pe-2.5 text-sm text-neutral-200 outline-none transition-colors select-none data-[highlighted]:bg-white/10 data-[highlighted]:text-white",
+        "relative flex cursor-pointer items-center gap-2 rounded-md py-2 ps-8 pe-2.5 text-sm text-neutral-300 outline-none transition-colors select-none data-[highlighted]:bg-white/10 data-[highlighted]:text-white",
         className,
       )}
       {...props}

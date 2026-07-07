@@ -57,7 +57,10 @@ export function WishlistHeartButton({
       aria-pressed={wishlisted}
       aria-label={wishlisted ? t("heartRemove") : t("heartAdd")}
       className={cn(
-        "flex h-9 w-9 items-center justify-center rounded-full bg-ink/70 text-white backdrop-blur transition-opacity duration-200",
+        // הכרטיס תמיד כהה מעל תמונת מוצר בשני ה-themes (bg-ink/70 לא ב-override
+        // של מצב יום, בכוונה). text-[#fff] גם הוא לא ב-override — לעומת
+        // text-white, שהיה הופך לכהה במצב יום ויוצר לב שחור-על-שחור בלתי נראה.
+        "flex h-9 w-9 items-center justify-center rounded-full bg-ink/70 text-[#fff] backdrop-blur transition-opacity duration-200",
         wishlisted ? "opacity-100" : "opacity-0 group-hover:opacity-100 max-md:opacity-100",
         className,
       )}
