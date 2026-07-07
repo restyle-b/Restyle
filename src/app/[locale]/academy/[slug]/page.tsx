@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { ShieldCheck } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Reveal } from "@/components/reveal";
 import { Link } from "@/i18n/navigation";
 import { EnrollForm } from "@/components/courses/enroll-form";
 import { formatAgorot } from "@/lib/format";
@@ -55,10 +59,10 @@ export default async function CoursePage({
           </h1>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-400">
             <span>
-              {t("durationLabel")}: <span className="text-neutral-200">{course.duration}</span>
+              {t("durationLabel")}: <span className="text-neutral-300">{course.duration}</span>
             </span>
             <span>
-              {t("levelLabel")}: <span className="text-neutral-200">{course.level}</span>
+              {t("levelLabel")}: <span className="text-neutral-300">{course.level}</span>
             </span>
           </div>
 
@@ -81,48 +85,65 @@ export default async function CoursePage({
 
         {/* הרשמה/מחיר — sticky בדסקטופ */}
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-lg border border-line-dark bg-ink-soft p-6">
-            {purchasable ? (
-              <>
-                <p className="text-sm text-neutral-400">{t("priceLabel")}</p>
-                <p className="mt-1 text-3xl font-semibold text-accent">
-                  {formatAgorot(course.priceAgorot!, locale)}
-                </p>
-                {depositAvailable && (
-                  <p className="mt-3 text-sm text-neutral-300">
-                    {t("depositInfo", {
-                      percent: course.depositPercent,
-                      amount: formatAgorot(depositAgorot, locale),
-                    })}
-                  </p>
-                )}
-                {course.seatsRemaining != null && course.seatsRemaining > 0 && (
-                  <p className="mt-3 text-sm text-accent">
-                    {t("seatsLeft", { count: course.seatsRemaining })}
-                  </p>
-                )}
+          <Reveal direction="up">
+            <Card className="p-6 sm:p-8">
+              {purchasable ? (
+                <>
+                  {/* היררכיית מחיר: המספר הבולט הוא תמיד הסכום שנדרש עכשיו —
+                      מקדמה אם קיימת, אחרת המחיר המלא. לעולם לא המחיר המלא
+                      כשיש מקדמה (בקשת המשתמש: שקיפות תמחור). */}
+                  {depositAvailable ? (
+                    <>
+                      <p className="text-sm text-neutral-400">{t("startingFromDeposit")}</p>
+                      <p className="mt-1 text-4xl font-bold text-accent sm:text-5xl">
+                        {formatAgorot(depositAgorot, locale)}
+                      </p>
+                      <p className="mt-3 text-sm text-neutral-300">
+                        {t("depositSubtext", { amount: formatAgorot(course.priceAgorot!, locale) })}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-neutral-400">{t("fullPriceNoDeposit")}</p>
+                      <p className="mt-1 text-4xl font-bold text-accent sm:text-5xl">
+                        {formatAgorot(course.priceAgorot!, locale)}
+                      </p>
+                    </>
+                  )}
 
-                {soldOut ? (
-                  <p className="mt-6 text-sm font-medium text-neutral-400">{t("soldOut")}</p>
-                ) : (
-                  <EnrollForm
-                    courseId={course.id}
-                    priceAgorot={course.priceAgorot!}
-                    depositAgorot={depositAgorot}
-                    depositAvailable={depositAvailable}
-                  />
-                )}
-              </>
-            ) : (
-              // קורס תדמיתי (ללא מחיר) — CTA צור-קשר, כמו לפני Phase 7.
-              <>
-                <p className="text-neutral-300">{t("contactCta")}</p>
-                <Link href="/contact" className="mt-4 inline-block text-sm font-medium text-accent hover:underline">
-                  {t("contactCta")}
-                </Link>
-              </>
-            )}
-          </div>
+                  {course.seatsRemaining != null && course.seatsRemaining > 0 && (
+                    <Badge tone="accent" className="mt-4">
+                      {t("seatsLeft", { count: course.seatsRemaining })}
+                    </Badge>
+                  )}
+
+                  <p className="mt-5 flex items-center gap-1.5 text-xs text-neutral-500">
+                    <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    {t("securePaymentNote")}
+                  </p>
+
+                  {soldOut ? (
+                    <p className="mt-6 text-sm font-medium text-neutral-400">{t("soldOut")}</p>
+                  ) : (
+                    <EnrollForm
+                      courseId={course.id}
+                      priceAgorot={course.priceAgorot!}
+                      depositAgorot={depositAgorot}
+                      depositAvailable={depositAvailable}
+                    />
+                  )}
+                </>
+              ) : (
+                // קורס תדמיתי (ללא מחיר) — CTA צור-קשר, כמו לפני Phase 7.
+                <>
+                  <p className="text-neutral-300">{t("contactCta")}</p>
+                  <Link href="/contact" className="mt-4 inline-block text-sm font-medium text-accent hover:underline">
+                    {t("contactCta")}
+                  </Link>
+                </>
+              )}
+            </Card>
+          </Reveal>
         </div>
       </div>
     </Container>
