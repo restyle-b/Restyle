@@ -250,6 +250,98 @@ Accessibility widget + `/accessibility` statement (IS 5568 / WCAG 2.0 AA), `/aca
 - ⬜ Backups, monitoring, logging
 - ⬜ Domain + production deploy sign-off
 
+## Phase 20 — Product page dark-mode fix + coupon system simplification 🔄
+User request: (1) the "Add to Cart" button's circular pill container is invisible in
+dark/night mode on the product page; (2) the coupon system (built in M4/Phase 16) is too
+complex — creating a simple `friends10`-style 10%-off code forces the merchant through a
+two-model "create a Promotion, then add a Coupon under it" flow with many irrelevant fields
+(appliesTo, priority, stackable, per-customer limits, bulk-code generation). Wants a flat,
+simple coupon form (code/discount type/value/active) with an optional advanced section
+(expiration/min order/max usage/product exclusions), and a genuinely new capability: coupons
+that apply to everything **except** explicitly excluded products, with clear cart-mixed-item
+behavior. User confirmed via `AskUserQuestion` that course-coupon integration is out of
+scope for now (courses have zero discount support today, a separate purchase pipeline
+`Enrollment`/`CoursePayment` — wiring coupons into it is a bigger, separate future effort).
+
+**A. Dark-mode button root cause (real bug, not cosmetic-only).** `buttonVariants`'s
+`primary` variant has a CSS-var background hardcoded to `#0e0e0e` (`--btn-primary-bg`,
+identical in both themes) — this is by design a *dark pill for light backgrounds*, per the
+component's own doc comment. In night/dark theme, the page background (`--page-bg`) is ALSO
+`#0e0e0e` — so any button using the default variant directly on the page background is
+functionally invisible (the pill is there, just indistinguishable from the page). The
+`light` variant is the theme-adaptive one already used correctly everywhere else on dark
+surfaces (header, login/register, home CTAs) — white pill in night, dark pill in day
+(`--btn-light-bg` flips per theme). `AddToCartButton` (the reported bug) and 13 other
+call sites across checkout/cart/gallery/lookup/courses pages have the exact same
+default-variant-on-dark-surface bug — same root cause, same one-line fix.
+
+**B. Coupon architecture.** DB check confirms this is effectively greenfield for the admin
+redesign: exactly one `Promotion`+`Coupon` pair exists in production (`Friends10`, already a
+clean 1:1 case), no automatic (no-code) promotions in use, no multi-coupon campaigns — no
+risky data migration needed. Keep the existing `Promotion`/`Coupon`/`CouponRedemption`
+schema and the evaluator's atomic-locking design (correct, tested, 28 vitest cases) entirely
+intact — this is an additive, UI-layer simplification, not a schema rewrite. New capability
+needed: exclusion. Today `eligibleProductIds`/`eligibleCategoryIds` are INCLUSIVE-only (empty
+= applies to everything, non-empty = ONLY those) — there's no way to express "everything
+except X." Add one new additive table, `PromotionExcludedProduct` (mirrors the existing
+`PromotionProduct` M2M), and thread `excludedProductIds` through `PromotionRow` in the pure
+evaluator (`evaluate.ts`) — a line is coupon-eligible iff included AND not excluded. The
+existing `COUPON_NO_ELIGIBLE_ITEMS` rejection path already produces exactly the "cart
+contains only excluded items → coupon doesn't apply, clear reason shown" behavior once
+exclusion is wired in; the existing `eligibleLinesFor`/largest-remainder allocation already
+guarantees "mixed cart → discount only on eligible lines" for free. What's new UI-side:
+checkout must render which line items received the discount (today `EvalResult.lineDiscounts`
+is computed and even persisted per-`OrderItem`, but never surfaced in the pre-purchase
+checkout UI) — needs a small itemized cart summary added to checkout.
+
+**Admin UX redesign.** New flat `/admin/coupons` page: one row = one coupon (code, discount
+summary, usage count, active toggle). New Sheet: **basic** fields only shown by default
+(code, discount type percent/fixed, value, active) — **advanced** section (collapsible,
+closed by default, matching the existing `CollapsibleSection` pattern from
+`promotion-edit-sheet.tsx`) holds expiration date, minimum order value, max usage limit, and
+the new excluded-products picker (reusing the existing `CheckboxList` + `getEligibilityOptions`
+pattern). Under the hood, one server action creates/updates the Promotion+Coupon pair
+together in a single transaction — the merchant never sees "two models." The existing
+`/admin/promotions` page (automatic sitewide campaigns, bulk-code generation) is left fully
+intact and reachable for power users — nothing removed, per "preserve existing
+functionality"; the new page is simply the recommended, simple primary path for the common
+case, added as its own "קופונים" sidebar entry above "מבצעים אוטומטיים" (renamed for clarity
+now that the two are separate surfaces). Fields deliberately NOT exposed in the new simple
+form (available only via the legacy advanced flow): per-customer limit, priority, stackable,
+appliesToSaleItems, appliesTo, automatic, category-level eligibility, bulk-code generation —
+matching the user's explicit "should not require assigning to users / limiting number of
+users / generating additional codes."
+
+**Acceptance criteria:**
+1. Add-to-cart button (and the 13 other same-bug instances) has a clearly visible pill
+   container in both night and day theme — verified via live `getComputedStyle()` reads, not
+   screenshots alone.
+2. Admin can create a working 10%-off coupon (`friends10`) in one form, four fields, no
+   forced extra configuration.
+3. Advanced settings (expiration/min order/max usage/exclusions) are available but never
+   forced during basic creation.
+4. A coupon with an excluded product: cart of only-excluded-items → coupon does not apply,
+   customer sees a clear reason; cart of mixed items → discount applies only to eligible
+   lines; checkout visibly shows which line(s) got the discount.
+5. Existing `Friends10` coupon and its evaluator/redemption/atomicity guarantees keep working
+   unchanged; `/admin/promotions` (automatic campaigns, bulk generation) unaffected.
+6. `tsc`/lint/tests (including new exclusion evaluator cases)/build green throughout; no
+   money computed client-side; `security` + `tranzila-payments` skill review before shipping
+   (touches the checkout evaluator data path).
+
+**Task breakdown:** (a) fix the 14-instance dark-mode button bug directly (mechanical,
+`variant="light"`); (b) migration for `PromotionExcludedProduct` (additive); (c) evaluator +
+`fetch-promotion-data.ts` exclusion wiring + new vitest cases; (d) new simple-coupon admin
+schema/actions/UI; (e) checkout per-line discount display; (f) `security`+`tranzila-payments`
+review since the evaluator/checkout data path changed; (g) QA (gates + live Playwright
+end-to-end coupon flow against local Postgres) + ROADMAP close-out. All done by the
+orchestrator directly (no worktree agents) — the pieces are tightly coupled (schema →
+evaluator → admin UI → checkout all depend on the same new `excludedProductIds` shape) and
+touch checkout-adjacent code, which this project's established pattern keeps
+orchestrator-owned rather than delegated.
+
+---
+
 ## Phase 19 — Premium UX & trust polish ✅
 User request: elevate course registration to a premium/luxury feel, fix a real pricing-
 transparency gap, add a clear header "Personal Area" entry point, audit+fix admin mobile
