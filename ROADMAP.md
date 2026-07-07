@@ -250,6 +250,85 @@ Accessibility widget + `/accessibility` statement (IS 5568 / WCAG 2.0 AA), `/aca
 - ⬜ Backups, monitoring, logging
 - ⬜ Domain + production deploy sign-off
 
+## Phase 19 — Premium UX & trust polish 🔄
+User request: elevate course registration to a premium/luxury feel, fix a real pricing-
+transparency gap, add a clear header "Personal Area" entry point, audit+fix admin mobile
+responsiveness site-wide, and audit+fix color contrast site-wide. Analysis done before any
+code (per `planning` skill):
+
+**A. Course registration premium redesign + pricing transparency (real bug, not just
+polish).** Current state read directly: `academy/[slug]/page.tsx` shows the course's full
+price as the dominant accent-colored headline number (labeled "מחיר מלא" — technically not
+false, but visually dominant), with the deposit relegated to a small secondary line below.
+The **catalog card** (`academy/page.tsx`) already does this correctly — "החל מ-" (starting
+from) + the deposit amount as the headline. The detail page needs the same "starting from
+deposit" framing as the primary number, with the full price shown as a clearly-labeled
+secondary total, so a user scanning the detail page can never mistake the deposit for the
+one-time price or the full price for what's due today. `EnrollForm` itself is a bare,
+unstyled HTML form (plain radio inputs, no visual hierarchy, no trust signals) — needs a
+premium redesign built on the existing `Card`/`Badge` primitives (already used by M1/M2, not
+reinventing a new visual language), clearer deposit-vs-full-price framing inside the plan
+selector itself (not just at page-load), and trust elements (secure-payment messaging,
+step/progress framing) around the actual payment handoff. Server-side price computation
+(`create-enrollment.ts`, already fully re-derives everything from the DB, ignores client-
+sent price) is untouched — this is presentation-layer only, no server action contract
+changes.
+
+**B. Header "Personal Area" access.** Current state: `AccountIconLink` is icon-only (no
+text label), hidden entirely on mobile (`hidden md:flex`) — on mobile it's only reachable
+buried at the bottom of the hamburger-menu link list, styled identically to ordinary nav
+links (About/Shop/Academy/...), not visually distinguished as an account action. Needs a
+clearly-labeled "אזור אישי" entry visible on both desktop (upgrade the icon to icon+label,
+or a distinct treatment) and mobile (promote out of the plain link list into its own
+visually-distinct placement, e.g. alongside the existing bottom action row with
+theme/locale toggles), integrated into the existing premium visual language (not a bolted-on
+generic button).
+
+**C+D. Admin mobile audit + site-wide color/contrast audit (combined into one analysis
+pass to avoid re-reading the same component tree twice).** Root cause already confirmed for
+D: the day/night theme system (`globals.css`) works by hardcoding CSS overrides for a
+**finite enumerated list** of specific Tailwind classes (`.text-neutral-300/400/500`,
+`.bg-ink-soft/60`, `.bg-ink/40`, `.border-line-dark`, `.text-accent`, etc.) — any component
+using a color utility class outside that exact list (e.g. a stray `text-neutral-200`,
+`border-accent/40`, or a semantic color like `text-red-400`/`text-green-400` used on a
+surface that flips light in day mode) silently keeps its dark-mode value and can become
+invisible or low-contrast in day theme. This exact bug class was already caught once this
+session (M1's Card component) — the admin's 6 milestones of new UI built this session
+(promotions/coupons tables, settings tabs, inventory dialogs, stock-adjust sheets) are newer
+than that fix and haven't been individually re-audited for the same failure mode. For C
+(mobile), admin was originally designed desktop-first in Phase 8.6 with a retrofitted mobile
+drawer nav — individual newer admin surfaces (wide tables, multi-column bulk-action bars,
+Sheets with side-by-side fields) need per-screen verification, not an assumption that the
+shared `Table`/`Sheet` primitives make every consumer automatically mobile-safe.
+
+**Acceptance criteria:**
+1. Course detail page's dominant, most visually prominent price number is the deposit
+   ("starting from X"), never the full price alone; the full course total is always shown,
+   clearly labeled, and never presented as what's due today.
+2. `EnrollForm` reads as a premium, trustworthy multi-step-feeling experience (visual
+   hierarchy, spacing, the existing Card/Badge language, explicit deposit-vs-total framing
+   inside the plan selector, payment-security trust copy) — not a bare HTML form.
+3. A "Personal Area" entry with a visible Hebrew label is reachable in ≤1 tap/click on both
+   mobile and desktop, styled consistently with the rest of the premium header.
+4. Every admin screen (products, categories, courses, promotions/coupons, orders,
+   enrollments, settings, activity, dashboard) is usable at a small mobile viewport: no
+   horizontal page scroll, every actionable control has an adequate tap target, wide tables
+   have an explicit mobile-safe presentation (not just relying on generic overflow-scroll).
+5. No text/icon/border becomes invisible or low-contrast in either theme, on any surface
+   touched by this session's admin work or the public site; day/night parity holds.
+6. `tsc`/lint/tests/build green throughout; no server action contracts changed for area A
+   (money still computed server-side only); existing functionality (enrollment creation,
+   payment flow, header nav links) fully preserved.
+
+**Task breakdown:** (a) Opus audit agent — read-only pass across all admin screens (mobile
+viewport reasoning) + site-wide color-token usage, producing a prioritized findings doc,
+same rigor as M6's final review wave; (b) orchestrator builds the header Personal Area
+entry directly (small, self-contained); (c) orchestrator designs+builds the course
+registration premium redesign directly (the epic's centerpiece, invoking the `ui-ux` skill
+first); (d) triage the audit findings from (a) into fix batches, building the critical ones
+directly and delegating larger mechanical batches to Sonnet agents in isolated worktrees,
+mirroring the platform-upgrade epic's proven review→merge pipeline.
+
 ---
 
 ## Session Log
