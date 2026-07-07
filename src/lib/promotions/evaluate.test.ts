@@ -37,6 +37,7 @@ function promotion(overrides: Partial<PromotionRow> = {}): PromotionRow {
     freeShippingMinSubtotalAgorot: null,
     eligibleProductIds: [],
     eligibleCategoryIds: [],
+    excludedProductIds: [],
     startsAt: null,
     endsAt: null,
     active: true,
@@ -233,6 +234,47 @@ describe("זכאות", () => {
     const resultDoesNotQualify = evaluatePromotions(doesNotQualify);
     // subtotal כולל = 1000 < 5000 → המבצע לא חל כלל, למרות שהפריט הזכאי בעגלה.
     expect(resultDoesNotQualify.discountAgorot).toBe(0);
+  });
+});
+
+describe("החרגות מוצר (Phase 20 — קופונים עם 'חל על הכל חוץ מ-X')", () => {
+  it("עגלה שכולה מוצרים מוחרגים → הקופון לא חל, סיבת דחייה ברורה", () => {
+    const input = baseInput({
+      lines: [line({ productId: "excluded", unitPriceAgorot: 5000 })],
+      coupon: coupon({}, { kind: "PERCENT", percentBp: 1000, excludedProductIds: ["excluded"] }),
+    });
+    const result = evaluatePromotions(input);
+    expect(result.discountAgorot).toBe(0);
+    expect(result.rejections).toEqual([{ code: "COUPON_NO_ELIGIBLE_ITEMS", reason: expect.any(String) }]);
+  });
+
+  it("עגלה מעורבת (זכאי + מוחרג) → ההנחה חלה רק על השורה הזכאית", () => {
+    const input = baseInput({
+      lines: [
+        line({ productId: "eligible", unitPriceAgorot: 1000 }),
+        line({ productId: "excluded", unitPriceAgorot: 5000 }),
+      ],
+      coupon: coupon({}, { kind: "PERCENT", percentBp: 1000, excludedProductIds: ["excluded"] }),
+    });
+    const result = evaluatePromotions(input);
+    expect(result.discountAgorot).toBe(100); // 10% מ-1000 בלבד, לא מ-6000
+    expect(result.lineDiscounts).toEqual([
+      { productId: "eligible", lineDiscountAgorot: 100 },
+      { productId: "excluded", lineDiscountAgorot: 0 },
+    ]);
+  });
+
+  it("החרגה מנצחת הכללה מפורשת — מוצר ברשימת eligibleProductIds אך גם מוחרג ⇒ לא זכאי", () => {
+    const input = baseInput({
+      lines: [line({ productId: "both", unitPriceAgorot: 1000 })],
+      coupon: coupon(
+        {},
+        { kind: "PERCENT", percentBp: 1000, eligibleProductIds: ["both"], excludedProductIds: ["both"] },
+      ),
+    });
+    const result = evaluatePromotions(input);
+    expect(result.discountAgorot).toBe(0);
+    expect(result.rejections[0]?.code).toBe("COUPON_NO_ELIGIBLE_ITEMS");
   });
 });
 

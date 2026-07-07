@@ -46,6 +46,8 @@ export interface PromotionRow {
   /** ריק ⇒ כל העגלה זכאית. */
   eligibleProductIds: string[];
   eligibleCategoryIds: string[];
+  /** מוצרים מוחרגים — "חל על הכל חוץ מ-X". נבדק אחרי הזכאות (החרגה מנצחת הכללה). */
+  excludedProductIds: string[];
   startsAt: Date | null;
   endsAt: Date | null;
   active: boolean;
@@ -134,12 +136,18 @@ function lineSubtotal(line: EvalLine): number {
   return line.unitPriceAgorot * line.quantity;
 }
 
-/** ריק בשני המערכים ⇒ כל העגלה זכאית; אחרת productId או categoryId (לא null) בהתאמה. */
+/**
+ * ריק בשני מערכי ההכללה ⇒ כל העגלה זכאית (לפני החרגה); אחרת productId או
+ * categoryId (לא null) בהתאמה. החרגה נבדקת אחרונה ומנצחת תמיד — מוצר מוחרג
+ * לעולם לא זכאי, גם אם הוא (או הקטגוריה שלו) מופיע ברשימת ההכללה.
+ */
 function isLineEligible(
   line: EvalLine,
   eligibleProductIds: string[],
   eligibleCategoryIds: string[],
+  excludedProductIds: string[],
 ): boolean {
+  if (excludedProductIds.includes(line.productId)) return false;
   if (eligibleProductIds.length === 0 && eligibleCategoryIds.length === 0) return true;
   if (eligibleProductIds.includes(line.productId)) return true;
   if (line.categoryId != null && eligibleCategoryIds.includes(line.categoryId)) return true;
@@ -156,10 +164,11 @@ function eligibleLinesFor(
   baseOf: (line: EvalLine, index: number) => number,
   eligibleProductIds: string[],
   eligibleCategoryIds: string[],
+  excludedProductIds: string[],
 ): EligibleLine[] {
   const result: EligibleLine[] = [];
   lines.forEach((currentLine, index) => {
-    if (isLineEligible(currentLine, eligibleProductIds, eligibleCategoryIds)) {
+    if (isLineEligible(currentLine, eligibleProductIds, eligibleCategoryIds, excludedProductIds)) {
       result.push({ index, base: baseOf(currentLine, index) });
     }
   });
@@ -257,6 +266,7 @@ function evaluateAutomaticMerchandiseCandidate(
     (currentLine) => lineSubtotal(currentLine),
     promo.eligibleProductIds,
     promo.eligibleCategoryIds,
+    promo.excludedProductIds,
   );
   const eligibleSubtotal = eligibleLines.reduce((acc, l) => acc + l.base, 0);
   const discount = computeMerchandiseDiscount(promo.kind, eligibleSubtotal, promo.percentBp, promo.amountAgorot);
@@ -367,10 +377,11 @@ function evaluateCoupon(
     (currentLine, index) => lineSubtotal(currentLine) - (autoDiscountByLine.get(index) ?? 0),
     promo.eligibleProductIds,
     promo.eligibleCategoryIds,
+    promo.excludedProductIds,
   );
   const eligibleSubtotal = eligibleLines.reduce((acc, l) => acc + l.base, 0);
   if (eligibleSubtotal <= 0) {
-    return rejectedCoupon("COUPON_NO_ELIGIBLE_ITEMS", "אין בעגלה מוצרים שהקופון חל עליהם.");
+    return rejectedCoupon("COUPON_NO_ELIGIBLE_ITEMS", "הקופון אינו חל על הפריטים שבעגלה שלך.");
   }
 
   const discount = computeMerchandiseDiscount(promo.kind, eligibleSubtotal, promo.percentBp, promo.amountAgorot);

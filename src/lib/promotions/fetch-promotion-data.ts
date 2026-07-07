@@ -31,6 +31,7 @@ type PromotionWithEligibility = {
   priority: number;
   eligibleProducts: { productId: string }[];
   eligibleCategories: { categoryId: string }[];
+  excludedProducts: { productId: string }[];
 };
 
 function toPromotionRow(promotion: PromotionWithEligibility, code: string | null): PromotionRow {
@@ -46,6 +47,7 @@ function toPromotionRow(promotion: PromotionWithEligibility, code: string | null
     freeShippingMinSubtotalAgorot: promotion.freeShippingMinSubtotalAgorot,
     eligibleProductIds: promotion.eligibleProducts.map((p) => p.productId),
     eligibleCategoryIds: promotion.eligibleCategories.map((c) => c.categoryId),
+    excludedProductIds: promotion.excludedProducts.map((p) => p.productId),
     startsAt: promotion.startsAt,
     endsAt: promotion.endsAt,
     active: promotion.active,
@@ -70,7 +72,7 @@ export async function fetchActiveAutomaticPromotions(
       OR: [{ startsAt: null }, { startsAt: { lte: now } }],
       AND: [{ OR: [{ endsAt: null }, { endsAt: { gte: now } }] }],
     },
-    include: { eligibleProducts: true, eligibleCategories: true },
+    include: { eligibleProducts: true, eligibleCategories: true, excludedProducts: true },
   });
   return promotions.map((p) => toPromotionRow(p, null));
 }
@@ -84,7 +86,7 @@ export async function fetchCouponRowByCode(client: PromotionDbClient, code: stri
   const coupon = await client.coupon.findFirst({
     where: { code: { equals: code, mode: "insensitive" } },
     include: {
-      promotion: { include: { eligibleProducts: true, eligibleCategories: true } },
+      promotion: { include: { eligibleProducts: true, eligibleCategories: true, excludedProducts: true } },
     },
   });
   if (!coupon) return null;

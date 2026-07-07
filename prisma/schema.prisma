@@ -292,6 +292,7 @@ model Product {
   orderItems      OrderItem[]
   wishlistItems   WishlistItem[]
   promotionLinks  PromotionProduct[]
+  promotionExclusions PromotionExcludedProduct[]
   inventoryEvents InventoryEvent[]
 
   // מחזור חיים (Platform upgrade, Phase 15): publishAt=null → מתפרסם מיד עם
@@ -483,6 +484,7 @@ model Promotion {
 
   eligibleProducts   PromotionProduct[]
   eligibleCategories PromotionCategory[]
+  excludedProducts   PromotionExcludedProduct[]
   coupons            Coupon[]
 
   createdAt DateTime @default(now())
@@ -512,6 +514,18 @@ model PromotionCategory {
 
   @@id([promotionId, categoryId])
   @@map("promotion_categories")
+}
+
+// החרגת מוצרים ספציפיים — "חל על הכל חוץ מ-X" (הפוך מ-PromotionProduct, שהוא
+// "חל רק על X"). נבדק ב-evaluator אחרי הזכאות: שורה זכאה = (כלולה) וגם (לא מוחרגת).
+model PromotionExcludedProduct {
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, productId])
+  @@map("promotion_excluded_products")
 }
 
 // קוד קופון — מצביע על Promotion אחת. מגבלות שימוש חיות כאן (סמנטיקה לפי-קוד),
