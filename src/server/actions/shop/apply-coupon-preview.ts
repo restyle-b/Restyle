@@ -10,7 +10,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cartItemsSchema } from "@/lib/checkout/checkout-schema";
 import { getShippingFeeAgorot } from "@/lib/checkout/shipping";
 import { getEffectivePriceAgorot } from "@/lib/shop/pricing";
-import { evaluatePromotions, type AppliedPromotion, type EvalLine } from "@/lib/promotions/evaluate";
+import { evaluatePromotions, type AppliedPromotion, type EvalLine, type LineDiscount } from "@/lib/promotions/evaluate";
 import { fetchActiveAutomaticPromotions, fetchCouponRowByCode } from "@/lib/promotions/fetch-promotion-data";
 
 export type ApplyCouponPreviewResult =
@@ -22,6 +22,8 @@ export type ApplyCouponPreviewResult =
       freeShipping: boolean;
       totalAgorot: number;
       appliedPromotions: AppliedPromotion[];
+      /** הנחה לפי productId — כדי שהצ'קאאוט יוכל להראות ללקוח בדיוק אילו פריטים קיבלו הנחה. */
+      lineDiscounts: LineDiscount[];
     }
   | { ok: false; error: string };
 
@@ -137,5 +139,6 @@ export async function applyCouponPreview(
     freeShipping: evalResult.freeShipping,
     totalAgorot: evalResult.totalAgorot,
     appliedPromotions: evalResult.appliedPromotions,
+    lineDiscounts: evalResult.lineDiscounts,
   };
 }

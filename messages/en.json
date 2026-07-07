@@ -480,6 +480,8 @@
     "couponAppliedLabel": "Coupon \"{code}\" applied",
     "discountLabel": "Discount",
     "freeShippingBadge": "Free shipping",
+    "itemsTitle": "Items in your cart",
+    "itemDiscountLabel": "Included in coupon discount",
     "summaryTitle": "Order summary",
     "subtotalLabel": "Subtotal",
     "shippingLabel": "Shipping",

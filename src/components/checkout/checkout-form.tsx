@@ -28,6 +28,8 @@ type AppliedCouponPreview = {
   shippingAgorot: number;
   freeShipping: boolean;
   totalAgorot: number;
+  /** הנחה לפי productId — כדי להראות ללקוח בדיוק אילו פריטים בעגלה קיבלו הנחה. */
+  lineDiscountsByProductId: Map<string, number>;
 };
 
 export function CheckoutForm() {
@@ -112,6 +114,9 @@ export function CheckoutForm() {
         shippingAgorot: result.shippingAgorot,
         freeShipping: result.freeShipping,
         totalAgorot: result.totalAgorot,
+        lineDiscountsByProductId: new Map(
+          result.lineDiscounts.filter((l) => l.lineDiscountAgorot > 0).map((l) => [l.productId, l.lineDiscountAgorot]),
+        ),
       });
     } finally {
       setCouponChecking(false);
@@ -320,6 +325,32 @@ export function CheckoutForm() {
             )}
           </div>
         )}
+      </div>
+
+      <div className="space-y-2 border-t border-line-dark pt-5">
+        <h2 className="font-display text-lg font-semibold text-white">{t("itemsTitle")}</h2>
+        <ul className="space-y-2">
+          {items.map((item) => {
+            const lineDiscount = appliedCoupon?.lineDiscountsByProductId.get(item.productId) ?? 0;
+            return (
+              <li key={item.productId} className="flex items-center justify-between gap-3 text-sm">
+                <div className="min-w-0">
+                  <p className="truncate text-neutral-300">
+                    {item.name} <span className="text-neutral-500">×{item.quantity}</span>
+                  </p>
+                  {lineDiscount > 0 && (
+                    <p className="mt-0.5 text-xs text-accent">
+                      {t("itemDiscountLabel")} (−{formatAgorot(lineDiscount, locale)})
+                    </p>
+                  )}
+                </div>
+                <span className="shrink-0 text-neutral-300">
+                  {formatAgorot(item.priceAgorot * item.quantity, locale)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
       <div className="space-y-2 border-t border-line-dark pt-5">

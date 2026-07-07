@@ -480,6 +480,8 @@
     "couponAppliedLabel": "קופון \"{code}\" הופעל",
     "discountLabel": "הנחה",
     "freeShippingBadge": "משלוח חינם",
+    "itemsTitle": "פריטים בעגלה",
+    "itemDiscountLabel": "כלול בהנחת הקופון",
     "summaryTitle": "סיכום הזמנה",
     "subtotalLabel": "סכום ביניים",
     "shippingLabel": "משלוח",

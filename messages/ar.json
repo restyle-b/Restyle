@@ -480,6 +480,8 @@
     "couponAppliedLabel": "تم تطبيق الكوبون \"{code}\"",
     "discountLabel": "الخصم",
     "freeShippingBadge": "توصيل مجاني",
+    "itemsTitle": "العناصر في سلتك",
+    "itemDiscountLabel": "مشمول في خصم الكوبون",
     "summaryTitle": "ملخص الطلب",
     "subtotalLabel": "المجموع الفرعي",
     "shippingLabel": "التوصيل",
