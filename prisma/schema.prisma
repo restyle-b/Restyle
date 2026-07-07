@@ -17,21 +17,61 @@ enum Role {
 
 // משתמש — מסונכרן עם Supabase Auth (id = auth user id).
 model User {
-  id        String   @id
-  email     String   @unique
-  name      String?
-  phone     String?
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
+  id                String             @id
+  email             String             @unique
+  name              String?
+  phone             String?
+  role              Role               @default(USER)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  orders            Order[]
+  enrollments       Enrollment[]
+  wishlistItems     WishlistItem[]
+  addresses         UserAddress[]
+  couponRedemptions CouponRedemption[]
 
   @@map("users")
 }
 
+// רשימת משאלות — פריט אחד לכל (משתמש, מוצר). Cascade כפול: משתמש/מוצר שנמחקים
+// מוחקים את השורה (בניגוד ל-Order שתמיד שומר snapshot) — מועדף על מוצר שלא קיים
+// יותר הוא חסר משמעות. גישה דרך server action מאומת בלבד (RLS ללא policies).
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("wishlist_items")
+}
+
+// כתובות שמורות של משתמש — נוחות בלבד. הזמנה תמיד שומרת snapshot משלה
+// (addressLine/City/Notes ב-Order) — אין FK מההזמנה לכאן, כדי שעריכה/מחיקה
+// של כתובת שמורה לעולם לא תשנה הזמנה היסטורית. ברירת-מחדל יחידה נאכפת
+// ב-migration עם partial unique index (userId WHERE isDefault=true).
+model UserAddress {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String // "בית" / "עבודה" — טקסט חופשי
+  line      String
+  city      String
+  notes     String?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("user_addresses")
+}
+
 // הגדרות אתר גלובליות — שורה אחת בלבד (id קבוע = 1). Phase 8.1.
 model SiteSettings {
-  id            Int      @id @default(1)
+  id            Int     @id @default(1)
   phone         String
   email         String
   address       String
@@ -40,65 +80,81 @@ model SiteSettings {
   facebookUrl   String?
   appStoreUrl   String?
   googlePlayUrl String?
-  updatedAt     DateTime @updatedAt
-  updatedById   String?
+
+  // מלאי (Platform upgrade, Phase 17 / M5). קבוע ה-fallback (LOW_STOCK_THRESHOLD
+  // ב-product-schema.ts) משמש רק כברירת מחדל לפני שהאדמין שינה את הערך כאן.
+  lowStockThreshold Int @default(5)
+
+  // דמי משלוח (Platform upgrade, Phase 18 / M6). קבוע ה-fallback
+  // (DELIVERY_FEE_AGOROT ב-lib/checkout/shipping.ts) משמש רק כברירת מחדל.
+  shippingFeeAgorot Int @default(4000)
+
+  updatedAt   DateTime @updatedAt
+  updatedById String?
 
   @@map("site_settings")
 }
 
-// שעות פתיחה — שורה אחת ליום. Phase 8.1.
+// שעות פתיחה — שורה אחת ליום, locale-neutral. Phase 8.1 (פושט 2026-07-03).
+// שם היום נגזר בזמן רינדור מ-dayOrder (Intl.DateTimeFormat), לא מאוחסן.
 model OpeningHour {
-  id       Int     @id @default(autoincrement())
-  dayOrder Int     @unique
-  dayHe    String
-  dayEn    String?
-  dayAr    String?
-  hoursHe  String
-  hoursEn  String?
-  hoursAr  String?
+  id        Int      @id @default(autoincrement())
+  dayOrder  Int      @unique // 0=ראשון...6=שבת (תואם JS Date.getDay())
+  openTime  String? // "HH:MM" (24h), null כש-closed=true
+  closeTime String? // "HH:MM" (24h), null כש-closed=true
+  closed    Boolean  @default(false)
+  updatedAt DateTime @updatedAt
 
   @@map("opening_hours")
 }
 
-// שירותי המספרה — מוצג ב-/services ובדף הבית. Phase 8.2.
-model Service {
-  id            String   @id @default(cuid())
-  slug          String   @unique
-  order         Int      @default(0)
-  nameHe        String
-  nameEn        String?
-  nameAr        String?
-  descriptionHe String   @db.Text
-  descriptionEn String?  @db.Text
-  descriptionAr String?  @db.Text
-  active        Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@map("services")
-}
-
 // קורסי האקדמיה — מוצג ב-/academy. Phase 8.2.
 model Course {
-  id            String   @id @default(cuid())
-  slug          String   @unique
-  order         Int      @default(0)
-  nameHe        String
-  nameEn        String?
-  nameAr        String?
-  descriptionHe String   @db.Text
-  descriptionEn String?  @db.Text
-  descriptionAr String?  @db.Text
-  durationHe    String
-  durationEn    String?
-  durationAr    String?
-  levelHe       String
-  levelEn       String?
-  levelAr       String?
-  active        Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  order          Int          @default(0)
+  nameHe         String
+  nameEn         String?
+  nameAr         String?
+  descriptionHe  String       @db.Text
+  descriptionEn  String?      @db.Text
+  descriptionAr  String?      @db.Text
+  durationHe     String
+  durationEn     String?
+  durationAr     String?
+  levelHe        String
+  levelEn        String?
+  levelAr        String?
+  // מסחר (Phase 7). כל השדות אופציונליים — קורס בלי priceAgorot נשאר תדמיתי
+  // (CTA צור-קשר). כסף תמיד Int אגורות.
+  priceAgorot    Int? // מחיר מלא; null → לא ניתן לרכישה
+  depositPercent Int          @default(20) // 0 = רק תשלום מלא
+  capacity       Int? // null = ללא הגבלת מקומות
+  detailsHe      String?      @db.Text // הסבר מפורט
+  detailsEn      String?      @db.Text
+  detailsAr      String?      @db.Text
+  syllabusHe     String?      @db.Text // סילבוס (טקסט חופשי)
+  syllabusEn     String?      @db.Text
+  syllabusAr     String?      @db.Text
+  active         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  enrollments    Enrollment[]
 
+  // מחזור חיים (Platform upgrade, Phase 15): publishAt=null → מתפרסם מיד עם
+  // active. publishAt עתידי + active=true → "מתוזמן". active=false → טיוטה
+  // (נגזר בקוד, לא מאוחסן). אותו דפוס בדיוק כמו Product.
+  publishAt DateTime?
+
+  // SEO per-locale — נופל ל-nameHe/descriptionHe כשריק (נגזר בקוד).
+  seoTitleHe       String?
+  seoTitleEn       String?
+  seoTitleAr       String?
+  seoDescriptionHe String? @db.Text
+  seoDescriptionEn String? @db.Text
+  seoDescriptionAr String? @db.Text
+
+  @@index([active, publishAt])
   @@map("courses")
 }
 
@@ -109,6 +165,10 @@ model Testimonial {
   nameHe    String
   nameEn    String?
   nameAr    String?
+  // תפקיד/תיאור קצר להצגה "שם · תפקיד" (אופציונלי — לא כל המלצה צריכה אחד).
+  roleHe    String?
+  roleEn    String?
+  roleAr    String?
   quoteHe   String   @db.Text
   quoteEn   String?  @db.Text
   quoteAr   String?  @db.Text
@@ -186,16 +246,17 @@ enum PaymentStatus {
 
 // קטגוריית מוצרים — לסינון בקטלוג.
 model Category {
-  id        String    @id @default(cuid())
-  slug      String    @unique
-  order     Int       @default(0)
-  nameHe    String
-  nameEn    String?
-  nameAr    String?
-  active    Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  products  Product[]
+  id             String              @id @default(cuid())
+  slug           String              @unique
+  order          Int                 @default(0)
+  nameHe         String
+  nameEn         String?
+  nameAr         String?
+  active         Boolean             @default(true)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  products       Product[]
+  promotionLinks PromotionCategory[]
 
   @@map("categories")
 }
@@ -203,33 +264,88 @@ model Category {
 // מוצרי החנות.
 // ⚠️ imageUrl (לא imageKey/R2) — אותה מוסכמה כמו GalleryImage.imageUrl (ראה
 // שם למה). imageUrl ריק/null => מוצג ImagePlaceholder בציבורי.
+// שלושה צירים עצמאיים (Admin redesign, Phase 8.6, 2026-07-03): active=
+// visibility (מוצג בקטלוג הציבורי בכלל), available=availability (ניתן
+// לרכישה — override ידני, עצמאי ממלאי, לדוגמה "בקרוב" בלי להסתיר את הכרטיס),
+// stock=מלאי (בריאות מלאי נגזרת בזמן תצוגה, לא מאוחסנת).
 model Product {
-  id            String      @id @default(cuid())
-  slug          String      @unique
-  order         Int         @default(0)
-  nameHe        String
-  nameEn        String?
-  nameAr        String?
-  descriptionHe String      @db.Text
-  descriptionEn String?     @db.Text
-  descriptionAr String?     @db.Text
-  priceAgorot   Int
-  stock         Int         @default(0)
-  imageUrl      String?
-  categoryId    String?
-  category      Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  active        Boolean     @default(true)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  orderItems    OrderItem[]
+  id              String             @id @default(cuid())
+  slug            String             @unique
+  order           Int                @default(0)
+  nameHe          String
+  nameEn          String?
+  nameAr          String?
+  descriptionHe   String             @db.Text
+  descriptionEn   String?            @db.Text
+  descriptionAr   String?            @db.Text
+  priceAgorot     Int
+  salePriceAgorot Int? // מחיר מבצע — כשמוגדר ותקף (< priceAgorot), מוצג כ"במבצע"
+  stock           Int                @default(0)
+  available       Boolean            @default(true)
+  featured        Boolean            @default(false)
+  imageUrl        String?
+  categoryId      String?
+  category        Category?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  active          Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  orderItems      OrderItem[]
+  wishlistItems   WishlistItem[]
+  promotionLinks  PromotionProduct[]
+  promotionExclusions PromotionExcludedProduct[]
+  inventoryEvents InventoryEvent[]
+
+  // מחזור חיים (Platform upgrade, Phase 15): publishAt=null → מתפרסם מיד עם
+  // active. publishAt עתידי + active=true → "מתוזמן". active=false → טיוטה
+  // (נגזר בקוד, לא מאוחסן — לא מתנגש עם available/stock, ציר רביעי עצמאי).
+  publishAt DateTime?
+
+  // SEO per-locale — נופל ל-nameHe/descriptionHe כשריק (נגזר בקוד).
+  seoTitleHe       String?
+  seoTitleEn       String?
+  seoTitleAr       String?
+  seoDescriptionHe String? @db.Text
+  seoDescriptionEn String? @db.Text
+  seoDescriptionAr String? @db.Text
 
   @@index([categoryId])
+  @@index([active, publishAt])
   @@map("products")
+}
+
+// יומן מלאי (Platform upgrade, Phase 17 / M5) — כל שינוי stock נכתב לכאן
+// (delta חתום + resultingStock כ-snapshot), לא רק ל-Product.stock עצמו.
+// מלאי "שמור" (הזמנות PENDING) מחושב תמיד ב-read מ-OrderItem, לא מאוחסן כאן —
+// פחות משטח race, ונאמן לעיצוב הקיים של "ירידת מלאי רק בתשלום מאומת".
+enum InventoryReason {
+  SALE // ירידת מלאי בתשלום מאומת (handle-payment-result, אותה טרנזקציה)
+  RESTOCK // חידוש מלאי ידני (delta חיובי)
+  MANUAL_ADJUST // תיקון ידני (delta שלילי, לא מכירה)
+  ORDER_CANCELLED // החזרת מלאי בביטול הזמנה ששולמה
+
+  @@map("inventory_reason")
+}
+
+model InventoryEvent {
+  id             String          @id @default(cuid())
+  productId      String
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  delta          Int
+  reason         InventoryReason
+  resultingStock Int
+  orderId        String?
+  order          Order?          @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  actorEmail     String? // אימייל אדמין, או "payment"/"system"
+  note           String?
+  createdAt      DateTime        @default(now())
+
+  @@index([productId, createdAt])
+  @@map("inventory_events")
 }
 
 // הזמנה — אורח או משתמש רשום (userId אופציונלי, guest checkout מותר).
 model Order {
-  id     String @id @default(cuid())
+  id          String @id @default(cuid())
   orderNumber String @unique
 
   userId String?
@@ -248,8 +364,16 @@ model Order {
   addressCity    String?
   addressNotes   String?
 
-  subtotalAgorot Int // סכום פריטים בלבד, מחושב בשרת
-  totalAgorot    Int // subtotal + shipping, מחושב בשרת
+  subtotalAgorot Int // סכום פריטים בלבד (לפני הנחה), מחושב בשרת
+  totalAgorot    Int // subtotal - discount + shipping, מחושב בשרת
+
+  // מבצעים/קופונים (Phase 16 / M4). discountAgorot תמיד >= 0 ו-<= subtotalAgorot.
+  // appliedCouponCode/appliedPromotions הם snapshot לתצוגה בלבד (לא FK) — הזמנה
+  // היסטורית לא משתנה אם קופון/מבצע נמחקים/משתנים בעתיד.
+  discountAgorot    Int     @default(0)
+  appliedCouponCode String?
+  appliedPromotions Json? // [{id,name,kind,amountAgorot}] — snapshot לתצוגה
+  freeShipping      Boolean @default(false)
 
   paymentProvider  String? // "mock" | "tranzila" — נשמר בזמן היצירה
   guestLookupToken String? @unique // אקראי, ל-guest order lookup
@@ -257,12 +381,30 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  items   OrderItem[]
-  payment Payment?
+  items            OrderItem[]
+  payment          Payment?
+  statusEvents     OrderStatusEvent[]
+  couponRedemption CouponRedemption?
+  inventoryEvents  InventoryEvent[]
 
   @@index([userId])
   @@index([customerEmail])
   @@map("orders")
+}
+
+// היסטוריית סטטוס להזמנה — כל מעבר נשמר (מי שינה: אדמין/תשלום/מערכת).
+// מוצגת גם למנהל (אדמין) וגם ללקוח. 2026-07-03.
+model OrderStatusEvent {
+  id         String       @id @default(cuid())
+  orderId    String
+  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+  changedBy  String? // אימייל אדמין / "payment" / "system"
+  createdAt  DateTime     @default(now())
+
+  @@index([orderId])
+  @@map("order_status_events")
 }
 
 // שורת פריט בהזמנה — snapshot של שם+מחיר בזמן הרכישה (לא JOIN חי ל-Product,
@@ -275,13 +417,162 @@ model OrderItem {
   productId String?
   product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
-  nameHeSnapshot  String
-  unitPriceAgorot Int
-  quantity        Int
-  lineTotalAgorot Int
+  nameHeSnapshot     String
+  unitPriceAgorot    Int
+  quantity           Int
+  lineTotalAgorot    Int
+  // חלק ההנחה של השורה — Σ lineDiscountAgorot === Order.discountAgorot (הקצאת
+  // largest-remainder, ראה docs/features/platform-upgrade/promotion-engine.md).
+  // נדרש להחזרים חלקיים עתידיים ולקופונים המוגבלים למוצרים ספציפיים.
+  lineDiscountAgorot Int    @default(0)
 
   @@index([orderId])
   @@map("order_items")
+}
+
+// מנוע מבצעים/קופונים — Phase 16 (M4), שלב א. עיצוב מלא + סמנטיקת הערכה ב-
+// docs/features/platform-upgrade/promotion-engine.md; החלטות פישור מול data-model.md
+// ב-docs/features/platform-upgrade.md §Reconciliation. עקרונות: כסף תמיד Int
+// אגורות (לעולם לא ב-Json), conditions Json? רק להרחבת Stage B עתידית, שני
+// מודלים נפרדים (Promotion=ההטבה, Coupon=הקוד) כי bulk coupon generation דורש
+// N קודים להטבה אחת — לא N שורות Promotion.
+
+enum PromotionKind {
+  PERCENT
+  FIXED_AMOUNT
+  FREE_SHIPPING
+  // Stage B (מוכן בסכימה, לא בשימוש בשלב א):
+  BUY_X_GET_Y
+  CHEAPEST_FREE
+  BUNDLE_PRICE
+
+  @@map("promotion_kind")
+}
+
+enum PromotionAppliesTo {
+  SHOP
+  COURSES // לא בשימוש בשלב א — עסקאות קורס (מקדמה/יתרה) יוצאות מהיקף, ראה promotion-engine.md §5
+
+  @@map("promotion_applies_to")
+}
+
+// ההטבה עצמה (לא הקוד). automatic=true → מוחל אוטומטית בלי קופון. שדות ה-
+// Stage B מאוחסנים ורדומים (priority/stackable/conditions) — שלב א מתעלם מהם.
+model Promotion {
+  id          String             @id @default(cuid())
+  name        String
+  description String?
+  kind        PromotionKind
+  automatic   Boolean            @default(false)
+  appliesTo   PromotionAppliesTo @default(SHOP)
+
+  percentBp                     Int? // 1000 = 10% (נקודות בסיס — מאפשר גם 12.5%)
+  amountAgorot                  Int?
+  freeShippingMinSubtotalAgorot Int?
+  minSubtotalAgorot             Int?    @default(0)
+  // הנחה חלה גם על פריטים שכבר במבצע? ברירת מחדל כן; "לא כולל פריטי מבצע" נפוץ בישראל.
+  appliesToSaleItems            Boolean @default(true)
+
+  startsAt DateTime?
+  endsAt   DateTime?
+  active   Boolean   @default(true)
+
+  // Stage B — מאוחסן, רדום בשלב א (evaluator לא קורא את זה עדיין):
+  priority   Int     @default(0)
+  stackable  Boolean @default(false)
+  conditions Json? // הרחבה עתידית (segment/BXGY) — לעולם לא כסף כאן
+
+  eligibleProducts   PromotionProduct[]
+  eligibleCategories PromotionCategory[]
+  excludedProducts   PromotionExcludedProduct[]
+  coupons            Coupon[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active, automatic])
+  @@map("promotions")
+}
+
+// הגבלת זכאות למוצרים ספציפיים — ריק ב-Promotion (בלי שורות) = כל העגלה.
+model PromotionProduct {
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, productId])
+  @@map("promotion_products")
+}
+
+// הגבלת זכאות לקטגוריות ספציפיות — אותה סמנטיקה כמו PromotionProduct.
+model PromotionCategory {
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, categoryId])
+  @@map("promotion_categories")
+}
+
+// החרגת מוצרים ספציפיים — "חל על הכל חוץ מ-X" (הפוך מ-PromotionProduct, שהוא
+// "חל רק על X"). נבדק ב-evaluator אחרי הזכאות: שורה זכאה = (כלולה) וגם (לא מוחרגת).
+model PromotionExcludedProduct {
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, productId])
+  @@map("promotion_excluded_products")
+}
+
+// קוד קופון — מצביע על Promotion אחת. מגבלות שימוש חיות כאן (סמנטיקה לפי-קוד),
+// לא ב-Promotion. ה-FOR UPDATE של מימוש אטומי ננעל על שורת ה-Coupon הזו.
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  usageLimit        Int? // תקרה גלובלית; null = ללא הגבלה
+  perCustomerLimit  Int? // תקרה ללקוח (מפתח: email מנורמל, גם לאורח); null = ללא הגבלה
+  usedCount         Int       @default(0) // מונה — מוגדל אטומית תחת FOR UPDATE על השורה
+  minSubtotalAgorot Int? // override על ה-Promotion, אם מוגדר
+  startsAt          DateTime?
+  expiresAt         DateTime?
+  active            Boolean   @default(true)
+
+  redemptions CouponRedemption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([promotionId])
+  @@map("coupons")
+}
+
+// מימוש קופון — שורה אחת לכל הזמנה (orderId ייחודי מונע ספירה כפולה ב-retry
+// של אותה הזמנה). מקור האמת למונה השימושים ולתקרת-הלקוח, לא ה-Order עצמה.
+model CouponRedemption {
+  id       String  @id @default(cuid())
+  couponId String
+  coupon   Coupon  @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  orderId  String  @unique
+  order    Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId   String? // null = אורח
+  user     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // תמיד נשמר (גם למשתמש רשום) — אכיפת perCustomerLimit עקבית לאורח ולרשום כאחד.
+  customerEmailNormalized String
+  discountAgorot          Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([couponId, orderId])
+  @@index([couponId, customerEmailNormalized])
+  @@map("coupon_redemptions")
 }
 
 // תשלום — קשור 1:1 להזמנה. לעולם לא PAN/CVV — רק מזהי התייחסות של הספק.
@@ -303,4 +594,130 @@ model Payment {
 
   @@index([provider, externalRef])
   @@map("payments")
+}
+
+// ===== Phase 7: רכישת קורסים =====
+
+enum EnrollmentStatus {
+  PENDING
+  DEPOSIT_PAID
+  PAID
+  CANCELLED
+  FAILED
+
+  @@map("enrollment_status")
+}
+
+enum EnrollmentPlan {
+  DEPOSIT
+  FULL
+
+  @@map("enrollment_plan")
+}
+
+enum CoursePaymentKind {
+  DEPOSIT
+  BALANCE
+  FULL
+
+  @@map("course_payment_kind")
+}
+
+// הרשמה לקורס — מקבילה ל-Order בחנות אך ייעודית (מקדמה/יתרה, בלי משלוח).
+// כסף תמיד Int אגורות; המחיר/מקדמה snapshot בזמן ההרשמה.
+model Enrollment {
+  id               String @id @default(cuid())
+  enrollmentNumber String @unique // "C-XXXXXX", קריא ללקוח
+
+  courseId             String?
+  course               Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  courseNameHeSnapshot String
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  guestLookupToken String? @unique
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  plan              EnrollmentPlan
+  coursePriceAgorot Int // snapshot מחיר מלא
+  depositAgorot     Int // snapshot מקדמה מחושבת
+  amountPaidAgorot  Int              @default(0) // סכום ששולם מצטבר
+  status            EnrollmentStatus @default(PENDING)
+  paymentProvider   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments     CoursePayment[]
+  statusEvents EnrollmentStatusEvent[]
+
+  @@index([userId])
+  @@index([customerEmail])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+// היסטוריית סטטוס להרשמה — כל מעבר נשמר (מי שינה: אדמין/תשלום/מערכת).
+// מוצגת גם למנהל (אדמין) וגם ללקוח. 2026-07-03.
+model EnrollmentStatusEvent {
+  id           String            @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment        @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  fromStatus   EnrollmentStatus?
+  toStatus     EnrollmentStatus
+  changedBy    String? // אימייל אדמין / "payment" / "system"
+  createdAt    DateTime          @default(now())
+
+  @@index([enrollmentId])
+  @@map("enrollment_status_events")
+}
+
+// תשלום קורס — רבים-ל-אחד להרשמה (מקדמה + יתרה). לעולם לא PAN/CVV.
+model CoursePayment {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  kind            CoursePaymentKind
+  provider        String
+  status          PaymentStatus     @default(PENDING)
+  amountAgorot    Int // הסכום הספציפי של העסקה הזו (מקדמה/מלא/יתרה)
+  externalRef     String?
+  last4           String?
+  failureReason   String?
+  rawResponseMeta Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([enrollmentId])
+  @@index([provider, externalRef])
+  @@map("course_payments")
+}
+
+// ===== Admin redesign (Phase 8.6): יומן פעילות מאוחד =====
+
+// יומן ביקורת אדמין אחד לכל הישויות — לא מחליף את OrderStatusEvent/
+// EnrollmentStatusEvent (אלה נשארים, מוצגים גם ללקוח); זהו מקור נוסף,
+// admin-only, append-only, כדי שעמוד "היסטוריית פעילות" ישאב ממקור אחד
+// בלבד במקום UNION בין כמה טבלאות. metadata — רק ערכים לא-רגישים
+// (before/after של שדות שהאדמין כבר רואה במסכים אחרים; לעולם לא נתוני כרטיס).
+model ActivityLog {
+  id         String  @id @default(cuid())
+  actorEmail String? // אימייל אדמין, או "system"/"payment" (כמו changedBy)
+  action     String // "product.create" | "product.update" | "product.stock_change" | "product.delete" | "order.status_change" | "enrollment.status_change" | "admin.write"
+  entityType String // "product" | "order" | "enrollment" | "course" | "testimonial" | "gallery" | "content" | "settings" | "category"
+  entityId   String?
+  summary    String // שורת תיאור קריאה-לאדם, מחושבת בזמן הכתיבה
+  metadata   Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("activity_log")
 }

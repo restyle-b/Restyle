@@ -6,7 +6,6 @@
   "nav": {
     "about": "אודות",
     "shop": "חנות",
-    "services": "שירותים",
     "academy": "אקדמיה",
     "gallery": "גלריה",
     "locations": "מיקום ושעות",
@@ -30,6 +29,7 @@
     "login": "התחברות",
     "register": "הרשמה",
     "myOrders": "ההזמנות שלי",
+    "myCourses": "הקורסים שלי",
     "orderLookup": "מעקב הזמנה",
     "bookingHeading": "קביעת תור",
     "bookingText": "קביעת תור מתבצעת באפליקציית ReStyle.",
@@ -51,11 +51,8 @@
     "heroTitle": "{name} — דיוק, סגנון ומקצועיות",
     "heroSubtitle": "חוויית עיצוב שיער ברמה הגבוהה ביותר, צוות מקצועי ואקדמיה להכשרת מעצבים.",
     "bookingCta": "קביעת תור",
-    "servicesCta": "לשירותים",
+    "shopCta": "לחנות המלאה",
     "scrollDownLabel": "גלילה למטה",
-    "servicesEyebrow": "מה שאנחנו עושים",
-    "servicesTitle": "שירותי המספרה",
-    "allServicesCta": "לכל השירותים",
     "ctaEyebrow": "קביעת תור",
     "ctaTitle": "מוכנים לתור הבא שלכם?",
     "ctaText": "קביעת תור מתבצעת באפליקציית ReStyle — מהירה, נוחה וזמינה 24/7.",
@@ -68,7 +65,6 @@
     "shopEyebrow": "החנות שלנו",
     "shopTitle": "מוצרים נבחרים",
     "shopDescription": "מוצרי הטיפוח שאנחנו עובדים ומאמינים בהם — עכשיו זמינים גם לבית.",
-    "shopCta": "לחנות המלאה",
     "shopOutOfStock": "אזל המלאי",
     "aboutImageLabel": "תמונת הסטודיו",
     "studioFeatureLighting": "תאורה מקצועית",
@@ -115,7 +111,105 @@
     "paragraph1": "אקדמיית ReStyle הוקמה כדי להעביר את הידע, הטכניקה והסטנדרט המקצועי שלנו לדור הבא של אנשי המקצוע. הלימוד בקבוצות קטנות, בסביבת עבודה אמיתית ובליווי אישי צמוד.",
     "paragraph2": "לפרטים על מועדי פתיחה, מחירים ותנאי הרשמה — צרו איתנו קשר ונשמח לספר לכם הכול.",
     "durationLabel": "משך: {duration}",
-    "ctaText": "לפרטים והרשמה — צרו קשר"
+    "ctaText": "לפרטים והרשמה — צרו קשר",
+    "detailsCta": "לפרטים והרשמה",
+    "fromLabel": "החל מ-"
+  },
+  "academyCommerce": {
+    "backToAcademy": "חזרה לאקדמיה",
+    "detailsTitle": "על הקורס",
+    "syllabusTitle": "סילבוס הקורס",
+    "durationLabel": "משך",
+    "levelLabel": "רמה",
+    "priceLabel": "מחיר מלא",
+    "startingFromDeposit": "החל ממקדמה של",
+    "depositSubtext": "מקדמה על חשבון מחיר קורס מלא של {amount}",
+    "fullPriceNoDeposit": "מחיר מלא לקורס",
+    "seatsLeft": "{count} מקומות אחרונים",
+    "soldOut": "הקורס מלא כרגע",
+    "contactCta": "לפרטים והרשמה — צרו קשר",
+    "securePaymentNote": "תשלום מאובטח ומוצפן",
+    "enroll": {
+      "title": "הרשמה לקורס",
+      "contactSectionTitle": "פרטים אישיים",
+      "nameLabel": "שם מלא",
+      "emailLabel": "אימייל",
+      "phoneLabel": "טלפון",
+      "companyLabel": "חברה",
+      "planLabel": "אופן תשלום",
+      "planDepositTitle": "תשלום מקדמה",
+      "planDepositDescription": "משריינים את המקום עכשיו, משלימים את היתרה בהמשך",
+      "planFullTitle": "תשלום מלא",
+      "planFullDescription": "משלמים הכל עכשיו — בלי יתרה עתידית",
+      "dueNowLabel": "לתשלום כעת",
+      "balanceLaterLabel": "יתרה בהמשך",
+      "noBalanceLabel": "אין יתרה נוספת",
+      "nextStepNote": "לאחר האישור תועברו לעמוד תשלום מאובטח להשלמת ההרשמה.",
+      "submit": "להרשמה ותשלום",
+      "submitting": "מעבד...",
+      "errors": {
+        "nameTooShort": "יש להזין שם מלא (לפחות 2 תווים)",
+        "emailInvalid": "כתובת אימייל לא תקינה",
+        "phoneTooShort": "מספר טלפון לא תקין",
+        "invalidInput": "הנתונים שהוזנו אינם תקינים.",
+        "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.",
+        "courseUnavailable": "הקורס אינו זמין להרשמה כרגע.",
+        "soldOut": "הקורס מלא — אין מקומות פנויים.",
+        "enrollFailed": "ההרשמה נכשלה. נסו שוב."
+      }
+    },
+    "success": {
+      "title": "ההרשמה התקבלה!",
+      "descriptionDeposit": "המקדמה שולמה והמקום שלך שמור. יתרת התשלום ממתינה להשלמה.",
+      "descriptionFull": "התשלום התקבל במלואו. נתראה בקורס!",
+      "processing": "התשלום מעובד — רעננו את העמוד בעוד רגע או בדקו באזור האישי.",
+      "enrollmentNumberLabel": "מספר הרשמה",
+      "payBalanceCta": "תשלום יתרה",
+      "viewMyCourses": "לקורסים שלי",
+      "backToAcademy": "חזרה לאקדמיה"
+    },
+    "cancel": {
+      "title": "ההרשמה לא הושלמה",
+      "description": "התשלום בוטל או נכשל. ניתן לנסות שוב.",
+      "retry": "חזרה לקורס",
+      "backToAcademy": "חזרה לאקדמיה"
+    },
+    "notFound": {
+      "title": "ההרשמה לא נמצאה",
+      "description": "לא הצלחנו לאתר הרשמה עם המספר הזה."
+    },
+    "balance": {
+      "dueLabel": "יתרה לתשלום",
+      "payCta": "תשלום יתרה",
+      "paidInFull": "שולם במלואו"
+    },
+    "status": {
+      "PENDING": "ממתין לתשלום",
+      "DEPOSIT_PAID": "מקדמה שולמה",
+      "PAID": "שולם במלואו",
+      "CANCELLED": "בוטל",
+      "FAILED": "נכשל"
+    },
+    "myCourses": {
+      "title": "הקורסים שלי",
+      "empty": "עדיין לא נרשמת לקורסים.",
+      "amountPaidLabel": "שולם",
+      "viewCourse": "לצפייה בקורס"
+    },
+    "lookup": {
+      "title": "בדיקת הרשמה לקורס",
+      "description": "הזינו את מספר ההרשמה ואת קוד המעקב שקיבלתם באימייל.",
+      "numberLabel": "מספר הרשמה",
+      "tokenLabel": "קוד מעקב",
+      "submit": "בדיקה",
+      "submitting": "בודק...",
+      "notFound": "לא נמצאה הרשמה עם הפרטים שהוזנו.",
+      "errors": {
+        "numberRequired": "יש להזין מספר הרשמה",
+        "tokenRequired": "יש להזין קוד מעקב",
+        "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות."
+      }
+    }
   },
   "accessibility": {
     "metaTitle": "הצהרת נגישות",
@@ -163,7 +257,8 @@
     "eyebrow": "עבודות נבחרות",
     "title": "גלריה",
     "workImageLabel": "תמונת עבודה",
-    "studioImageLabel": "הסטודיו שלנו"
+    "studioImageLabel": "הסטודיו שלנו",
+    "instagramCta": "עוד עבודות באינסטגרם"
   },
   "locations": {
     "metaTitle": "מיקום ושעות",
@@ -178,7 +273,9 @@
     "emailLabel": "אימייל:",
     "quickContactHeading": "יצירת קשר מהירה",
     "bookingCta": "קביעת תור באפליקציה",
-    "mapTitle": "מפה — {address}"
+    "mapTitle": "מפה — {address}",
+    "openNow": "פתוח עכשיו",
+    "tileWhatsappSub": "מענה מהיר"
   },
   "privacy": {
     "metaTitle": "מדיניות פרטיות",
@@ -222,39 +319,6 @@
     "contactBodyBefore": "לשאלות בנוגע לתקנון ניתן לפנות אלינו בטלפון",
     "contactBodyMiddle": "או באימייל",
     "updatedText": "תקנון זה עודכן בתאריך {date}."
-  },
-  "services": {
-    "metaTitle": "שירותים",
-    "metaDescription": "כל שירותי המספרה של ReStyle — תספורות, עיצוב זקן, צבע וטיפולי שיער.",
-    "eyebrow": "מה שאנחנו עושים",
-    "title": "כל השירותים שלנו",
-    "bookingCta": "קביעת תור"
-  },
-  "servicesData": {
-    "haircut": {
-      "name": "תספורת עיצוב",
-      "description": "תספורת מותאמת אישית לפי צורת הפנים והסגנון שלך, בליווי ייעוץ קצר."
-    },
-    "beard": {
-      "name": "עיצוב זקן",
-      "description": "גילוח וקיצוץ מדויקים, כולל חימום מגבת חמה וטיפוח עור."
-    },
-    "coloring": {
-      "name": "צבע וגוונים",
-      "description": "צביעה מקצועית והדגשות בעזרת מוצרים פרימיום, ללא פגיעה במבנה השיער."
-    },
-    "treatment": {
-      "name": "טיפולי שיער",
-      "description": "טיפולי הזנה ושיקום לשיער ולקרקפת, מותאמים לסוג השיער שלך."
-    },
-    "kids": {
-      "name": "תספורת ילדים",
-      "description": "חוויה נעימה ומהירה במספרה, בסבלנות ובמקצועיות."
-    },
-    "vip": {
-      "name": "חוויית VIP",
-      "description": "טיפול מקיף — תספורת, זקן וטיפוח, בליווי אישי וזמן איכות מורחב."
-    }
   },
   "academyData": {
     "barbering-foundations": {
@@ -334,7 +398,8 @@
     "waze": "ניווט בוייז",
     "call": "התקשרו אלינו",
     "whatsapp": "וואטסאפ",
-    "whatsappMessage": "היי! אשמח לקבל פרטים על ReStyle."
+    "whatsappMessage": "היי! אשמח לקבל פרטים על ReStyle.",
+    "instagram": "אינסטגרם"
   },
   "floatingContact": {
     "whatsappAria": "צ'אט בוואטסאפ",
@@ -383,6 +448,8 @@
     "empty": "העגלה שלך ריקה.",
     "continueShopping": "המשך בקנייה",
     "quantityLabel": "כמות",
+    "decreaseQuantity": "הפחתת כמות",
+    "increaseQuantity": "הוספת כמות",
     "remove": "הסרה",
     "subtotal": "סכום ביניים",
     "checkoutCta": "מעבר לתשלום",
@@ -404,6 +471,17 @@
     "addressLineLabel": "כתובת",
     "addressCityLabel": "עיר",
     "addressNotesLabel": "הערות למשלוח (אופציונלי)",
+    "couponTitle": "קוד קופון",
+    "couponLabel": "קוד קופון",
+    "couponPlaceholder": "הזינו קוד קופון",
+    "couponApply": "החל",
+    "couponApplying": "בודק...",
+    "couponRemove": "הסר",
+    "couponAppliedLabel": "קופון \"{code}\" הופעל",
+    "discountLabel": "הנחה",
+    "freeShippingBadge": "משלוח חינם",
+    "itemsTitle": "פריטים בעגלה",
+    "itemDiscountLabel": "כלול בהנחת הקופון",
     "summaryTitle": "סיכום הזמנה",
     "subtotalLabel": "סכום ביניים",
     "shippingLabel": "משלוח",
@@ -425,7 +503,9 @@
       "emptyCart": "העגלה ריקה או שהנתונים שנשלחו אינם תקינים.",
       "productUnavailable": "אחד המוצרים בעגלה כבר אינו זמין.",
       "insufficientStock": "אין מספיק מלאי עבור \"{name}\".",
-      "paymentInitFailed": "פתיחת התשלום נכשלה. נסו שוב."
+      "paymentInitFailed": "פתיחת התשלום נכשלה. נסו שוב.",
+      "couponNotFound": "קוד הקופון אינו קיים.",
+      "couponInvalid": "לא ניתן להחיל את הקופון."
     },
     "mockPay": {
       "title": "סימולציית תשלום (מצב פיתוח)",
@@ -492,7 +572,8 @@
         "FAILED": "נכשל",
         "REFUNDED": "זוכה",
         "PARTIALLY_REFUNDED": "זוכה חלקית"
-      }
+      },
+      "historyTitle": "היסטוריית סטטוס"
     },
     "lookup": {
       "title": "בדיקת סטטוס הזמנה",
@@ -506,6 +587,137 @@
         "orderNumberRequired": "יש להזין מספר הזמנה",
         "tokenRequired": "יש להזין קוד מעקב",
         "rateLimited": "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות."
+      }
+    }
+  },
+  "account": {
+    "nav": {
+      "dashboard": "סקירה",
+      "orders": "ההזמנות שלי",
+      "courses": "הקורסים שלי",
+      "wishlist": "המועדפים",
+      "addresses": "כתובות",
+      "profile": "הפרופיל שלי",
+      "more": "עוד",
+      "adminPanel": "פאנל ניהול"
+    },
+    "dashboard": {
+      "eyebrow": "האזור האישי שלך",
+      "greeting": "שלום, {firstName}",
+      "emailLabel": "אימייל",
+      "recentOrders": {
+        "title": "הזמנות אחרונות",
+        "trackOrder": "מעקב הזמנה",
+        "viewAll": "לכל ההזמנות",
+        "empty": "עדיין לא ביצעת הזמנות. שווה להתחיל 🙂",
+        "emptyCta": "למעבר לחנות"
+      },
+      "profileNudge": {
+        "title": "הפרופיל שלך כמעט מוכן",
+        "description": "עוד רגע וסיימת — זה עוזר לנו לשרת אותך טוב יותר.",
+        "missingName": "שם מלא",
+        "missingPhone": "טלפון",
+        "cta": "השלמת פרטים"
+      },
+      "courses": {
+        "title": "הקורסים שלי",
+        "viewAll": "לכל הקורסים",
+        "empty": "עדיין לא נרשמת לקורסים.",
+        "emptyCta": "גילוי הקורסים שלנו"
+      },
+      "quickActions": {
+        "title": "פעולות מהירות",
+        "booking": "קביעת תור",
+        "shop": "חזרה לחנות",
+        "courses": "הקורסים שלנו"
+      },
+      "wishlist": {
+        "title": "המועדפים שלי",
+        "viewAll": "לכל המועדפים",
+        "empty": "אין עדיין מועדפים. סמנו לב על מוצרים שאהבתם והם יופיעו כאן."
+      },
+      "recommended": {
+        "title": "מוצרים מומלצים"
+      },
+      "recentlyViewed": {
+        "title": "נצפו לאחרונה"
+      }
+    },
+    "profile": {
+      "title": "הפרופיל שלי",
+      "personalTitle": "פרטים אישיים",
+      "nameLabel": "שם מלא",
+      "phoneLabel": "טלפון",
+      "emailLabel": "אימייל",
+      "emailReadonlyNote": "האימייל מקושר לחשבון ההתחברות ואינו ניתן לשינוי כאן.",
+      "saveCta": "שמירת שינויים",
+      "saving": "שומר...",
+      "savedToast": "הפרטים נשמרו",
+      "securityTitle": "אבטחה",
+      "securityDescription": "לשינוי הסיסמה נשלח אליך קישור מאובטח למייל.",
+      "resetPasswordCta": "שליחת קישור לאיפוס סיסמה",
+      "addressesLinkCta": "ניהול כתובות שמורות",
+      "errors": {
+        "nameTooShort": "השם קצר מדי",
+        "phoneTooShort": "מספר הטלפון קצר מדי",
+        "invalidInput": "קלט לא תקין",
+        "rateLimited": "יותר מדי ניסיונות — נסו שוב בעוד דקה",
+        "notAuthenticated": "יש להתחבר כדי לעדכן פרופיל"
+      }
+    },
+    "addresses": {
+      "title": "כתובות",
+      "empty": "עדיין לא הוספת כתובות. כתובת שמורה תמלא את פרטי המשלוח אוטומטית בצ'קאאוט.",
+      "emptyCta": "הוספת כתובת",
+      "addCta": "הוספת כתובת",
+      "editCta": "עריכה",
+      "setDefaultCta": "הגדרה כברירת מחדל",
+      "deleteCta": "מחיקה",
+      "defaultBadge": "ברירת מחדל",
+      "deleteConfirmTitle": "מחיקת כתובת",
+      "deleteConfirmDescription": "למחוק את הכתובת? הפעולה אינה הפיכה.",
+      "form": {
+        "createTitle": "הוספת כתובת",
+        "editTitle": "עריכת כתובת",
+        "labelLabel": "כינוי (למשל בית/עבודה)",
+        "lineLabel": "כתובת",
+        "cityLabel": "עיר",
+        "notesLabel": "הערות (אופציונלי)",
+        "isDefaultLabel": "הגדרה כברירת מחדל",
+        "saveCta": "שמירה",
+        "saving": "שומר...",
+        "cancelCta": "ביטול"
+      },
+      "toasts": {
+        "created": "הכתובת נוספה",
+        "updated": "הכתובת עודכנה",
+        "deleted": "הכתובת נמחקה",
+        "defaultSet": "הכתובת הוגדרה כברירת מחדל"
+      },
+      "errors": {
+        "labelRequired": "יש להזין כינוי",
+        "lineRequired": "יש להזין כתובת",
+        "cityRequired": "יש להזין עיר",
+        "invalidInput": "קלט לא תקין",
+        "notFound": "הכתובת לא נמצאה",
+        "rateLimited": "יותר מדי ניסיונות — נסו שוב בעוד דקה",
+        "notAuthenticated": "יש להתחבר כדי לנהל כתובות"
+      }
+    },
+    "wishlist": {
+      "title": "המועדפים שלי",
+      "empty": "רשימת המועדפים ריקה",
+      "emptyDescription": "סמנו לב על מוצרים שאהבתם כדי לשמור אותם כאן.",
+      "emptyCta": "למעבר לחנות",
+      "removedToast": "הוסר מהמועדפים",
+      "undoCta": "ביטול",
+      "addedToast": "נוסף למועדפים",
+      "heartAdd": "הוספה למועדפים",
+      "heartRemove": "הסרה מהמועדפים",
+      "errors": {
+        "notAuthenticated": "יש להתחבר כדי לשמור מועדפים",
+        "invalidInput": "קלט לא תקין",
+        "rateLimited": "יותר מדי ניסיונות — נסו שוב בעוד דקה"
       }
     }
   }

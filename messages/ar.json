@@ -6,7 +6,6 @@
   "nav": {
     "about": "من نحن",
     "shop": "المتجر",
-    "services": "الخدمات",
     "academy": "الأكاديمية",
     "gallery": "معرض الصور",
     "locations": "الموقع وساعات العمل",
@@ -30,6 +29,7 @@
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",
     "myOrders": "طلباتي",
+    "myCourses": "دوراتي",
     "orderLookup": "تتبع الطلب",
     "bookingHeading": "حجز موعد",
     "bookingText": "يتم حجز المواعيد من خلال تطبيق ريستايل.",
@@ -51,11 +51,8 @@
     "heroTitle": "{name} — دقة، أسلوب واحترافية",
     "heroSubtitle": "تجربة تصفيف شعر على أعلى مستوى، فريق محترف وأكاديمية لتدريب المصففين.",
     "bookingCta": "حجز موعد",
-    "servicesCta": "عرض الخدمات",
+    "shopCta": "زيارة المتجر",
     "scrollDownLabel": "التمرير للأسفل",
-    "servicesEyebrow": "ما الذي نقدمه",
-    "servicesTitle": "خدمات الصالون",
-    "allServicesCta": "جميع الخدمات",
     "ctaEyebrow": "حجز موعد",
     "ctaTitle": "هل أنتم جاهزون لموعدكم القادم؟",
     "ctaText": "يتم حجز المواعيد من خلال تطبيق ريستايل — سريع، سهل ومتاح على مدار الساعة.",
@@ -68,7 +65,6 @@
     "shopEyebrow": "متجرنا",
     "shopTitle": "منتجات مختارة",
     "shopDescription": "منتجات العناية التي نستخدمها ونثق بها — متوفرة الآن لتأخذها معك.",
-    "shopCta": "زيارة المتجر",
     "shopOutOfStock": "نفدت الكمية",
     "aboutImageLabel": "صورة الاستوديو",
     "studioFeatureLighting": "إضاءة مهنية",
@@ -115,7 +111,105 @@
     "paragraph1": "تأسست أكاديمية ريستايل لنقل معرفتنا وتقنيتنا ومعاييرنا المهنية إلى الجيل القادم من المهنيين. يتم التعلم في مجموعات صغيرة، في بيئة عمل حقيقية وبإرشاد شخصي وثيق.",
     "paragraph2": "للحصول على تفاصيل حول مواعيد الافتتاح والأسعار وشروط التسجيل — تواصلوا معنا وسنكون سعداء بإخباركم بكل شيء.",
     "durationLabel": "المدة: {duration}",
-    "ctaText": "للتفاصيل والتسجيل — تواصلوا معنا"
+    "ctaText": "للتفاصيل والتسجيل — تواصلوا معنا",
+    "detailsCta": "التفاصيل والتسجيل",
+    "fromLabel": "ابتداءً من "
+  },
+  "academyCommerce": {
+    "backToAcademy": "العودة إلى الأكاديمية",
+    "detailsTitle": "عن الدورة",
+    "syllabusTitle": "منهج الدورة",
+    "durationLabel": "المدة",
+    "levelLabel": "المستوى",
+    "priceLabel": "السعر الكامل",
+    "startingFromDeposit": "ابتداءً من دفعة مقدمة",
+    "depositSubtext": "دفعة مقدمة على حساب سعر دورة كامل قدره {amount}",
+    "fullPriceNoDeposit": "السعر الكامل للدورة",
+    "seatsLeft": "بقيت {count} مقاعد",
+    "soldOut": "الدورة ممتلئة حاليًا",
+    "contactCta": "للتفاصيل والتسجيل — تواصلوا معنا",
+    "securePaymentNote": "دفع آمن ومشفّر",
+    "enroll": {
+      "title": "التسجيل في الدورة",
+      "contactSectionTitle": "بياناتك الشخصية",
+      "nameLabel": "الاسم الكامل",
+      "emailLabel": "البريد الإلكتروني",
+      "phoneLabel": "الهاتف",
+      "companyLabel": "الشركة",
+      "planLabel": "طريقة الدفع",
+      "planDepositTitle": "دفع مقدمة",
+      "planDepositDescription": "احجز مكانك الآن، وأكمل الباقي لاحقًا",
+      "planFullTitle": "دفع كامل",
+      "planFullDescription": "ادفع كل شيء الآن — بلا رصيد مستقبلي",
+      "dueNowLabel": "مستحق الآن",
+      "balanceLaterLabel": "الرصيد لاحقًا",
+      "noBalanceLabel": "لا يوجد رصيد إضافي",
+      "nextStepNote": "بعد التأكيد سيتم تحويلك إلى صفحة دفع آمنة لإكمال التسجيل.",
+      "submit": "التسجيل والدفع",
+      "submitting": "جارٍ المعالجة...",
+      "errors": {
+        "nameTooShort": "يرجى إدخال الاسم الكامل (حرفان على الأقل)",
+        "emailInvalid": "عنوان بريد إلكتروني غير صالح",
+        "phoneTooShort": "رقم هاتف غير صالح",
+        "invalidInput": "البيانات المُدخلة غير صالحة.",
+        "rateLimited": "عدد محاولات كبير جدًا. حاول مرة أخرى بعد دقائق قليلة.",
+        "courseUnavailable": "الدورة غير متاحة للتسجيل حاليًا.",
+        "soldOut": "الدورة ممتلئة — لا توجد مقاعد متاحة.",
+        "enrollFailed": "فشل التسجيل. حاول مرة أخرى."
+      }
+    },
+    "success": {
+      "title": "تم استلام التسجيل!",
+      "descriptionDeposit": "تم دفع المقدمة وحُجز مكانك. الرصيد المتبقي بانتظار الدفع.",
+      "descriptionFull": "تم استلام الدفع بالكامل. نراك في الدورة!",
+      "processing": "يتم معالجة الدفع — حدّث الصفحة بعد قليل أو تحقق من حسابك.",
+      "enrollmentNumberLabel": "رقم التسجيل",
+      "payBalanceCta": "دفع الرصيد",
+      "viewMyCourses": "دوراتي",
+      "backToAcademy": "العودة إلى الأكاديمية"
+    },
+    "cancel": {
+      "title": "لم يكتمل التسجيل",
+      "description": "تم إلغاء الدفع أو فشل. يمكنك المحاولة مرة أخرى.",
+      "retry": "العودة إلى الدورة",
+      "backToAcademy": "العودة إلى الأكاديمية"
+    },
+    "notFound": {
+      "title": "التسجيل غير موجود",
+      "description": "لم نتمكن من العثور على تسجيل بهذا الرقم."
+    },
+    "balance": {
+      "dueLabel": "الرصيد المستحق",
+      "payCta": "دفع الرصيد",
+      "paidInFull": "مدفوع بالكامل"
+    },
+    "status": {
+      "PENDING": "بانتظار الدفع",
+      "DEPOSIT_PAID": "تم دفع المقدمة",
+      "PAID": "مدفوع بالكامل",
+      "CANCELLED": "ملغى",
+      "FAILED": "فشل"
+    },
+    "myCourses": {
+      "title": "دوراتي",
+      "empty": "لم تسجّل في أي دورة بعد.",
+      "amountPaidLabel": "مدفوع",
+      "viewCourse": "عرض الدورة"
+    },
+    "lookup": {
+      "title": "التحقق من التسجيل في الدورة",
+      "description": "أدخل رقم التسجيل وكود التتبع الذي استلمته بالبريد الإلكتروني.",
+      "numberLabel": "رقم التسجيل",
+      "tokenLabel": "كود التتبع",
+      "submit": "تحقق",
+      "submitting": "جارٍ التحقق...",
+      "notFound": "لم يتم العثور على تسجيل مطابق لهذه التفاصيل.",
+      "errors": {
+        "numberRequired": "يرجى إدخال رقم التسجيل",
+        "tokenRequired": "يرجى إدخال كود التتبع",
+        "rateLimited": "عدد محاولات كبير جدًا. حاول مرة أخرى بعد دقائق قليلة."
+      }
+    }
   },
   "accessibility": {
     "metaTitle": "بيان إمكانية الوصول",
@@ -163,7 +257,8 @@
     "eyebrow": "أعمال مختارة",
     "title": "معرض الصور",
     "workImageLabel": "صورة عمل",
-    "studioImageLabel": "الاستوديو الخاص بنا"
+    "studioImageLabel": "الاستوديو الخاص بنا",
+    "instagramCta": "المزيد من الأعمال على إنستغرام"
   },
   "locations": {
     "metaTitle": "الموقع وساعات العمل",
@@ -178,7 +273,9 @@
     "emailLabel": "البريد الإلكتروني:",
     "quickContactHeading": "تواصل سريع",
     "bookingCta": "حجز موعد في التطبيق",
-    "mapTitle": "خريطة — {address}"
+    "mapTitle": "خريطة — {address}",
+    "openNow": "مفتوح الآن",
+    "tileWhatsappSub": "رد سريع"
   },
   "privacy": {
     "metaTitle": "سياسة الخصوصية",
@@ -222,39 +319,6 @@
     "contactBodyBefore": "للأسئلة المتعلقة بهذه الشروط، يمكنكم التواصل معنا عبر الهاتف",
     "contactBodyMiddle": "أو عبر البريد الإلكتروني",
     "updatedText": "تم تحديث هذه الشروط بتاريخ {date}."
-  },
-  "services": {
-    "metaTitle": "الخدمات",
-    "metaDescription": "جميع خدمات صالون ريستايل — قصات شعر، تصميم لحية، تلوين وعلاجات شعر.",
-    "eyebrow": "ما الذي نقدمه",
-    "title": "جميع خدماتنا",
-    "bookingCta": "حجز موعد"
-  },
-  "servicesData": {
-    "haircut": {
-      "name": "قصة شعر مصممة",
-      "description": "قصة شعر مصممة خصيصًا حسب شكل وجهكم وأسلوبكم، مع استشارة قصيرة."
-    },
-    "beard": {
-      "name": "تصميم اللحية",
-      "description": "حلاقة وتقليم دقيقان، تشمل منشفة ساخنة والعناية بالبشرة."
-    },
-    "coloring": {
-      "name": "صبغة وهايلايت",
-      "description": "صبغ مهني وهايلايت باستخدام منتجات فاخرة، دون الإضرار ببنية الشعر."
-    },
-    "treatment": {
-      "name": "علاجات الشعر",
-      "description": "علاجات تغذية وإصلاح للشعر وفروة الرأس، مصممة حسب نوع شعركم."
-    },
-    "kids": {
-      "name": "قص شعر الأطفال",
-      "description": "تجربة لطيفة وسريعة في الصالون، بصبر ومهنية."
-    },
-    "vip": {
-      "name": "تجربة VIP",
-      "description": "علاج شامل — قصة شعر، لحية وعناية، مع اهتمام شخصي ووقت إضافي."
-    }
   },
   "academyData": {
     "barbering-foundations": {
@@ -334,7 +398,8 @@
     "waze": "التنقل عبر Waze",
     "call": "اتصلوا بنا",
     "whatsapp": "واتساب",
-    "whatsappMessage": "مرحبًا! أرغب في الحصول على معلومات حول ريستايل."
+    "whatsappMessage": "مرحبًا! أرغب في الحصول على معلومات حول ريستايل.",
+    "instagram": "إنستغرام"
   },
   "floatingContact": {
     "whatsappAria": "محادثة عبر واتساب",
@@ -383,6 +448,8 @@
     "empty": "سلتك فارغة.",
     "continueShopping": "متابعة التسوق",
     "quantityLabel": "الكمية",
+    "decreaseQuantity": "إنقاص الكمية",
+    "increaseQuantity": "زيادة الكمية",
     "remove": "إزالة",
     "subtotal": "المجموع الفرعي",
     "checkoutCta": "الانتقال للدفع",
@@ -404,6 +471,17 @@
     "addressLineLabel": "العنوان",
     "addressCityLabel": "المدينة",
     "addressNotesLabel": "ملاحظات التوصيل (اختياري)",
+    "couponTitle": "كود الكوبون",
+    "couponLabel": "كود الكوبون",
+    "couponPlaceholder": "أدخل كود الكوبون",
+    "couponApply": "تطبيق",
+    "couponApplying": "جارٍ التحقق...",
+    "couponRemove": "إزالة",
+    "couponAppliedLabel": "تم تطبيق الكوبون \"{code}\"",
+    "discountLabel": "الخصم",
+    "freeShippingBadge": "توصيل مجاني",
+    "itemsTitle": "العناصر في سلتك",
+    "itemDiscountLabel": "مشمول في خصم الكوبون",
     "summaryTitle": "ملخص الطلب",
     "subtotalLabel": "المجموع الفرعي",
     "shippingLabel": "التوصيل",
@@ -425,7 +503,9 @@
       "emptyCart": "السلة فارغة أو أن البيانات المُرسلة غير صالحة.",
       "productUnavailable": "أحد المنتجات في سلتك لم يعد متوفرًا.",
       "insufficientStock": "لا توجد كمية كافية من \"{name}\".",
-      "paymentInitFailed": "فشل بدء عملية الدفع. حاول مرة أخرى."
+      "paymentInitFailed": "فشل بدء عملية الدفع. حاول مرة أخرى.",
+      "couponNotFound": "كود الكوبون غير موجود.",
+      "couponInvalid": "لا يمكن تطبيق هذا الكوبون."
     },
     "mockPay": {
       "title": "محاكاة دفع (وضع التطوير)",
@@ -492,7 +572,8 @@
         "FAILED": "فشل",
         "REFUNDED": "تم الاسترداد",
         "PARTIALLY_REFUNDED": "استرداد جزئي"
-      }
+      },
+      "historyTitle": "سجل الحالة"
     },
     "lookup": {
       "title": "تحقق من حالة الطلب",
@@ -506,6 +587,137 @@
         "orderNumberRequired": "يرجى إدخال رقم الطلب",
         "tokenRequired": "يرجى إدخال كود التتبع",
         "rateLimited": "عدد محاولات كبير جدًا. حاول مرة أخرى بعد دقائق قليلة."
+      }
+    }
+  },
+  "account": {
+    "nav": {
+      "dashboard": "نظرة عامة",
+      "orders": "طلباتي",
+      "courses": "دوراتي",
+      "wishlist": "المفضلة",
+      "addresses": "العناوين",
+      "profile": "ملفي الشخصي",
+      "more": "المزيد",
+      "adminPanel": "لوحة الإدارة"
+    },
+    "dashboard": {
+      "eyebrow": "حسابك الشخصي",
+      "greeting": "مرحبًا، {firstName}",
+      "emailLabel": "البريد الإلكتروني",
+      "recentOrders": {
+        "title": "الطلبات الأخيرة",
+        "trackOrder": "تتبع الطلب",
+        "viewAll": "كل الطلبات",
+        "empty": "لم تقم بأي طلبات بعد. يستحق الأمر أن تبدأ 🙂",
+        "emptyCta": "الانتقال إلى المتجر"
+      },
+      "profileNudge": {
+        "title": "ملفك الشخصي على وشك الاكتمال",
+        "description": "خطوة أخيرة — هذا يساعدنا على خدمتك بشكل أفضل.",
+        "missingName": "الاسم الكامل",
+        "missingPhone": "الهاتف",
+        "cta": "إكمال البيانات"
+      },
+      "courses": {
+        "title": "دوراتي",
+        "viewAll": "كل الدورات",
+        "empty": "لم تسجل في أي دورة بعد.",
+        "emptyCta": "اكتشف دوراتنا"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "booking": "حجز موعد",
+        "shop": "العودة إلى المتجر",
+        "courses": "دوراتنا"
+      },
+      "wishlist": {
+        "title": "مفضلتي",
+        "viewAll": "كل المفضلة",
+        "empty": "لا توجد مفضلات بعد. أضف قلبًا على المنتجات التي أعجبتك وستظهر هنا."
+      },
+      "recommended": {
+        "title": "منتجات موصى بها"
+      },
+      "recentlyViewed": {
+        "title": "شوهدت مؤخرًا"
+      }
+    },
+    "profile": {
+      "title": "ملفي الشخصي",
+      "personalTitle": "البيانات الشخصية",
+      "nameLabel": "الاسم الكامل",
+      "phoneLabel": "الهاتف",
+      "emailLabel": "البريد الإلكتروني",
+      "emailReadonlyNote": "البريد الإلكتروني مرتبط بحساب الدخول ولا يمكن تغييره هنا.",
+      "saveCta": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ...",
+      "savedToast": "تم حفظ البيانات",
+      "securityTitle": "الأمان",
+      "securityDescription": "لتغيير كلمة المرور، سنرسل لك رابطًا آمنًا إلى بريدك الإلكتروني.",
+      "resetPasswordCta": "إرسال رابط إعادة تعيين كلمة المرور",
+      "addressesLinkCta": "إدارة العناوين المحفوظة",
+      "errors": {
+        "nameTooShort": "الاسم قصير جدًا",
+        "phoneTooShort": "رقم الهاتف قصير جدًا",
+        "invalidInput": "بيانات غير صالحة",
+        "rateLimited": "عدد محاولات كبير جدًا — حاول مرة أخرى بعد دقيقة",
+        "notAuthenticated": "يجب تسجيل الدخول لتحديث الملف الشخصي"
+      }
+    },
+    "addresses": {
+      "title": "العناوين",
+      "empty": "لم تُضِف أي عنوان بعد. العنوان المحفوظ يملأ تفاصيل التوصيل تلقائيًا عند الدفع.",
+      "emptyCta": "إضافة عنوان",
+      "addCta": "إضافة عنوان",
+      "editCta": "تعديل",
+      "setDefaultCta": "تعيين كافتراضي",
+      "deleteCta": "حذف",
+      "defaultBadge": "افتراضي",
+      "deleteConfirmTitle": "حذف العنوان",
+      "deleteConfirmDescription": "هل تريد حذف هذا العنوان؟ لا يمكن التراجع عن هذا الإجراء.",
+      "form": {
+        "createTitle": "إضافة عنوان",
+        "editTitle": "تعديل العنوان",
+        "labelLabel": "الاسم (مثل المنزل/العمل)",
+        "lineLabel": "العنوان",
+        "cityLabel": "المدينة",
+        "notesLabel": "ملاحظات (اختياري)",
+        "isDefaultLabel": "تعيين كافتراضي",
+        "saveCta": "حفظ",
+        "saving": "جارٍ الحفظ...",
+        "cancelCta": "إلغاء"
+      },
+      "toasts": {
+        "created": "تمت إضافة العنوان",
+        "updated": "تم تحديث العنوان",
+        "deleted": "تم حذف العنوان",
+        "defaultSet": "تم تعيين العنوان كافتراضي"
+      },
+      "errors": {
+        "labelRequired": "يرجى إدخال اسم للعنوان",
+        "lineRequired": "يرجى إدخال العنوان",
+        "cityRequired": "يرجى إدخال المدينة",
+        "invalidInput": "بيانات غير صالحة",
+        "notFound": "العنوان غير موجود",
+        "rateLimited": "عدد محاولات كبير جدًا — حاول مرة أخرى بعد دقيقة",
+        "notAuthenticated": "يجب تسجيل الدخول لإدارة العناوين"
+      }
+    },
+    "wishlist": {
+      "title": "مفضلتي",
+      "empty": "قائمة المفضلة فارغة",
+      "emptyDescription": "أضف قلبًا على المنتجات التي أعجبتك لحفظها هنا.",
+      "emptyCta": "الانتقال إلى المتجر",
+      "removedToast": "تمت الإزالة من المفضلة",
+      "undoCta": "تراجع",
+      "addedToast": "تمت الإضافة إلى المفضلة",
+      "heartAdd": "إضافة إلى المفضلة",
+      "heartRemove": "إزالة من المفضلة",
+      "errors": {
+        "notAuthenticated": "يجب تسجيل الدخول لحفظ المفضلة",
+        "invalidInput": "بيانات غير صالحة",
+        "rateLimited": "عدد محاولات كبير جدًا — حاول مرة أخرى بعد دقيقة"
       }
     }
   }

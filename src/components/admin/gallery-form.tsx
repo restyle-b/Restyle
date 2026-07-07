@@ -7,13 +7,13 @@ import { z } from "zod";
 import { galleryImageSchema, type GalleryImageInput } from "@/lib/admin/gallery-schema";
 import { updateGalleryImages } from "@/server/actions/admin/gallery";
 import { buttonVariants } from "@/components/ui/button";
+import { ConfirmRemoveButton } from "@/components/admin/confirm-remove-button";
+import { ImageUploadButton } from "@/components/admin/image-upload-button";
+import { adminInputClass as inputClass } from "@/lib/admin/form-styles";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({ rows: galleryImageSchema.array() });
 type FormValues = { rows: GalleryImageInput[] };
-
-const inputClass =
-  "w-full rounded-md border border-line-dark bg-ink-soft px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-accent focus:outline-none";
 
 function emptyRow(order: number): GalleryImageInput {
   return { order, imageUrl: "", altHe: "", altEn: "", altAr: "", active: true };
@@ -26,6 +26,7 @@ export function GalleryForm({ initialValues }: { initialValues: GalleryImageInpu
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -49,21 +50,24 @@ export function GalleryForm({ initialValues }: { initialValues: GalleryImageInpu
           <div key={field.id} className="rounded-lg border border-line-dark p-4">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-sm text-neutral-400">תמונה #{index + 1}</span>
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="text-sm text-red-400 hover:text-red-300"
-              >
-                הסרה
-              </button>
+              <ConfirmRemoveButton onRemove={() => remove(index)} />
             </div>
             <input type="hidden" {...register(`rows.${index}.id`)} />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-sm font-medium text-neutral-300">
-                  כתובת תמונה (URL)
-                </label>
-                <input className={inputClass} {...register(`rows.${index}.imageUrl`)} />
+                <label className="mb-1.5 block text-sm font-medium text-neutral-300">תמונה</label>
+                <div className="flex flex-wrap items-center gap-3">
+                  <ImageUploadButton
+                    onUploaded={(url) =>
+                      setValue(`rows.${index}.imageUrl`, url, { shouldDirty: true, shouldValidate: true })
+                    }
+                  />
+                  <input
+                    className={cn(inputClass, "flex-1 basis-64")}
+                    placeholder="או הדבקת קישור (URL)"
+                    {...register(`rows.${index}.imageUrl`)}
+                  />
+                </div>
                 {errors.rows?.[index]?.imageUrl && (
                   <p className="mt-1 text-sm text-red-400">{errors.rows[index]?.imageUrl?.message}</p>
                 )}

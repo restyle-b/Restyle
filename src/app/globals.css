@@ -111,6 +111,17 @@ body {
 [data-theme="day"] .bg-ink-soft {
   background-color: #f3f1ec;
 }
+/* גרסאות שקיפות של אותם טוקנים (Card משתמש ב-bg-ink-soft/60, כרטיסי הדשבורד
+   באזור האישי ב-bg-ink/40) — Tailwind v4 מייצר להן class נפרד לפי האחוז,
+   כך שה-override הבסיסי למעלה לא תופס אותן. נחשף לראשונה ע"י Phase 13
+   (אזור אישי, theme-aware) — Card/Badge וכו' נבנו במקור לאדמין (תמיד כהה),
+   שם השקיפות לא משנה כלום כי הרקע מאחור תמיד כהה. */
+[data-theme="day"] .bg-ink-soft\/60 {
+  background-color: #f3f1ec;
+}
+[data-theme="day"] .bg-ink\/40 {
+  background-color: #eae6de;
+}
 [data-theme="day"] .text-white {
   color: #14110f;
 }
@@ -248,6 +259,103 @@ body {
 }
 .animate-float {
   animation: float 2.4s var(--ease-in-out) infinite;
+}
+
+/* ── תנועת overlay (Admin) — Dialog/Sheet/DropdownMenu מבוססי Radix ──
+   האדמין נעול RTL תמיד (dir="rtl" קשיח, לא עוקב אחרי locale), לכן הכיוונים
+   כאן פיזיים (translateX) ולא לוגיים — "end" נפתח מצד שמאל, "start" מימין.
+   נשלט ע"י data-state של Radix, לא מחייב plugin. */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes dialog-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+@keyframes sheet-in-end {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-out-end {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes sheet-in-start {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-out-start {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+[data-slot="overlay"][data-state="open"] {
+  animation: overlay-in var(--dur-micro) var(--ease-out) both;
+}
+[data-slot="overlay"][data-state="closed"] {
+  animation: overlay-out var(--dur-micro) var(--ease-in-out) both;
+}
+[data-slot="dialog-content"][data-state="open"] {
+  animation: dialog-in var(--dur-micro) var(--ease-out) both;
+}
+[data-slot="dialog-content"][data-state="closed"] {
+  animation: dialog-out var(--dur-micro) var(--ease-in-out) both;
+}
+[data-slot="sheet-content"][data-side="end"][data-state="open"] {
+  animation: sheet-in-end var(--dur-element) var(--ease-out) both;
+}
+[data-slot="sheet-content"][data-side="end"][data-state="closed"] {
+  animation: sheet-out-end var(--dur-micro) var(--ease-in-out) both;
+}
+[data-slot="sheet-content"][data-side="start"][data-state="open"] {
+  animation: sheet-in-start var(--dur-element) var(--ease-out) both;
+}
+[data-slot="sheet-content"][data-side="start"][data-state="closed"] {
+  animation: sheet-out-start var(--dur-micro) var(--ease-in-out) both;
 }
 
 /* מספריים "נוסנות" — חיווי "גלול" ב-Hero.
@@ -708,6 +816,19 @@ html.a11y-big-cursor * {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M5 2l14 7-6 2-2 6z' fill='%23fff' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E")
       4 4,
     auto !important;
+}
+
+/* באזור האישי בנייד יש bottom tab bar קבוע (AccountMobileNav, ux-spec.md §A1)
+   שלא היה קיים באתר לפני Phase 13 — הכפתורים הצפים הקיימים (יצירת קשר,
+   נגישות, שניהם fixed+bottom-4) יושבים מתחת לגובה שלו ומתנגשים איתו חזותית.
+   הסלקטור לפי data-account-mobile-nav (לא לפי aria-label המתורגם — לא תלוי
+   שפה). :has() מזהה שהוא בפועל ב-DOM (רק ב-/account) + מדיה-קווארי תואם
+   ל-md:hidden (Tailwind md=768px) כדי לא להשפיע בדסקטופ, איפה שהבר
+   בכלל display:none. */
+@media (max-width: 767.98px) {
+  body:has(nav[data-account-mobile-nav]) .fixed.bottom-4 {
+    bottom: 4.75rem;
+  }
 }
 
 /* כיבוד העדפת מערכת — אם המשתמש ביקש פחות תנועה, מאפסים אנימציות ומעברים.

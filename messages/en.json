@@ -6,7 +6,6 @@
   "nav": {
     "about": "About",
     "shop": "Shop",
-    "services": "Services",
     "academy": "Academy",
     "gallery": "Gallery",
     "locations": "Location & Hours",
@@ -30,6 +29,7 @@
     "login": "Log in",
     "register": "Sign up",
     "myOrders": "My orders",
+    "myCourses": "My courses",
     "orderLookup": "Track order",
     "bookingHeading": "Book Now",
     "bookingText": "Booking is done through the ReStyle app.",
@@ -51,11 +51,8 @@
     "heroTitle": "{name} — Precision, Style & Craft",
     "heroSubtitle": "A top-tier hairstyling experience, a professional team, and an academy for training stylists.",
     "bookingCta": "Book Now",
-    "servicesCta": "View Services",
+    "shopCta": "Visit the shop",
     "scrollDownLabel": "Scroll down",
-    "servicesEyebrow": "What We Do",
-    "servicesTitle": "Barbershop Services",
-    "allServicesCta": "All Services",
     "ctaEyebrow": "Book Now",
     "ctaTitle": "Ready for your next appointment?",
     "ctaText": "Booking is done through the ReStyle app — fast, easy and available 24/7.",
@@ -68,7 +65,6 @@
     "shopEyebrow": "Our Shop",
     "shopTitle": "Selected Products",
     "shopDescription": "The grooming products we use and believe in — now available to take home.",
-    "shopCta": "Visit the shop",
     "shopOutOfStock": "Out of stock",
     "aboutImageLabel": "Studio photo",
     "studioFeatureLighting": "Professional lighting",
@@ -115,7 +111,105 @@
     "paragraph1": "ReStyle Academy was founded to pass on our knowledge, technique and professional standards to the next generation of professionals. Learning happens in small groups, in a real work environment, with close personal guidance.",
     "paragraph2": "For details on start dates, pricing and enrollment terms — contact us and we'll be happy to tell you everything.",
     "durationLabel": "Duration: {duration}",
-    "ctaText": "For details and enrollment — contact us"
+    "ctaText": "For details and enrollment — contact us",
+    "detailsCta": "Details & enrollment",
+    "fromLabel": "From "
+  },
+  "academyCommerce": {
+    "backToAcademy": "Back to academy",
+    "detailsTitle": "About the course",
+    "syllabusTitle": "Course syllabus",
+    "durationLabel": "Duration",
+    "levelLabel": "Level",
+    "priceLabel": "Full price",
+    "startingFromDeposit": "Starting from a deposit of",
+    "depositSubtext": "Deposit toward a full course price of {amount}",
+    "fullPriceNoDeposit": "Full course price",
+    "seatsLeft": "{count} spots left",
+    "soldOut": "Course is currently full",
+    "contactCta": "For details and enrollment — contact us",
+    "securePaymentNote": "Secure, encrypted payment",
+    "enroll": {
+      "title": "Course enrollment",
+      "contactSectionTitle": "Your details",
+      "nameLabel": "Full name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone",
+      "companyLabel": "Company",
+      "planLabel": "Payment method",
+      "planDepositTitle": "Pay deposit",
+      "planDepositDescription": "Reserve your spot now, pay the balance later",
+      "planFullTitle": "Pay in full",
+      "planFullDescription": "Pay everything now — no future balance",
+      "dueNowLabel": "Due now",
+      "balanceLaterLabel": "Balance later",
+      "noBalanceLabel": "No further balance",
+      "nextStepNote": "After confirming, you'll be redirected to a secure payment page to complete enrollment.",
+      "submit": "Enroll & pay",
+      "submitting": "Processing...",
+      "errors": {
+        "nameTooShort": "Please enter your full name (at least 2 characters)",
+        "emailInvalid": "Invalid email address",
+        "phoneTooShort": "Invalid phone number",
+        "invalidInput": "The submitted data is invalid.",
+        "rateLimited": "Too many attempts. Please try again in a few minutes.",
+        "courseUnavailable": "This course is not available for enrollment right now.",
+        "soldOut": "The course is full — no spots available.",
+        "enrollFailed": "Enrollment failed. Please try again."
+      }
+    },
+    "success": {
+      "title": "Enrollment received!",
+      "descriptionDeposit": "Your deposit is paid and your spot is reserved. The remaining balance is pending.",
+      "descriptionFull": "Payment received in full. See you in the course!",
+      "processing": "Your payment is being processed — refresh shortly or check your account.",
+      "enrollmentNumberLabel": "Enrollment number",
+      "payBalanceCta": "Pay balance",
+      "viewMyCourses": "My courses",
+      "backToAcademy": "Back to academy"
+    },
+    "cancel": {
+      "title": "Enrollment not completed",
+      "description": "The payment was cancelled or failed. You can try again.",
+      "retry": "Back to course",
+      "backToAcademy": "Back to academy"
+    },
+    "notFound": {
+      "title": "Enrollment not found",
+      "description": "We couldn't find an enrollment with this number."
+    },
+    "balance": {
+      "dueLabel": "Balance due",
+      "payCta": "Pay balance",
+      "paidInFull": "Paid in full"
+    },
+    "status": {
+      "PENDING": "Awaiting payment",
+      "DEPOSIT_PAID": "Deposit paid",
+      "PAID": "Paid in full",
+      "CANCELLED": "Cancelled",
+      "FAILED": "Failed"
+    },
+    "myCourses": {
+      "title": "My courses",
+      "empty": "You haven't enrolled in any courses yet.",
+      "amountPaidLabel": "Paid",
+      "viewCourse": "View course"
+    },
+    "lookup": {
+      "title": "Check course enrollment",
+      "description": "Enter your enrollment number and the tracking code you received by email.",
+      "numberLabel": "Enrollment number",
+      "tokenLabel": "Tracking code",
+      "submit": "Check",
+      "submitting": "Checking...",
+      "notFound": "No enrollment found matching those details.",
+      "errors": {
+        "numberRequired": "Please enter an enrollment number",
+        "tokenRequired": "Please enter a tracking code",
+        "rateLimited": "Too many attempts. Please try again in a few minutes."
+      }
+    }
   },
   "accessibility": {
     "metaTitle": "Accessibility Statement",
@@ -163,7 +257,8 @@
     "eyebrow": "Selected Work",
     "title": "Gallery",
     "workImageLabel": "Work photo",
-    "studioImageLabel": "Our studio"
+    "studioImageLabel": "Our studio",
+    "instagramCta": "More work on Instagram"
   },
   "locations": {
     "metaTitle": "Location & Hours",
@@ -178,7 +273,9 @@
     "emailLabel": "Email:",
     "quickContactHeading": "Quick Contact",
     "bookingCta": "Book in the app",
-    "mapTitle": "Map — {address}"
+    "mapTitle": "Map — {address}",
+    "openNow": "Open now",
+    "tileWhatsappSub": "Fast reply"
   },
   "privacy": {
     "metaTitle": "Privacy Policy",
@@ -222,39 +319,6 @@
     "contactBodyBefore": "For questions regarding these terms, you may contact us by phone at",
     "contactBodyMiddle": "or by email at",
     "updatedText": "These terms were last updated on {date}."
-  },
-  "services": {
-    "metaTitle": "Services",
-    "metaDescription": "All of ReStyle's barbershop services — haircuts, beard design, coloring and hair treatments.",
-    "eyebrow": "What We Do",
-    "title": "All Our Services",
-    "bookingCta": "Book Now"
-  },
-  "servicesData": {
-    "haircut": {
-      "name": "Precision Haircut",
-      "description": "A haircut tailored to your face shape and style, with a short consultation."
-    },
-    "beard": {
-      "name": "Beard Styling",
-      "description": "Precise shaving and trimming, including a hot towel treatment and skin care."
-    },
-    "coloring": {
-      "name": "Color & Highlights",
-      "description": "Professional coloring and highlights using premium products, without damaging hair structure."
-    },
-    "treatment": {
-      "name": "Hair Treatments",
-      "description": "Nourishing and restorative treatments for hair and scalp, tailored to your hair type."
-    },
-    "kids": {
-      "name": "Kids' Haircuts",
-      "description": "A pleasant, quick experience at the barbershop, with patience and professionalism."
-    },
-    "vip": {
-      "name": "VIP Experience",
-      "description": "A comprehensive treatment — haircut, beard and grooming, with personal attention and extended quality time."
-    }
   },
   "academyData": {
     "barbering-foundations": {
@@ -334,7 +398,8 @@
     "waze": "Navigate with Waze",
     "call": "Call Us",
     "whatsapp": "WhatsApp",
-    "whatsappMessage": "Hi! I would like more information about ReStyle."
+    "whatsappMessage": "Hi! I would like more information about ReStyle.",
+    "instagram": "Instagram"
   },
   "floatingContact": {
     "whatsappAria": "Chat on WhatsApp",
@@ -383,6 +448,8 @@
     "empty": "Your cart is empty.",
     "continueShopping": "Continue shopping",
     "quantityLabel": "Quantity",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
     "remove": "Remove",
     "subtotal": "Subtotal",
     "checkoutCta": "Proceed to checkout",
@@ -404,6 +471,17 @@
     "addressLineLabel": "Address",
     "addressCityLabel": "City",
     "addressNotesLabel": "Delivery notes (optional)",
+    "couponTitle": "Coupon code",
+    "couponLabel": "Coupon code",
+    "couponPlaceholder": "Enter coupon code",
+    "couponApply": "Apply",
+    "couponApplying": "Checking...",
+    "couponRemove": "Remove",
+    "couponAppliedLabel": "Coupon \"{code}\" applied",
+    "discountLabel": "Discount",
+    "freeShippingBadge": "Free shipping",
+    "itemsTitle": "Items in your cart",
+    "itemDiscountLabel": "Included in coupon discount",
     "summaryTitle": "Order summary",
     "subtotalLabel": "Subtotal",
     "shippingLabel": "Shipping",
@@ -425,7 +503,9 @@
       "emptyCart": "Your cart is empty or the submitted data is invalid.",
       "productUnavailable": "One of the items in your cart is no longer available.",
       "insufficientStock": "Not enough stock for \"{name}\".",
-      "paymentInitFailed": "Failed to start payment. Please try again."
+      "paymentInitFailed": "Failed to start payment. Please try again.",
+      "couponNotFound": "This coupon code does not exist.",
+      "couponInvalid": "This coupon cannot be applied."
     },
     "mockPay": {
       "title": "Simulated payment (dev mode)",
@@ -492,7 +572,8 @@
         "FAILED": "Failed",
         "REFUNDED": "Refunded",
         "PARTIALLY_REFUNDED": "Partially refunded"
-      }
+      },
+      "historyTitle": "Status history"
     },
     "lookup": {
       "title": "Check order status",
@@ -506,6 +587,137 @@
         "orderNumberRequired": "Please enter an order number",
         "tokenRequired": "Please enter a tracking code",
         "rateLimited": "Too many attempts. Please try again in a few minutes."
+      }
+    }
+  },
+  "account": {
+    "nav": {
+      "dashboard": "Overview",
+      "orders": "My orders",
+      "courses": "My courses",
+      "wishlist": "Wishlist",
+      "addresses": "Addresses",
+      "profile": "My profile",
+      "more": "More",
+      "adminPanel": "Admin panel"
+    },
+    "dashboard": {
+      "eyebrow": "Your account",
+      "greeting": "Hi, {firstName}",
+      "emailLabel": "Email",
+      "recentOrders": {
+        "title": "Recent orders",
+        "trackOrder": "Track order",
+        "viewAll": "All orders",
+        "empty": "You haven't placed any orders yet. Why not start now? 🙂",
+        "emptyCta": "Go to shop"
+      },
+      "profileNudge": {
+        "title": "Your profile is almost ready",
+        "description": "Just a bit more — it helps us serve you better.",
+        "missingName": "Full name",
+        "missingPhone": "Phone",
+        "cta": "Complete details"
+      },
+      "courses": {
+        "title": "My courses",
+        "viewAll": "All courses",
+        "empty": "You haven't enrolled in any courses yet.",
+        "emptyCta": "Discover our courses"
+      },
+      "quickActions": {
+        "title": "Quick actions",
+        "booking": "Book an appointment",
+        "shop": "Back to shop",
+        "courses": "Our courses"
+      },
+      "wishlist": {
+        "title": "My wishlist",
+        "viewAll": "All wishlist items",
+        "empty": "No favorites yet. Heart products you love and they'll show up here."
+      },
+      "recommended": {
+        "title": "Recommended products"
+      },
+      "recentlyViewed": {
+        "title": "Recently viewed"
+      }
+    },
+    "profile": {
+      "title": "My profile",
+      "personalTitle": "Personal details",
+      "nameLabel": "Full name",
+      "phoneLabel": "Phone",
+      "emailLabel": "Email",
+      "emailReadonlyNote": "Your email is linked to your login account and can't be changed here.",
+      "saveCta": "Save changes",
+      "saving": "Saving...",
+      "savedToast": "Your details were saved",
+      "securityTitle": "Security",
+      "securityDescription": "To change your password, we'll send a secure link to your email.",
+      "resetPasswordCta": "Send password reset link",
+      "addressesLinkCta": "Manage saved addresses",
+      "errors": {
+        "nameTooShort": "Name is too short",
+        "phoneTooShort": "Phone number is too short",
+        "invalidInput": "Invalid input",
+        "rateLimited": "Too many attempts — please try again in a minute",
+        "notAuthenticated": "Please sign in to update your profile"
+      }
+    },
+    "addresses": {
+      "title": "Addresses",
+      "empty": "You haven't added any addresses yet. A saved address will fill in your delivery details automatically at checkout.",
+      "emptyCta": "Add address",
+      "addCta": "Add address",
+      "editCta": "Edit",
+      "setDefaultCta": "Set as default",
+      "deleteCta": "Delete",
+      "defaultBadge": "Default",
+      "deleteConfirmTitle": "Delete address",
+      "deleteConfirmDescription": "Delete this address? This can't be undone.",
+      "form": {
+        "createTitle": "Add address",
+        "editTitle": "Edit address",
+        "labelLabel": "Label (e.g. Home/Work)",
+        "lineLabel": "Address",
+        "cityLabel": "City",
+        "notesLabel": "Notes (optional)",
+        "isDefaultLabel": "Set as default",
+        "saveCta": "Save",
+        "saving": "Saving...",
+        "cancelCta": "Cancel"
+      },
+      "toasts": {
+        "created": "Address added",
+        "updated": "Address updated",
+        "deleted": "Address deleted",
+        "defaultSet": "Address set as default"
+      },
+      "errors": {
+        "labelRequired": "Please enter a label",
+        "lineRequired": "Please enter an address",
+        "cityRequired": "Please enter a city",
+        "invalidInput": "Invalid input",
+        "notFound": "Address not found",
+        "rateLimited": "Too many attempts — please try again in a minute",
+        "notAuthenticated": "Please sign in to manage addresses"
+      }
+    },
+    "wishlist": {
+      "title": "My wishlist",
+      "empty": "Your wishlist is empty",
+      "emptyDescription": "Heart products you love to save them here.",
+      "emptyCta": "Go to shop",
+      "removedToast": "Removed from wishlist",
+      "undoCta": "Undo",
+      "addedToast": "Added to wishlist",
+      "heartAdd": "Add to wishlist",
+      "heartRemove": "Remove from wishlist",
+      "errors": {
+        "notAuthenticated": "Please sign in to save favorites",
+        "invalidInput": "Invalid input",
+        "rateLimited": "Too many attempts — please try again in a minute"
       }
     }
   }

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { Link } from "@/i18n/navigation";
 import { OrderDetailCard, type OrderDetailData } from "@/components/shop/order-detail-card";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import { db } from "@/lib/db";
 
 export async function generateMetadata({
@@ -28,9 +27,9 @@ export default async function AccountOrderDetailPage({
   const { locale, orderNumber } = await params;
   const t = await getTranslations({ locale, namespace: "orders" });
 
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) {
+  // ה-layout כבר מבטיח משתמש מחובר; קריאה נוספת פה רק כדי לקבל את ה-id.
+  const user = await getCurrentUser();
+  if (!user) {
     redirect(`/login?next=/account/orders/${orderNumber}`);
   }
 
@@ -38,9 +37,9 @@ export default async function AccountOrderDetailPage({
   // הגיעו לכאן דרך הרשימה (IDOR defense, כל URL הזמנה ניתן להקלדה ישירה).
   const order = await db.order.findUnique({
     where: { orderNumber },
-    include: { items: true, payment: true },
+    include: { items: true, payment: true, statusEvents: { orderBy: { createdAt: "desc" } } },
   });
-  if (!order || order.userId !== data.user.id) {
+  if (!order || order.userId !== user.id) {
     notFound();
   }
 
@@ -63,10 +62,15 @@ export default async function AccountOrderDetailPage({
       lineTotalAgorot: item.lineTotalAgorot,
     })),
     payment: order.payment ? { status: order.payment.status, last4: order.payment.last4 } : null,
+    statusEvents: order.statusEvents.map((event) => ({
+      id: event.id,
+      toStatus: event.toStatus,
+      createdAt: event.createdAt,
+    })),
   };
 
   return (
-    <Container className="py-20">
+    <>
       <SectionHeading light eyebrow={t("detail.title")} title={order.orderNumber} />
       <div className="mt-10 max-w-xl">
         <OrderDetailCard order={detail} />
@@ -74,6 +78,6 @@ export default async function AccountOrderDetailPage({
       <Link href="/account/orders" className="mt-10 inline-block text-sm text-neutral-400 hover:text-white">
         {t("backToOrders")}
       </Link>
-    </Container>
+    </>
   );
 }

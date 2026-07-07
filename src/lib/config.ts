@@ -13,7 +13,7 @@ export const siteConfig = {
   },
 
   social: {
-    instagram: "#",
+    instagram: "https://www.instagram.com/avraham.hairartist",
     facebook: "#",
     whatsapp: "#",
   },
@@ -33,7 +33,6 @@ export const siteConfig = {
 /** מפתחות פריטי הניווט הראשי — התוויות מגיעות מ-messages.nav (ראה docs/DESIGN.md). */
 export const navLinks = [
   { href: "/about", key: "about" },
-  { href: "/services", key: "services" },
   { href: "/shop", key: "shop" },
   { href: "/academy", key: "academy" },
   { href: "/gallery", key: "gallery" },

@@ -5,8 +5,17 @@ import { Container } from "@/components/ui/container";
 import { Link } from "@/i18n/navigation";
 import { ProductImage } from "@/components/shop/product-image";
 import { AddToCartButton } from "@/components/shop/add-to-cart-button";
+import { RecordRecentlyViewed } from "@/components/shop/record-recently-viewed";
 import { formatAgorot } from "@/lib/format";
 import { getProductBySlug } from "@/lib/content/get-products";
+
+// בוחר שדה SEO לפי locale, כמו pick() הפנימי של get-products.ts, אבל nullable —
+// ריק בשדה הספציפי (או שלא הוגדר SEO כלל) נופל לשם/תיאור המוצר בקריאה למטה.
+function pickSeoField(locale: string, he: string | null, en: string | null, ar: string | null): string | null {
+  if (locale === "en" && en) return en;
+  if (locale === "ar" && ar) return ar;
+  return he;
+}
 
 export async function generateMetadata({
   params,
@@ -16,7 +25,12 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const product = await getProductBySlug(locale, slug);
   if (!product) return {};
-  return { title: product.name, description: product.description };
+  const title =
+    pickSeoField(locale, product.seoTitleHe, product.seoTitleEn, product.seoTitleAr) ?? product.name;
+  const description =
+    pickSeoField(locale, product.seoDescriptionHe, product.seoDescriptionEn, product.seoDescriptionAr) ??
+    product.description;
+  return { title, description };
 }
 
 export default async function ProductPage({
@@ -29,10 +43,17 @@ export default async function ProductPage({
   const product = await getProductBySlug(locale, slug);
   if (!product) notFound();
 
-  const inStock = product.stock > 0;
+  const inStock = product.stock > 0 && product.available;
 
   return (
     <Container className="py-20 sm:py-28">
+      <RecordRecentlyViewed
+        productId={product.id}
+        slug={product.slug}
+        name={product.name}
+        imageUrl={product.imageUrl}
+        priceAgorot={product.effectivePriceAgorot}
+      />
       <Link
         href="/shop"
         className="link-underline text-sm text-neutral-400 transition-colors hover:text-white"
@@ -53,8 +74,13 @@ export default async function ProductPage({
           <h1 className="font-display text-3xl font-bold uppercase tracking-wide text-white sm:text-4xl">
             {product.name}
           </h1>
-          <p className="mt-6 text-2xl font-semibold text-accent">
-            {formatAgorot(product.priceAgorot, locale)}
+          <p className="mt-6 flex items-baseline gap-3 text-2xl font-semibold text-accent">
+            <span>{formatAgorot(product.effectivePriceAgorot, locale)}</span>
+            {product.onSale && (
+              <span className="text-base font-normal text-neutral-500 line-through">
+                {formatAgorot(product.priceAgorot, locale)}
+              </span>
+            )}
           </p>
           <p className="mt-6 leading-relaxed text-neutral-300">{product.description}</p>
 
@@ -66,7 +92,7 @@ export default async function ProductPage({
             productId={product.id}
             slug={product.slug}
             name={product.name}
-            priceAgorot={product.priceAgorot}
+            priceAgorot={product.effectivePriceAgorot}
             imageUrl={product.imageUrl}
             inStock={inStock}
           />

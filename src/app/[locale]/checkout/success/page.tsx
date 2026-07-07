@@ -75,7 +75,7 @@ export default async function CheckoutSuccessPage({
       )}
 
       <div className="mt-10 flex flex-wrap justify-center gap-4">
-        <Link href="/shop" className={cn(buttonVariants({ size: "lg" }))}>
+        <Link href="/shop" className={cn(buttonVariants({ size: "lg", variant: "light" }))}>
           {t("success.backToShop")}
         </Link>
         <Link href="/account/orders" className={cn(buttonVariants({ size: "lg", variant: "outline" }))}>

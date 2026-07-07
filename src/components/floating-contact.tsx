@@ -1,16 +1,16 @@
-import { useLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { getContactLinks } from "@/lib/contact-links";
+import type { SiteContactInfo } from "@/lib/content/get-site-settings";
 import type { Locale } from "@/i18n/routing";
 
 /**
  * לחצנים צפים ליצירת קשר מהירה (וואטסאפ + טלפון) — בכל עמודי האתר.
  * פינה קדמית-תחתונה (start = ימין ב-RTL, שמאל ב-LTR; תפריט הנגישות בקצה ההפוך — אין התנגשות).
  */
-export function FloatingContact() {
-  const t = useTranslations("floatingContact");
-  const tActions = useTranslations("contactActions");
-  const locale = useLocale() as Locale;
-  const contactLinks = getContactLinks(tActions("whatsappMessage"), locale);
+export async function FloatingContact({ locale, contact }: { locale: Locale; contact: SiteContactInfo }) {
+  const t = await getTranslations({ locale, namespace: "floatingContact" });
+  const tActions = await getTranslations({ locale, namespace: "contactActions" });
+  const contactLinks = getContactLinks(tActions("whatsappMessage"), locale, contact);
 
   return (
     <div className="fixed end-4 bottom-4 z-[55] flex flex-col gap-3 print:hidden">

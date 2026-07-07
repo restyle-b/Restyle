@@ -9,13 +9,19 @@ import { BookingLink } from "@/components/booking-link";
 import { Wordmark } from "@/components/wordmark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { CartIconLink } from "@/components/cart/cart-icon-link";
-import { AccountIconLink } from "@/components/account/account-icon-link";
+import { AccountNavLink } from "@/components/account/account-nav-link";
 import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { navLinks } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
+export function SiteHeader({
+  appStoreUrl,
+  googlePlayUrl,
+}: {
+  appStoreUrl?: string;
+  googlePlayUrl?: string;
+}) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const isRtl = locale !== "en";
@@ -87,18 +93,28 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <ThemeToggle
-            dayLabel={t("themeDay")}
-            nightLabel={t("themeNight")}
-            ariaLabel={t("themeToggleAria")}
-          />
+          {/* במובייל השורה העליונה נשארת רק ללוגו+עגלה+המבורגר (בקשת המשתמש —
+              עומס חזותי); מצב יום/לילה+שפה+קביעת תור נגישים בתפריט ההמבורגר.
+              אזור אישי מקבל מקום ייעודי ובולט בתחתית התפריט (לא עוד קישור
+              רגיל ברשימה) — ראה mobile-nav.tsx. */}
+          <div className="hidden md:block">
+            <ThemeToggle
+              dayLabel={t("themeDay")}
+              nightLabel={t("themeNight")}
+              ariaLabel={t("themeToggleAria")}
+            />
+          </div>
           <LocaleSwitcher className="hidden md:inline-flex" />
-          <AccountIconLink />
+          <AccountNavLink className="hidden md:inline-flex" />
           <CartIconLink />
-          <BookingLink className={buttonVariants({ size: "sm", variant: "light" })}>
+          <BookingLink
+            className={cn(buttonVariants({ size: "sm", variant: "light" }), "hidden md:inline-flex")}
+            appStoreUrl={appStoreUrl}
+            googlePlayUrl={googlePlayUrl}
+          >
             {t("bookingCta")}
           </BookingLink>
-          <MobileNav />
+          <MobileNav appStoreUrl={appStoreUrl} googlePlayUrl={googlePlayUrl} />
         </div>
       </Container>
     </header>

@@ -13,11 +13,18 @@ next-env.d.ts
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 # env / secrets — לעולם לא לדחוף!
 .env
 .env.local
 .env.*.local
+
+# Claude Code agent worktrees (isolated copies for background subagents — local scratch, not project content)
+/.claude/worktrees/
 
 # misc
 .DS_Store
@@ -30,3 +37,10 @@ yarn-error.log*
 
 # prisma (יתווסף ב-Phase 1C)
 # /prisma/migrations/dev.db
+
+# PWA — service worker מקומפל (serwist InjectManifest, נבנה מ-src/app/sw.ts
+# בכל build; מכיל precache manifest שמשתנה בכל פעם — לא נגרר ל-git).
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+/public/swe-worker-*.js.map

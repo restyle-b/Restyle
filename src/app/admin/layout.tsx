@@ -1,34 +1,32 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata, Viewport } from "next";
 import { requireAdmin } from "@/lib/auth/require-admin";
-import { SignOutButton } from "@/components/auth/sign-out-button";
+import { Sidebar } from "@/components/admin/sidebar";
+import { Topbar } from "@/components/admin/topbar";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
 import "../globals.css";
 
 export const metadata: Metadata = {
   title: "ניהול | ReStyle",
   robots: { index: false, follow: false },
+  // PWA נפרד לגמרי מהאתר הציבורי (עץ <html> משלו, ראה docs/features/pwa.md).
+  manifest: "/admin.webmanifest",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "ReStyle ניהול" },
+  icons: { apple: "/icons/admin-apple-touch.png" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#e5e5e5",
 };
 
 // תלוי ב-cookies()/Supabase בכל בקשה — אסור רינדור סטטי בזמן build.
 export const dynamic = "force-dynamic";
 
-const NAV_LINKS = [
-  { href: "/admin", label: "דשבורד" },
-  { href: "/admin/settings", label: "הגדרות אתר" },
-  { href: "/admin/services", label: "שירותים" },
-  { href: "/admin/courses", label: "קורסים" },
-  { href: "/admin/testimonials", label: "המלצות" },
-  { href: "/admin/gallery", label: "גלריה" },
-  { href: "/admin/content", label: "טקסטי האתר" },
-  { href: "/admin/products", label: "מוצרים" },
-  { href: "/admin/categories", label: "קטגוריות" },
-  { href: "/admin/orders", label: "הזמנות" },
-] as const;
-
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // הגנה כפולה — ה-middleware חוסם /admin למשתמש לא מחובר, אך בדיקת ה-role
   // נעשית רק כאן (Prisma לא רץ ב-Edge runtime של ה-middleware).
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   // /admin יושב מחוץ ל-[locale] (לא מתורגם), ולכן אין לו root layout משותף
   // עם שאר האתר — הוא חייב להגדיר <html>/<body> בעצמו, אחרת Tailwind
@@ -36,26 +34,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <html dir="rtl" lang="he">
       <body className="min-h-screen bg-ink text-white">
-        <div className="min-h-screen">
-          <header className="border-b border-line-dark">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-              <nav className="flex items-center gap-6">
-                <span className="font-semibold">ניהול ReStyle</span>
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-sm text-neutral-300 hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-              <SignOutButton />
+        <RegisterServiceWorker scope="/admin" />
+        <TooltipProvider delayDuration={300}>
+          <div className="flex min-h-screen">
+            <Sidebar />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <Topbar email={admin.email} />
+              <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-10">{children}</main>
             </div>
-          </header>
-          <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
-        </div>
+          </div>
+          <Toaster />
+        </TooltipProvider>
       </body>
     </html>
   );

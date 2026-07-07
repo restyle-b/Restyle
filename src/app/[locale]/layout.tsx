@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Assistant, Cairo } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -12,6 +12,9 @@ import { SkipToContent } from "@/components/skip-to-content";
 import { AccessibilityMenu } from "@/components/accessibility/accessibility-menu";
 import { FloatingContact } from "@/components/floating-contact";
 import { CartProvider } from "@/lib/cart/cart-context";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
+import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
+import { SiteToaster } from "@/components/site-toaster";
 import "../globals.css";
 
 /**
@@ -41,6 +44,13 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0e0e0e" },
+    { media: "(prefers-color-scheme: light)", color: "#fafaf8" },
+  ],
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -61,6 +71,10 @@ export async function generateMetadata({
       type: "website",
       locale: OG_LOCALES[locale as Locale] ?? OG_LOCALES[routing.defaultLocale],
     },
+    // PWA — אפליקציה נפרדת מהאדמין (שני עצי <html> עצמאיים, ראה docs/features/pwa.md).
+    manifest: "/site.webmanifest",
+    appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: siteConfig.name },
+    icons: { apple: "/icons/site-apple-touch.png" },
   };
 }
 
@@ -77,6 +91,7 @@ export default async function RootLayout({
   }
 
   setRequestLocale(locale);
+  const contact = await getSiteContactInfo();
 
   return (
     <html
@@ -93,17 +108,19 @@ export default async function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='day'&&t!=='night'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='night';}})();`,
           }}
         />
+        <RegisterServiceWorker scope="/" />
         <NextIntlClientProvider>
           <CartProvider>
             <SkipToContent />
             <ScrollProgress />
-            <SiteHeader />
+            <SiteHeader appStoreUrl={contact.appStoreUrl} googlePlayUrl={contact.googlePlayUrl} />
             <main id="main" className="flex-1">
               {children}
             </main>
-            <SiteFooter />
-            <FloatingContact />
+            <SiteFooter locale={locale as Locale} contact={contact} />
+            <FloatingContact locale={locale as Locale} contact={contact} />
             <AccessibilityMenu />
+            <SiteToaster />
           </CartProvider>
         </NextIntlClientProvider>
       </body>

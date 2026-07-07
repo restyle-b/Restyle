@@ -20,7 +20,7 @@ export default function CheckoutPage() {
       {items.length === 0 ? (
         <div className="mt-12 text-center">
           <p className="text-neutral-400">{t("emptyCartDescription")}</p>
-          <Link href="/shop" className={cn(buttonVariants({ size: "lg" }), "mt-6")}>
+          <Link href="/shop" className={cn(buttonVariants({ size: "lg", variant: "light" }), "mt-6")}>
             {t("backToShop")}
           </Link>
         </div>

@@ -35,7 +35,7 @@ export async function lookupOrder(input: unknown, locale: string): Promise<Looku
 
   const order = await db.order.findUnique({
     where: { orderNumber: parsed.data.orderNumber },
-    include: { items: true, payment: true },
+    include: { items: true, payment: true, statusEvents: { orderBy: { createdAt: "desc" } } },
   });
 
   if (!order || !order.guestLookupToken || order.guestLookupToken !== parsed.data.guestLookupToken) {
@@ -63,6 +63,11 @@ export async function lookupOrder(input: unknown, locale: string): Promise<Looku
         lineTotalAgorot: item.lineTotalAgorot,
       })),
       payment: order.payment ? { status: order.payment.status, last4: order.payment.last4 } : null,
+      statusEvents: order.statusEvents.map((event) => ({
+        id: event.id,
+        toStatus: event.toStatus,
+        createdAt: event.createdAt,
+      })),
     },
   };
 }

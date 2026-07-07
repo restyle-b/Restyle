@@ -21,5 +21,7 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // src/app/sw.ts הוא Service Worker (WorkerGlobalScope, לא DOM) — נבדק
+  // בנפרד תחת tsconfig.worker.json (ראה docs/features/pwa.md).
+  "exclude": ["node_modules", "src/app/sw.ts"]
 }

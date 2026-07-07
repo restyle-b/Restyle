@@ -1,34 +1,97 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
-import type { OrderStatus } from "@prisma/client";
+import type { OrderStatus, PaymentStatus, Prisma } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/lib/db";
+import { logActivity } from "@/lib/admin/activity-log";
 import { ALLOWED_ORDER_TRANSITIONS } from "@/lib/admin/order-status-transitions";
+import { orderStatusSchema } from "@/lib/admin/order-status-schema";
+import { NON_REVENUE_ORDER_STATUSES } from "@/lib/admin/revenue-status";
 
 export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
-// TypeScript מאכיף את הטיפוס הזה רק בזמן קומפילציה — קריאה ישירה ל-server
-// action (בעקיפין ל-client bundle) יכולה לשלוח כל string. ולידציה מפורשת
-// כאן היא ההגנה בפועל, לא רק הסתמכות על allow-list/Prisma enum כ-backstop עקיף.
-const orderStatusSchema = z.enum(["PENDING", "PAID", "FULFILLED", "COMPLETED", "CANCELLED", "FAILED"]);
+const PAGE_SIZE = 25;
 
-export async function listOrders(statusFilter?: OrderStatus) {
+export async function listOrders(options?: {
+  statusFilter?: OrderStatus;
+  paymentStatusFilter?: PaymentStatus;
+  search?: string;
+  page?: number;
+}) {
   await requireAdmin();
-  return db.order.findMany({
-    where: statusFilter ? { status: statusFilter } : undefined,
-    orderBy: { createdAt: "desc" },
-    take: 100,
-    include: { payment: true },
-  });
+
+  const { statusFilter, paymentStatusFilter, search, page = 1 } = options ?? {};
+  const trimmedSearch = search?.trim();
+
+  const where: Prisma.OrderWhereInput = {
+    ...(statusFilter ? { status: statusFilter } : {}),
+    ...(paymentStatusFilter ? { payment: { status: paymentStatusFilter } } : {}),
+    ...(trimmedSearch
+      ? {
+          OR: [
+            { orderNumber: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerName: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerEmail: { contains: trimmedSearch, mode: "insensitive" } },
+            { customerPhone: { contains: trimmedSearch, mode: "insensitive" } },
+          ],
+        }
+      : {}),
+  };
+
+  const currentPage = Math.max(1, page);
+  const [orders, total] = await Promise.all([
+    db.order.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (currentPage - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: { payment: true, items: true, statusEvents: { orderBy: { createdAt: "desc" } } },
+    }),
+    db.order.count({ where }),
+  ]);
+
+  return { orders, total, page: currentPage, pageSize: PAGE_SIZE };
+}
+
+/** מדדים לכרטיסי הסיכום שבראש עמוד ההזמנות — לא תלויים בסינון הנוכחי. */
+export async function getOrdersOverview() {
+  await requireAdmin();
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [pendingCount, todayAgg, overallAgg] = await Promise.all([
+    db.order.count({ where: { status: "PENDING" } }),
+    db.order.aggregate({
+      where: { createdAt: { gte: startOfToday }, status: { notIn: NON_REVENUE_ORDER_STATUSES } },
+      _sum: { totalAgorot: true },
+      _count: { _all: true },
+    }),
+    db.order.aggregate({
+      where: { status: { notIn: NON_REVENUE_ORDER_STATUSES } },
+      _avg: { totalAgorot: true },
+    }),
+  ]);
+
+  return {
+    pendingCount,
+    todayOrders: todayAgg._count._all,
+    todayRevenueAgorot: todayAgg._sum.totalAgorot ?? 0,
+    avgOrderAgorot: Math.round(overallAgg._avg.totalAgorot ?? 0),
+  };
 }
 
 export async function getOrder(orderNumber: string) {
   await requireAdmin();
   return db.order.findUnique({
     where: { orderNumber },
-    include: { items: true, payment: true, user: { select: { email: true } } },
+    include: {
+      items: true,
+      payment: true,
+      user: { select: { email: true } },
+      statusEvents: { orderBy: { createdAt: "desc" } },
+    },
   });
 }
 
@@ -36,7 +99,7 @@ export async function updateOrderStatus(
   orderNumber: string,
   newStatusInput: OrderStatus,
 ): Promise<AdminActionResult> {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   const parsedStatus = orderStatusSchema.safeParse(newStatusInput);
   if (!parsedStatus.success) {
@@ -44,7 +107,10 @@ export async function updateOrderStatus(
   }
   const newStatus = parsedStatus.data;
 
-  const order = await db.order.findUnique({ where: { orderNumber }, select: { status: true } });
+  const order = await db.order.findUnique({
+    where: { orderNumber },
+    select: { id: true, status: true, couponRedemption: { select: { id: true, couponId: true } } },
+  });
   if (!order) {
     return { ok: false, error: "הזמנה לא נמצאה" };
   }
@@ -54,7 +120,37 @@ export async function updateOrderStatus(
     return { ok: false, error: `מעבר מ-${order.status} ל-${newStatus} אינו מותר` };
   }
 
-  await db.order.update({ where: { orderNumber }, data: { status: newStatus } });
+  // ביטול ע"י אדמין = כישלון סופי לצורך מבצעים/קופונים, בדיוק כמו FAILED
+  // מ-handle-payment-result — משחררים מימוש קופון ששמור (reserve-at-creation)
+  // כדי שהקוד יהיה זמין שוב. **לא** משחזרים מימוש אם CANCELLED→PENDING
+  // (un-cancel) — זה נשאר scope עתידי (ראה promotion-engine.md §4).
+  const releaseCouponOps =
+    newStatus === "CANCELLED" && order.couponRedemption
+      ? [
+          db.couponRedemption.delete({ where: { id: order.couponRedemption.id } }),
+          db.coupon.update({
+            where: { id: order.couponRedemption.couponId },
+            data: { usedCount: { decrement: 1 } },
+          }),
+        ]
+      : [];
+
+  await db.$transaction([
+    db.order.update({ where: { orderNumber }, data: { status: newStatus } }),
+    db.orderStatusEvent.create({
+      data: { orderId: order.id, fromStatus: order.status, toStatus: newStatus, changedBy: admin.email },
+    }),
+    ...releaseCouponOps,
+  ]);
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "order.status_change",
+    entityType: "order",
+    entityId: order.id,
+    summary: `הזמנה ${orderNumber}: ${order.status} → ${newStatus}`,
+  });
+
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${orderNumber}`);
   return { ok: true };

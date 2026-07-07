@@ -11,10 +11,12 @@ import { ScissorsScrollIndicator } from "@/components/scissors-scroll-indicator"
 import { CutLineDivider } from "@/components/cut-line-divider";
 import { ProductCard } from "@/components/shop/product-card";
 import { siteConfig } from "@/lib/config";
-import { getServices } from "@/lib/content/get-services";
 import { getTestimonials } from "@/lib/content/get-testimonials";
 import { getGalleryImages } from "@/lib/content/get-gallery";
 import { getProducts } from "@/lib/content/get-products";
+import { getOpeningHours } from "@/lib/content/get-opening-hours";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
+import { cn } from "@/lib/utils";
 
 export default async function HomePage({
   params,
@@ -23,9 +25,8 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
-  const tRoot = await getTranslations({ locale });
-  const hours = tRoot.raw("hours") as { day: string; hours: string }[];
-  const services = await getServices(locale);
+  const hours = await getOpeningHours(locale);
+  const contact = await getSiteContactInfo();
   const testimonials = await getTestimonials(locale);
   const galleryImages = await getGalleryImages(locale);
   const featuredProducts = (await getProducts(locale)).slice(0, 4);
@@ -56,51 +57,27 @@ export default async function HomePage({
             {t("heroSubtitle")}
           </p>
           <div className="animate-fade-up mt-10 flex flex-wrap gap-4 [animation-delay:360ms]">
-            <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>
+            <BookingLink
+              className={buttonVariants({ size: "lg", variant: "light" })}
+              appStoreUrl={contact.appStoreUrl}
+              googlePlayUrl={contact.googlePlayUrl}
+            >
               {t("bookingCta")}
             </BookingLink>
-            <Link href="/services" className={buttonVariants({ variant: "outline", size: "lg" })}>
-              {t("servicesCta")}
+            <Link href="/shop" className={buttonVariants({ variant: "outline", size: "lg" })}>
+              {t("shopCta")}
             </Link>
           </div>
         </Container>
 
         {/* חיווי "גלול" — מספריים של ספר: כמה סבבי כניסה, ואז נסניס בלופ; לחיצה מסבבת וגוללת לסקציה הבאה */}
         <div className="absolute inset-x-0 top-[86svh] z-10 flex justify-center sm:top-[88svh]">
-          <ScissorsScrollIndicator label={t("scrollDownLabel")} scrollTargetId="home-services" />
+          <ScissorsScrollIndicator label={t("scrollDownLabel")} scrollTargetId="home-cta" />
         </div>
       </section>
 
-      {/* שירותים */}
-      <section id="home-services" className="bg-paper text-ink py-16 sm:py-24">
-        <Container>
-          <Reveal>
-            <SectionHeading center cut eyebrow={t("servicesEyebrow")} title={t("servicesTitle")} />
-          </Reveal>
-          {/* מפריד "קו גזירה" — מוטיב המספריים גוזר לאורך הקו בכניסה לצפייה */}
-          <CutLineDivider tone="light" className="mx-auto mt-10 max-w-md" />
-          <div className="border-line-light mt-6 grid gap-px overflow-hidden border sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, i) => (
-              <Reveal key={service.slug} delay={i * 70}>
-                <div className="border-line-light bg-cream h-full p-8 transition-colors hover:bg-white sm:border-l">
-                  <h3 className="font-display text-lg font-bold tracking-wide uppercase">
-                    {service.name}
-                  </h3>
-                  <p className="mt-3 text-sm text-neutral-600">{service.description}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-12 flex justify-center">
-            <Link href="/services" className={buttonVariants({ variant: "outline" })}>
-              {t("allServicesCta")}
-            </Link>
-          </Reveal>
-        </Container>
-      </section>
-
       {/* CTA קביעת תור */}
-      <section className="bg-ink relative overflow-hidden py-16 text-center sm:py-24">
+      <section id="home-cta" className="bg-ink relative overflow-hidden py-16 text-center sm:py-24">
         <div className="glow-orb inset-x-0 -top-24 mx-auto h-72 w-72" aria-hidden="true" />
         <Container className="relative flex flex-col items-center">
           <Reveal>
@@ -113,7 +90,11 @@ export default async function HomePage({
             <p className="mx-auto mt-3 max-w-md text-neutral-300">{t("ctaText")}</p>
           </Reveal>
           <Reveal className="mt-8">
-            <BookingLink className={buttonVariants({ size: "lg", variant: "light" })}>
+            <BookingLink
+              className={buttonVariants({ size: "lg", variant: "light" })}
+              appStoreUrl={contact.appStoreUrl}
+              googlePlayUrl={contact.googlePlayUrl}
+            >
               {t("ctaBooking")}
             </BookingLink>
           </Reveal>
@@ -293,20 +274,41 @@ export default async function HomePage({
               title={t("testimonialsTitle")}
             />
           </Reveal>
-          {/* מפריד "קו גזירה" על רקע כהה — מוטיב המספריים */}
-          <CutLineDivider tone="dark" className="mx-auto mt-10 max-w-md" />
-          <div className="mt-6 grid gap-px sm:grid-cols-3">
-            {testimonials.map((item, i) => (
-              <Reveal key={item.id} delay={i * 80}>
-                <figure className="border-line-dark h-full border-t px-6 py-8 text-center">
-                  <span className="font-display text-accent text-4xl">&rdquo;</span>
-                  <blockquote className="mt-2 text-neutral-300">{item.quote}</blockquote>
-                  <figcaption className="font-display mt-4 text-sm font-semibold tracking-wide text-white uppercase">
-                    {item.name}
+          {/* פריסה א-סימטרית — ציטוט מוביל גדול + שני ציטוטים תומכים קטנים,
+              במקום 3 עמודות שוות-משקל (לחיזוק ה-social proof). */}
+          <div className="mt-10 grid items-start gap-12 md:grid-cols-[1.5fr_1fr]">
+            {testimonials[0] && (
+              <Reveal>
+                <figure className="border-cream border-s-2 ps-7">
+                  <blockquote className="font-display text-[clamp(1.4rem,2.4vw,1.9rem)] leading-snug font-semibold text-white">
+                    &rdquo;{testimonials[0].quote}&rdquo;
+                  </blockquote>
+                  <figcaption className="text-accent-soft mt-5 text-[13.5px] tracking-[0.12em] uppercase">
+                    {testimonials[0].name}
+                    {testimonials[0].role && ` · ${testimonials[0].role}`}
                   </figcaption>
                 </figure>
               </Reveal>
-            ))}
+            )}
+            {testimonials.length > 1 && (
+              <div className="flex flex-col">
+                {testimonials.slice(1, 3).map((item, i, side) => (
+                  <Reveal key={item.id} delay={80 + i * 80}>
+                    <figure
+                      className={cn(
+                        "border-line-dark border-t py-[22px]",
+                        i === side.length - 1 && "border-b",
+                      )}
+                    >
+                      <blockquote className="text-[15px] text-neutral-300">&rdquo;{item.quote}&rdquo;</blockquote>
+                      <figcaption className="mt-2.5 text-[12.5px] tracking-[0.12em] text-neutral-500 uppercase">
+                        {item.name}
+                      </figcaption>
+                    </figure>
+                  </Reveal>
+                ))}
+              </div>
+            )}
           </div>
         </Container>
       </section>
@@ -320,11 +322,11 @@ export default async function HomePage({
               <dl className="mt-8 space-y-3 text-neutral-700">
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("addressLabel")}</dt>
-                  <dd>{siteConfig.contact.address}</dd>
+                  <dd>{contact.address}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("phoneLabel")}</dt>
-                  <dd>{siteConfig.contact.phone}</dd>
+                  <dd>{contact.phone}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="font-medium">{t("hoursLabel")}</dt>

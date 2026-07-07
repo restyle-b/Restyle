@@ -1,5 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
+import { getEffectivePriceAgorot } from "@/lib/shop/pricing";
 
 export const PRODUCTS_TAG = "products";
 
@@ -9,9 +10,22 @@ export type ProductItem = {
   name: string;
   description: string;
   priceAgorot: number;
+  effectivePriceAgorot: number; // מבצע אם תקף, אחרת = priceAgorot
+  onSale: boolean;
   stock: number;
+  available: boolean;
+  featured: boolean;
   imageUrl: string | null;
   categorySlug: string | null;
+  publishAt: Date | null;
+  // SEO per-locale — גולמי (לא ניגזר ל-locale הנוכחי); הצרכן (generateMetadata)
+  // אחראי ל-fallback לשם/תיאור כשריק.
+  seoTitleHe: string | null;
+  seoTitleEn: string | null;
+  seoTitleAr: string | null;
+  seoDescriptionHe: string | null;
+  seoDescriptionEn: string | null;
+  seoDescriptionAr: string | null;
 };
 
 function pick(locale: string, he: string, en: string | null, ar: string | null) {
@@ -23,7 +37,9 @@ function pick(locale: string, he: string, en: string | null, ar: string | null) 
 async function fetchProducts() {
   try {
     return await db.product.findMany({
-      where: { active: true },
+      // publishAt=null → מתפרסם מיד עם active; עתידי → "מתוזמן" ומוסתר עד אז
+      // (Phase 15). מכסה גם את רשימת הקטלוג וגם getProductBySlug למטה.
+      where: { active: true, OR: [{ publishAt: null }, { publishAt: { lte: new Date() } }] },
       orderBy: { order: "asc" },
       include: { category: { select: { slug: true } } },
     });
@@ -50,30 +66,56 @@ export async function getProducts(locale: string, categorySlug?: string): Promis
   const rows = await cachedFetchProducts();
   return rows
     .filter((r) => !categorySlug || r.category?.slug === categorySlug)
-    .map((r) => ({
-      id: r.id,
-      slug: r.slug,
-      name: pick(locale, r.nameHe, r.nameEn, r.nameAr),
-      description: pick(locale, r.descriptionHe, r.descriptionEn, r.descriptionAr),
-      priceAgorot: r.priceAgorot,
-      stock: r.stock,
-      imageUrl: r.imageUrl,
-      categorySlug: r.category?.slug ?? null,
-    }));
+    .map((r) => {
+      const effectivePriceAgorot = getEffectivePriceAgorot(r.priceAgorot, r.salePriceAgorot);
+      return {
+        id: r.id,
+        slug: r.slug,
+        name: pick(locale, r.nameHe, r.nameEn, r.nameAr),
+        description: pick(locale, r.descriptionHe, r.descriptionEn, r.descriptionAr),
+        priceAgorot: r.priceAgorot,
+        effectivePriceAgorot,
+        onSale: effectivePriceAgorot < r.priceAgorot,
+        stock: r.stock,
+        available: r.available,
+        featured: r.featured,
+        imageUrl: r.imageUrl,
+        categorySlug: r.category?.slug ?? null,
+        publishAt: r.publishAt,
+        seoTitleHe: r.seoTitleHe,
+        seoTitleEn: r.seoTitleEn,
+        seoTitleAr: r.seoTitleAr,
+        seoDescriptionHe: r.seoDescriptionHe,
+        seoDescriptionEn: r.seoDescriptionEn,
+        seoDescriptionAr: r.seoDescriptionAr,
+      };
+    });
 }
 
 export async function getProductBySlug(locale: string, slug: string): Promise<ProductItem | null> {
   const rows = await cachedFetchProducts();
   const row = rows.find((r) => r.slug === slug);
   if (!row) return null;
+  const effectivePriceAgorot = getEffectivePriceAgorot(row.priceAgorot, row.salePriceAgorot);
   return {
     id: row.id,
     slug: row.slug,
     name: pick(locale, row.nameHe, row.nameEn, row.nameAr),
     description: pick(locale, row.descriptionHe, row.descriptionEn, row.descriptionAr),
     priceAgorot: row.priceAgorot,
+    effectivePriceAgorot,
+    onSale: effectivePriceAgorot < row.priceAgorot,
     stock: row.stock,
+    available: row.available,
+    featured: row.featured,
     imageUrl: row.imageUrl,
     categorySlug: row.category?.slug ?? null,
+    publishAt: row.publishAt,
+    seoTitleHe: row.seoTitleHe,
+    seoTitleEn: row.seoTitleEn,
+    seoTitleAr: row.seoTitleAr,
+    seoDescriptionHe: row.seoDescriptionHe,
+    seoDescriptionEn: row.seoDescriptionEn,
+    seoDescriptionAr: row.seoDescriptionAr,
   };
 }

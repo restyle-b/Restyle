@@ -2,17 +2,25 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, UserRound } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { BookingLink } from "@/components/booking-link";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { CartIconLink } from "@/components/cart/cart-icon-link";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/wordmark";
 import { navLinks } from "@/lib/config";
+import { cn } from "@/lib/utils";
 
-export function MobileNav() {
+export function MobileNav({
+  appStoreUrl,
+  googlePlayUrl,
+}: {
+  appStoreUrl?: string;
+  googlePlayUrl?: string;
+}) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -121,26 +129,39 @@ export function MobileNav() {
                   </Link>
                 );
               })}
+            </nav>
+
+            {/* אזור אישי — לא עוד קישור טקסט רגיל ברשימה (בקשת המשתמש: כפתור
+                ברור ובולט). שורה משלו, מופרדת חזותית, מעל שורת הפעולות התחתונה. */}
+            <div className="shrink-0 border-t border-line-dark px-4 py-4 sm:px-6">
               <Link
                 href="/account"
                 onClick={() => setOpen(false)}
                 aria-current={pathname === "/account" ? "page" : undefined}
-                className={`block border-b border-line-dark px-4 py-5 text-2xl font-semibold text-white transition-colors hover:text-accent sm:px-6 ${
-                  pathname === "/account" ? "bg-white/5 text-accent" : ""
-                }`}
+                className={cn(buttonVariants({ variant: "outline", size: "md" }), "w-full text-white")}
               >
+                <UserRound className="h-5 w-5" aria-hidden="true" />
                 {t("account")}
               </Link>
-            </nav>
+            </div>
 
-            <div className="flex shrink-0 items-center justify-between gap-4 border-t border-line-dark px-4 py-6 sm:px-6">
-              <div className="flex items-center gap-2">
-                <LocaleSwitcher />
-                <CartIconLink />
+            <div className="flex shrink-0 flex-col gap-4 border-t border-line-dark px-4 py-6 sm:px-6">
+              <div className="flex items-center justify-between gap-2">
+                <ThemeToggle
+                  dayLabel={t("themeDay")}
+                  nightLabel={t("themeNight")}
+                  ariaLabel={t("themeToggleAria")}
+                />
+                <div className="flex items-center gap-2">
+                  <LocaleSwitcher />
+                  <CartIconLink />
+                </div>
               </div>
               <BookingLink
-                className={buttonVariants({ size: "sm", variant: "light" })}
+                className={`${buttonVariants({ size: "sm", variant: "light" })} w-full`}
                 onClick={() => setOpen(false)}
+                appStoreUrl={appStoreUrl}
+                googlePlayUrl={googlePlayUrl}
               >
                 {t("bookingCta")}
               </BookingLink>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema, type SignInInput } from "@/lib/auth-schema";
@@ -13,7 +13,6 @@ const inputClass =
   "w-full rounded-md border border-line-dark bg-ink-soft px-4 py-2.5 text-white placeholder:text-neutral-500 focus:border-accent focus:outline-none";
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
   const {
@@ -27,8 +26,15 @@ export function LoginForm() {
     try {
       const result = await signIn(values);
       if (result.ok) {
-        router.push(safeRedirectPath(searchParams.get("next"), "/account"));
-        router.refresh();
+        // ניווט קשיח (לא router.push) בכוונה: "next" יכול להצביע ל-/admin, שהוא
+        // עץ <html> נפרד לגמרי מ-[locale] (ראה docs/features/pwa.md) — מעבר
+        // client-side בין שני root layouts שונה מסתמך על מנגנון פנימי של
+        // Next.js, ו-router.refresh() שרץ מיד אחרי router.push() התנגש איתו
+        // בפועל וגרם לחזרה למסך ההתחברות במקום למעבר לאדמין (אומת מול לוגים
+        // אמיתיים ב-production: ה-middleware מאשר session תקין, אבל הדף חוזר
+        // ל-/login). ניווט אמיתי מבטיח רינדור מלא מחדש עם ה-cookies העדכניים,
+        // בלי תלות במצב ה-router הפנימי של הלקוח.
+        window.location.href = safeRedirectPath(searchParams.get("next"), "/account");
       } else {
         setServerError(result.error);
       }

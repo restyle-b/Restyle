@@ -4,6 +4,7 @@ import { getContentBlocks } from "@/server/actions/admin/content";
 import { isEditableNamespace } from "@/lib/content/editable-namespaces";
 import { flattenMessages } from "@/lib/content/flatten-messages";
 import { ContentBlocksForm } from "@/components/admin/content-blocks-form";
+import { Breadcrumb } from "@/components/admin/breadcrumb";
 import type { ContentBlockInput } from "@/lib/admin/content-schema";
 
 export const dynamic = "force-dynamic";
@@ -59,6 +60,7 @@ export default async function AdminContentNamespacePage({
 
   return (
     <div>
+      <Breadcrumb items={[{ label: "טקסטי האתר", href: "/admin/content" }, { label: namespace }]} />
       <h1 className="text-2xl font-semibold">עריכת תוכן: {namespace}</h1>
       <p className="mt-1 text-neutral-400">
         כל שדה כאן מתאים לפסקה/טקסט בעמוד הציבורי. עברית חובה, אנגלית/ערבית אופציונלי (נופל

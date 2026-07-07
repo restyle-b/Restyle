@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { Link } from "@/i18n/navigation";
 import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { formatAgorot } from "@/lib/format";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import { db } from "@/lib/db";
 import type { Order } from "@prisma/client";
 
@@ -33,14 +32,15 @@ export default async function AccountOrdersPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "orders" });
 
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) {
+  // ה-layout כבר מבטיח משתמש מחובר; קריאה נוספת פה רק כדי לקבל את ה-id
+  // (הגנה כפולה קלה — לא מוסיפים redirect משוכפל, ה-layout כבר עשה זאת).
+  const user = await getCurrentUser();
+  if (!user) {
     redirect("/login?next=/account/orders");
   }
 
   const orders = await db.order.findMany({
-    where: { userId: data.user.id },
+    where: { userId: user.id },
     orderBy: { createdAt: "desc" },
   });
 
@@ -48,7 +48,7 @@ export default async function AccountOrdersPage({
   const completed = orders.filter((o) => !(IN_PROGRESS_STATUSES as readonly string[]).includes(o.status));
 
   return (
-    <Container className="py-20">
+    <>
       <SectionHeading light eyebrow={t("title")} title={t("title")} />
 
       {orders.length === 0 ? (
@@ -63,7 +63,7 @@ export default async function AccountOrdersPage({
       <Link href="/account" className="mt-10 inline-block text-sm text-neutral-400 hover:text-white">
         {t("backToAccount")}
       </Link>
-    </Container>
+    </>
   );
 }
 

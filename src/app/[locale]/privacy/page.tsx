@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { siteConfig } from "@/lib/config";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 
 export const dynamic = "force-static";
 
@@ -17,8 +17,14 @@ export async function generateMetadata({
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
-export default function PrivacyPage() {
-  const t = useTranslations("privacy");
+export default async function PrivacyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "privacy" });
+  const contact = await getSiteContactInfo();
   return (
     <Container className="py-20">
       <SectionHeading light eyebrow={t("eyebrow")} title={t("title")} />
@@ -58,16 +64,16 @@ export default function PrivacyPage() {
             <div className="flex gap-3">
               <dt className="font-medium text-white">{t("phoneLabel")}</dt>
               <dd>
-                <a href={`tel:${siteConfig.contact.phone}`} className="hover:text-accent">
-                  {siteConfig.contact.phone}
+                <a href={`tel:${contact.phone}`} className="hover:text-accent">
+                  {contact.phone}
                 </a>
               </dd>
             </div>
             <div className="flex gap-3">
               <dt className="font-medium text-white">{t("emailLabel")}</dt>
               <dd>
-                <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-accent">
-                  {siteConfig.contact.email}
+                <a href={`mailto:${contact.email}`} className="hover:text-accent">
+                  {contact.email}
                 </a>
               </dd>
             </div>

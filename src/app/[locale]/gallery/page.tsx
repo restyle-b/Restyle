@@ -4,7 +4,10 @@ import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/section-heading";
 import { ImagePlaceholder } from "@/components/image-placeholder";
+import { InstagramIcon } from "@/components/icons/instagram-icon";
+import { buttonVariants } from "@/components/ui/button";
 import { getGalleryImages } from "@/lib/content/get-gallery";
+import { getSiteContactInfo } from "@/lib/content/get-site-settings";
 
 export async function generateMetadata({
   params,
@@ -24,6 +27,7 @@ export default async function GalleryPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "gallery" });
   const images = await getGalleryImages(locale);
+  const contact = await getSiteContactInfo();
 
   return (
     <Container className="py-20">
@@ -56,6 +60,18 @@ export default async function GalleryPage({
           : Array.from({ length: 11 }).map((_, i) => (
               <ImagePlaceholder key={i} label={t("workImageLabel")} className="aspect-square rounded-md" />
             ))}
+      </div>
+
+      <div className="mt-12 flex justify-center">
+        <a
+          href={contact.instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonVariants({ size: "lg", variant: "light" })}
+        >
+          <InstagramIcon className="h-4 w-4" />
+          {t("instagramCta")}
+        </a>
       </div>
     </Container>
   );

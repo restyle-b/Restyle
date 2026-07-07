@@ -24,6 +24,7 @@ export type OrderDetailData = {
     lineTotalAgorot: number;
   }[];
   payment: { status: PaymentStatus; last4: string | null } | null;
+  statusEvents?: { id: string; toStatus: OrderStatus; createdAt: string | Date }[];
 };
 
 /**
@@ -33,6 +34,7 @@ export type OrderDetailData = {
  */
 export function OrderDetailCard({ order }: { order: OrderDetailData }) {
   const t = useTranslations("orders.detail");
+  const tStatus = useTranslations("orders.status");
   const tCheckout = useTranslations("checkout");
   const locale = useLocale();
 
@@ -109,6 +111,22 @@ export function OrderDetailCard({ order }: { order: OrderDetailData }) {
           </div>
         )}
       </div>
+
+      {order.statusEvents && order.statusEvents.length > 0 && (
+        <div className="border-t border-line-dark pt-4">
+          <h2 className="font-display text-lg font-semibold text-white">{t("historyTitle")}</h2>
+          <ol className="mt-3 space-y-2">
+            {order.statusEvents.map((event) => (
+              <li key={event.id} className="flex flex-wrap items-baseline gap-x-3 text-sm">
+                <span className="text-neutral-500 [direction:ltr] [font-variant-numeric:tabular-nums]">
+                  {new Date(event.createdAt).toLocaleString(locale, { dateStyle: "short", timeStyle: "short" })}
+                </span>
+                <span className="text-white">{tStatus(event.toStatus)}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   );
 }
