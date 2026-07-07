@@ -115,7 +115,7 @@ export function ProductEditSheet({
             {errors.nameHe && <p className="mt-1 text-sm text-red-400">{errors.nameHe.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label htmlFor="product-priceShekels" className="mb-1.5 block text-sm font-medium text-neutral-300">
                 מחיר (₪)

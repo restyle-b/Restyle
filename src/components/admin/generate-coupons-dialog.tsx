@@ -117,7 +117,7 @@ export function GenerateCouponsDialog({
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="gen-count" className="mb-1.5 block text-sm font-medium text-neutral-300">
                   כמות קודים (עד 500)
@@ -151,7 +151,7 @@ export function GenerateCouponsDialog({
               {errors.prefix && <p className="mt-1 text-sm text-red-400">{errors.prefix.message}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="gen-usageLimitInput" className="mb-1.5 block text-sm font-medium text-neutral-300">
                   תקרת שימושים לכל קוד

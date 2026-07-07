@@ -101,7 +101,7 @@ export function CouponEditSheet({
             {errors.code && <p className="mt-1 text-sm text-red-400">{errors.code.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label htmlFor="coupon-usageLimitInput" className="mb-1.5 block text-sm font-medium text-neutral-300">
                 תקרת שימושים (ריק = ללא הגבלה)
@@ -135,7 +135,7 @@ export function CouponEditSheet({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label htmlFor="coupon-startsAt" className="mb-1.5 block text-sm font-medium text-neutral-300">
                 תחילת תוקף (ריק = מיידי)

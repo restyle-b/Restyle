@@ -277,7 +277,7 @@ export function PromotionEditSheet({
             פעיל
           </label>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label htmlFor="promo-startsAt" className="mb-1.5 block text-sm font-medium text-neutral-300">
                 תחילת תוקף (ריק = מיידי)
@@ -328,7 +328,7 @@ export function PromotionEditSheet({
               חל גם על פריטים שכבר במבצע
             </label>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="promo-priority" className="mb-1.5 block text-sm font-medium text-neutral-300">
                   עדיפות

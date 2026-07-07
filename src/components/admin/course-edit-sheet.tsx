@@ -155,7 +155,7 @@ export function CourseEditSheet({
             {errors.descriptionHe && <p className="mt-1 text-sm text-red-400">{errors.descriptionHe.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label htmlFor="course-levelHe" className="mb-1.5 block text-sm font-medium text-neutral-300">
                 רמה (עברית)
@@ -172,7 +172,7 @@ export function CourseEditSheet({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label htmlFor="course-priceShekels" className="mb-1.5 block text-sm font-medium text-neutral-300">
                 מחיר מלא (₪, ריק = תדמיתי)
@@ -237,7 +237,7 @@ export function CourseEditSheet({
               </label>
               <textarea id="course-descriptionAr" className={textareaClass} {...register("descriptionAr")} />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="course-levelEn" className="mb-1.5 block text-sm font-medium text-neutral-300">
                   רמה (אנגלית)
@@ -251,7 +251,7 @@ export function CourseEditSheet({
                 <input id="course-levelAr" className={inputClass} {...register("levelAr")} />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="course-durationEn" className="mb-1.5 block text-sm font-medium text-neutral-300">
                   משך (אנגלית)
@@ -329,7 +329,7 @@ export function CourseEditSheet({
                 <p className="mt-1 text-sm text-red-400">{errors.seoDescriptionHe.message}</p>
               )}
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="course-seoTitleEn" className="mb-1.5 block text-sm font-medium text-neutral-300">
                   כותרת SEO (אנגלית)
