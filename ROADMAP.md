@@ -250,7 +250,7 @@ Accessibility widget + `/accessibility` statement (IS 5568 / WCAG 2.0 AA), `/aca
 - ⬜ Backups, monitoring, logging
 - ⬜ Domain + production deploy sign-off
 
-## Phase 19 — Premium UX & trust polish 🔄
+## Phase 19 — Premium UX & trust polish ✅
 User request: elevate course registration to a premium/luxury feel, fix a real pricing-
 transparency gap, add a clear header "Personal Area" entry point, audit+fix admin mobile
 responsiveness site-wide, and audit+fix color contrast site-wide. Analysis done before any
@@ -329,6 +329,49 @@ first); (d) triage the audit findings from (a) into fix batches, building the cr
 directly and delegating larger mechanical batches to Sonnet agents in isolated worktrees,
 mirroring the platform-upgrade epic's proven review→merge pipeline.
 
+**Status: ✅ done.** (a) Opus audit completed, produced findings D1–D7 (contrast) and
+C1–C4 (admin mobile). (b) Header Personal Area entry built — desktop pill with icon+label
+(`AccountNavLink`, renamed from `AccountIconLink`), mobile promoted to its own full-width
+button below the nav list (`mobile-nav.tsx`), no longer buried in the plain link list. (c)
+Course registration redesign built — `academy/[slug]/page.tsx` now shows the deposit as the
+dominant headline number with the full price as a clearly-labeled secondary total (the
+actual pricing-transparency bug fix); `EnrollForm` rebuilt on `Card`/Badge-style plan
+selector cards with `react-hook-form` `watch()`-driven active-state styling, deposit-vs-
+total breakdown per plan, and secure-payment trust copy. (d) Audit findings triaged and
+fixed directly (mechanical, low-risk, no agent delegation needed):
+- **D1** (High) — `dropdown-menu.tsx` `text-neutral-200` → `text-neutral-300` (2 places);
+  was invisible in day theme on the account-address actions menu.
+- **D4** (Medium) — `wishlist-heart-button.tsx` `text-white` → `text-[#fff]` (arbitrary
+  value bypasses the day-theme override selector, since the circle behind it is
+  intentionally dark in both themes); was an invisible dark-heart-on-dark-circle bug.
+- **D6** (Low, preventive) — `badge.tsx` neutral tone `text-neutral-200` → `text-neutral-300`.
+- **C1** (High-leverage, mechanical) — 12 unprefixed `grid grid-cols-2` instances across 6
+  admin edit Sheets/Dialogs (`promotion-edit-sheet.tsx`, `coupon-edit-sheet.tsx`,
+  `course-edit-sheet.tsx` ×5, `product-edit-sheet.tsx`, `generate-coupons-dialog.tsx` ×2)
+  → `grid-cols-1 gap-3 sm:grid-cols-2`, matching the pattern already used correctly by
+  `testimonials-form.tsx`/`gallery-form.tsx`; fields were crushing 2-up at 375px.
+
+Deliberately **not** fixed, accepted as documented follow-ups (all Low severity, no user-
+facing breakage, avoids scope-creeping a "premium polish" epic into every Low finding):
+- **C2** — products page's floating bulk-action bar wraps awkwardly + small tap targets on
+  narrow mobile (`products-table.tsx:484-515`).
+- **C3** — products table's 9-column layout requires heavy horizontal scroll on mobile；
+  explicit judgment call, no mobile-card fallback built (would be a real redesign, not a
+  polish fix).
+- **C4** — Dialog/Sheet content can go edge-to-edge on mobile and some tall Sheets lack
+  `overflow-y-auto` (`dialog.tsx:34`, `sheet.tsx`).
+- **D5** — colored status badges (`order-status-badge.tsx`, `enrollment-status-badge.tsx`)
+  look "muddy" in day mode but remain legible — cosmetic only.
+- **D7** — several other `text-neutral-200`/`bg-ink/NN` usages reviewed individually and
+  confirmed correct as-is (surfaces that stay dark in both themes, e.g.
+  `account-mobile-nav.tsx`, `product-card.tsx`) — explicitly a global CSS-rule fix was
+  rejected here because it would have broken these correct cases; targeted per-component
+  fixes were used instead for D1/D4/D6.
+
+All fixes gated: `tsc --noEmit`, `next lint`, `vitest` (94 tests), `next build` — all clean
+after every commit. Contrast fixes additionally live-verified via Playwright with explicit
+theme/locale forcing and `getComputedStyle()` reads (not screenshots alone).
+
 ---
 
 ## Session Log
@@ -353,3 +396,4 @@ mirroring the platform-upgrade epic's proven review→merge pipeline.
 | 2026-07-06 | **M5 (Phase 17) finished — admin UI stream merged.** Stock-adjustment Sheet (set-absolute/delta toggle, both modes computing a final value client-side and calling the one verified `updateProductStock` write point — no parallel mutation action added) and a per-product inventory-history drawer (`getProductInventoryHistory`, read-only, capped at 200 rows since the ledger grows unboundedly, reused the codebase's existing actor-label and delta-coloring conventions instead of inventing new ones). Wired the real DB-backed low-stock threshold (`getLowStockThreshold()`, kept in its own module since `product-schema.ts` is imported by client components and can't pull in `db`) into the dashboard KPI and the product table's badges/filters, replacing the hardcoded constant (kept only as fallback). Diffed to confirm zero changes to the two already-verified write points (`updateProductStock`'s core logic, `handle-payment-result.ts`) — this stream only added a new read-only function alongside them. Full M1-M5 gate (tsc/lint/94 tests/build) green on the merged tree. M5 and M6 (schema/settings-reorg piece) are both now complete; M6's larger remaining scope — general UX polish pass and the final Opus review wave (architecture/security/a11y/responsive/performance) — is what's left of the whole platform-upgrade epic. | M6 remainder: UX polish pass across the platform, then a final multi-angle Opus review wave + QA close-out before the epic itself is marked done. |
 | 2026-07-06 | **M6 (Phase 18) finished — epic (Phases 13-18) closed out.** Closed a real gap first: the master acceptance criteria required coupon "preview in cart," which nothing had built yet — a Sonnet agent added a manual apply-button coupon UI to `checkout-form.tsx`, wired to the already-verified `applyCouponPreview`/`createOrder`, without touching any of the already-reviewed backend files. In parallel, ran the epic's own planned "final Opus review wave" as a read-only audit against the accumulated M1-M6 whole (explicitly told not to re-litigate pieces already reviewed individually, e.g. M4's checkout transaction). Result: epic is structurally sound overall (security/money/a11y/RTL all clean — every new mutation across 6 milestones starts with `requireAdmin()`, money stays integer agorot throughout, motion-reduce/RTL-chevron/contrast conventions held). Two High findings, both tracing to acceptance criterion 6 (inventory alerts must surface "on dashboard + bell"): the dashboard's low-stock KPI card linked to `/admin/products?stock=low`, a filter the products table never actually read from `searchParams` (dead deep-link); and the notification bell only ever counted pending orders/enrollments, never low stock, despite the criterion explicitly requiring both surfaces. Fixed both directly (small, well-scoped, not delegated): `ProductsTable` now accepts `initialStockFilter` seeded from `searchParams.stock`; `getTopbarAlertCounts` gained a `lowStockProducts` count threaded through to a new bell group. Also fixed 2 Medium findings the review caught — `getPromotion`'s coupon list and `getPromotionRedemptions` had no `take` cap, the same unbounded-ledger-growth risk the inventory-history query had already guarded against at 200 rows — capped at 200/50 respectively. Fixed 2 of 4 Low polish items (coupon codes forced `dir:ltr` so mixed alphanumeric codes don't reorder in an RTL table cell; promotions nav moved to its own "שיווק" group instead of sharing "קטלוג"); left 2 Low items as documented, deliberate follow-up rather than scope-creeping into them (promotions-table status chips/filtering is a feature addition, not a fix; a chart-tooltip misalignment on horizontal scroll is a minor desktop-hover-only cosmetic issue). Full gate (tsc/lint/94 tests/build) green after every change. **The whole platform-upgrade epic (Phases 13-18) is now complete**: 6 milestones, each built via appropriately-scoped agents (Opus reserved for planning/final-review, Sonnet for implementation, orchestrator handling schema/migrations and the highest-stakes checkout-adjacent code directly), every stream individually gated and diff-reviewed before merge, and every claim that mattered (concurrency/atomicity in particular) independently re-verified against a live database rather than trusted from an agent's own report. | Epic done. Next: whatever the user asks for next — no more platform-upgrade milestones queued. |
 | 2026-07-06 | **Shop cart quantity UX (user request) + E2E regression check.** User asked to be able to adjust/cancel quantity with +/- buttons on the product page, matching the catalog card. Found the catalog card (`ProductCardCartControl`) already had this; the product detail page (`AddToCartButton`) and the dedicated `/cart` page did not — both now match: +/- pill control (decrement to 0 removes) plus an explicit trash/remove button. Verified live in a real browser via Playwright (not just gates) in both Hebrew/RTL and English/LTR. Then ran the full existing Playwright E2E suite as a broader regression check after this session's huge changeset — caught and fixed a real environment-setup gotcha along the way (Next's `unstable_cache` data cache persisted a stale empty-products result across a build that ran before test fixtures were seeded — cleared `.next` and reseeded `e2e-product`/`e2e-course`). 7/9 E2E specs pass; the remaining 2 (full checkout/enrollment payment flow) fail only because this sandbox lacks `NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY` (`createSupabaseServerClient()` throws inside `createOrder`/`createEnrollment`) — a pre-existing, already-documented user-blocked gap (real or dummy Supabase credentials needed), not a regression from today's change, which only touches client-side cart state. | Phase 10 (Hardening & launch) is what remains platform-wide — most of its items (real domain, real images, Tranzila credentials, Supabase test credentials for full E2E) are user-blocked; flag to user rather than guess at infra decisions. |
+| 2026-07-07 | **Phase 19 (premium UX + trust polish epic) finished.** Built directly by the orchestrator (no worktree agents needed — every piece was either the epic's centerpiece or a small, well-scoped fix): header "Personal Area" entry (desktop icon+label pill, mobile promoted to its own full-width button, no longer buried in the plain nav list); course registration premium redesign, which also fixed a real pricing-transparency bug (course detail page previously showed the *full* price as the dominant headline number with the deposit as a small secondary note — now the deposit is the dominant "starting from" number when one applies, full price always shown as a clearly-labeled secondary total, matching the pattern the catalog card already used correctly); `EnrollForm` rebuilt from a bare unstyled HTML form into Card-based plan-selector cards with `react-hook-form` `watch()`-driven active styling, per-plan deposit-vs-total breakdown, and secure-payment trust copy. Then triaged an Opus audit's findings (admin mobile responsiveness + site-wide color contrast): fixed 3 real invisible-in-day-theme contrast bugs (dropdown-menu items, wishlist heart icon, badge neutral tone — the wishlist fix notably used an arbitrary-value class `text-[#fff]` to deliberately bypass the day-theme override selector, since that circle is meant to stay dark in both themes) and the high-leverage mechanical fix — 12 unprefixed `grid grid-cols-2` instances across 6 admin edit Sheets/Dialogs were crushing fields 2-up at 375px, all switched to `grid-cols-1 gap-3 sm:grid-cols-2` matching the pattern already used correctly elsewhere in the codebase. Left 5 Low-severity audit items as documented, deliberate follow-ups (products page bulk-action-bar mobile wrapping, products table's heavy horizontal scroll on mobile, Dialog/Sheet edge-to-edge spacing, muddy-but-legible status badge colors, a handful of already-reviewed-correct color usages) rather than scope-creeping into every Low finding — consistent with how M6's audit wave was closed out. All contrast fixes live-verified via Playwright with explicit theme/locale forcing (Playwright's default `colorScheme` is light and default locale isn't Hebrew — both must be forced explicitly, a gotcha rediscovered this session) and `getComputedStyle()` reads, not screenshots alone. Full gate (tsc/lint/94 tests/build) green after every commit. | Phase 10 (Hardening & launch) remains the only queued platform-wide work, mostly user-blocked (real domain/images, Tranzila credentials, Supabase test credentials for full E2E). |
