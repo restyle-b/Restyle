@@ -7,6 +7,7 @@ import {
   Package,
   Tags,
   Ticket,
+  Percent,
   ShoppingCart,
   GraduationCap,
   BookOpen,
@@ -32,7 +33,10 @@ const NAV_GROUPS = [
   },
   {
     label: "שיווק",
-    links: [{ href: "/admin/promotions", label: "מבצעים וקופונים", icon: Ticket }],
+    links: [
+      { href: "/admin/coupons", label: "קופונים", icon: Ticket },
+      { href: "/admin/promotions", label: "מבצעים אוטומטיים", icon: Percent },
+    ],
   },
   {
     label: "עסקאות",

@@ -10,8 +10,11 @@ import { logActivity } from "@/lib/admin/activity-log";
 import {
   couponDetailsSchema,
   generateCouponsSchema,
+  simpleCouponSchema,
+  percentToBp,
   shekelsToAgorotOrNull,
   intInputToNullable,
+  type SimpleCouponInput,
 } from "@/lib/admin/promotion-schema";
 import { jerusalemLocalToUtc } from "@/lib/admin/product-schema";
 
@@ -276,4 +279,247 @@ export async function generateCoupons(promotionId: string, input: unknown): Prom
 
   revalidatePromotionsPaths();
   return { ok: true, codes: finalCodes };
+}
+
+// ---------------------------------------------------------------------------
+// קופון פשוט (Phase 20) — טופס יחיד, יוצר/מעדכן זוג Promotion+Coupon יחד.
+// כל שורת Coupon = קוד עבודה אחד; לא מבחינים בין קופון "פשוט" ל"מתקדם" ברמת
+// ה-DB — זו רק שכבת UX. ה-name הפנימי של ה-Promotion מוחזק זהה לקוד עצמו,
+// כדי שגם מי שיפתח את עמוד "מבצעים" הישן יזהה את הקופון בקלות.
+// ---------------------------------------------------------------------------
+
+function revalidateSimpleCouponsPaths() {
+  revalidatePath("/admin/coupons");
+}
+
+async function validateExcludedProducts(productIds: string[]): Promise<string | null> {
+  if (productIds.length === 0) return null;
+  const count = await db.product.count({ where: { id: { in: productIds } } });
+  if (count !== productIds.length) return "מוצר מוחרג אחד או יותר לא נמצא";
+  return null;
+}
+
+function buildSimpleDiscountFields(row: Pick<SimpleCouponInput, "discountType" | "percentInput" | "amountShekels">) {
+  return {
+    kind: row.discountType,
+    percentBp: row.discountType === "PERCENT" ? percentToBp(row.percentInput!) : null,
+    amountAgorot: row.discountType === "FIXED_AMOUNT" ? shekelsToAgorotOrNull(row.amountShekels) : null,
+  };
+}
+
+/** רשימת קופונים לעמוד השטוח /admin/coupons — כל שורת Coupon עם פרטי ה-Promotion שמאחוריה. */
+export async function getSimpleCoupons() {
+  await requireAdmin();
+  return db.coupon.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      promotion: {
+        select: {
+          kind: true,
+          percentBp: true,
+          amountAgorot: true,
+          active: true,
+          _count: { select: { excludedProducts: true } },
+        },
+      },
+    },
+  });
+}
+
+/** קופון בודד לעריכה — לפי מזהה ה-Coupon (לא ה-Promotion, כדי שלא יהיה תלוי
+ * במבנה הפנימי). מחזיר גם את מזהי המוצרים המוחרגים לתיבות הסימון ב-Sheet. */
+export async function getSimpleCoupon(couponId: string) {
+  await requireAdmin();
+  const coupon = await db.coupon.findUnique({
+    where: { id: couponId },
+    include: { promotion: { include: { excludedProducts: { select: { productId: true } } } } },
+  });
+  if (!coupon) return null;
+  return {
+    id: coupon.id,
+    promotionId: coupon.promotionId,
+    code: coupon.code,
+    discountType: coupon.promotion.kind as SimpleCouponInput["discountType"],
+    percentInput:
+      coupon.promotion.kind === "PERCENT" && coupon.promotion.percentBp != null
+        ? String(coupon.promotion.percentBp / 100)
+        : "",
+    amountShekels:
+      coupon.promotion.kind === "FIXED_AMOUNT" && coupon.promotion.amountAgorot != null
+        ? String(coupon.promotion.amountAgorot / 100)
+        : "",
+    active: coupon.active,
+    expiresAt: coupon.expiresAt,
+    minSubtotalAgorot: coupon.promotion.minSubtotalAgorot,
+    usageLimit: coupon.usageLimit,
+    excludedProductIds: coupon.promotion.excludedProducts.map((p) => p.productId),
+  };
+}
+
+export async function createSimpleCoupon(input: unknown): Promise<AdminActionResult> {
+  const admin = await requireAdmin();
+
+  const parsed = simpleCouponSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "קלט לא תקין" };
+  }
+  const row = parsed.data;
+  const code = row.code.toUpperCase();
+  const excludedProductIds = [...new Set(row.excludedProductIds ?? [])];
+
+  const exclusionError = await validateExcludedProducts(excludedProductIds);
+  if (exclusionError) return { ok: false, error: exclusionError };
+
+  try {
+    await db.$transaction(async (tx) => {
+      const promotion = await tx.promotion.create({
+        data: {
+          name: code,
+          automatic: false,
+          appliesTo: "SHOP",
+          ...buildSimpleDiscountFields(row),
+          minSubtotalAgorot: shekelsToAgorotOrNull(row.minSubtotalShekels) ?? 0,
+          active: row.active,
+          excludedProducts: { createMany: { data: excludedProductIds.map((productId) => ({ productId })) } },
+        },
+      });
+      await tx.coupon.create({
+        data: {
+          code,
+          promotionId: promotion.id,
+          usageLimit: intInputToNullable(row.usageLimitInput),
+          expiresAt: jerusalemLocalToUtc(row.expiresAt),
+          active: row.active,
+        },
+      });
+    });
+  } catch (err) {
+    if (isUniqueConstraintError(err)) return { ok: false, error: "קוד זה כבר קיים במערכת" };
+    throw err;
+  }
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "coupon.create",
+    entityType: "coupon",
+    entityId: code,
+    summary: `קופון חדש נוצר: ${code}`,
+  });
+
+  revalidateSimpleCouponsPaths();
+  return { ok: true };
+}
+
+export async function updateSimpleCoupon(couponId: string, input: unknown): Promise<AdminActionResult> {
+  const admin = await requireAdmin();
+
+  const existing = await db.coupon.findUnique({ where: { id: couponId } });
+  if (!existing) return { ok: false, error: "קופון לא נמצא" };
+
+  const parsed = simpleCouponSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "קלט לא תקין" };
+  }
+  const row = parsed.data;
+  const code = row.code.toUpperCase();
+  const excludedProductIds = [...new Set(row.excludedProductIds ?? [])];
+
+  const exclusionError = await validateExcludedProducts(excludedProductIds);
+  if (exclusionError) return { ok: false, error: exclusionError };
+
+  try {
+    await db.$transaction([
+      db.promotion.update({
+        where: { id: existing.promotionId },
+        data: {
+          name: code,
+          ...buildSimpleDiscountFields(row),
+          minSubtotalAgorot: shekelsToAgorotOrNull(row.minSubtotalShekels) ?? 0,
+          active: row.active,
+        },
+      }),
+      db.promotionExcludedProduct.deleteMany({ where: { promotionId: existing.promotionId } }),
+      ...(excludedProductIds.length > 0
+        ? [
+            db.promotionExcludedProduct.createMany({
+              data: excludedProductIds.map((productId) => ({ promotionId: existing.promotionId, productId })),
+            }),
+          ]
+        : []),
+      db.coupon.update({
+        where: { id: couponId },
+        data: {
+          code,
+          usageLimit: intInputToNullable(row.usageLimitInput),
+          expiresAt: jerusalemLocalToUtc(row.expiresAt),
+          active: row.active,
+        },
+      }),
+    ]);
+  } catch (err) {
+    if (isUniqueConstraintError(err)) return { ok: false, error: "קוד זה כבר קיים במערכת" };
+    throw err;
+  }
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "coupon.update",
+    entityType: "coupon",
+    entityId: couponId,
+    summary: `קופון עודכן: ${code}`,
+  });
+
+  revalidateSimpleCouponsPaths();
+  return { ok: true };
+}
+
+/** מחיקת קופון פשוט — מוחקת את ה-Promotion הייעודי מאחוריו (יחס 1:1 בזרם הפשוט),
+ * cascade מוריד גם את ה-Coupon/מימושים/החרגות. */
+export async function deleteSimpleCoupon(couponId: string): Promise<AdminActionResult> {
+  const admin = await requireAdmin();
+
+  const existing = await db.coupon.findUnique({ where: { id: couponId } });
+  if (!existing) return { ok: false, error: "קופון לא נמצא" };
+
+  await db.promotion.delete({ where: { id: existing.promotionId } });
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "coupon.delete",
+    entityType: "coupon",
+    entityId: couponId,
+    summary: `קופון נמחק: ${existing.code}`,
+  });
+
+  revalidateSimpleCouponsPaths();
+  return { ok: true };
+}
+
+/** הפעלה/כיבוי — מעדכן גם את ה-Coupon וגם את ה-Promotion יחד (שניהם נבדקים
+ * ב-evaluator: !coupon.active || !promo.active), כדי שהמתג יתנהג כמצופה. */
+export async function toggleSimpleCouponActive(couponId: string, valueInput: boolean): Promise<AdminActionResult> {
+  const admin = await requireAdmin();
+
+  const parsedValue = z.boolean().safeParse(valueInput);
+  if (!parsedValue.success) return { ok: false, error: "ערך לא תקין" };
+  const value = parsedValue.data;
+
+  const existing = await db.coupon.findUnique({ where: { id: couponId } });
+  if (!existing) return { ok: false, error: "קופון לא נמצא" };
+
+  await db.$transaction([
+    db.coupon.update({ where: { id: couponId }, data: { active: value } }),
+    db.promotion.update({ where: { id: existing.promotionId }, data: { active: value } }),
+  ]);
+
+  await logActivity({
+    actorEmail: admin.email,
+    action: "coupon.update",
+    entityType: "coupon",
+    entityId: couponId,
+    summary: `קופון "${existing.code}" ${value ? "הופעל" : "כובה"}`,
+  });
+
+  revalidateSimpleCouponsPaths();
+  return { ok: true };
 }

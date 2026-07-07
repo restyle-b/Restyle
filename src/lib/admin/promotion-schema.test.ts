@@ -8,6 +8,7 @@ import {
   promotionDetailsSchema,
   couponDetailsSchema,
   generateCouponsSchema,
+  simpleCouponSchema,
 } from "@/lib/admin/promotion-schema";
 
 describe("percentToBp / bpToPercentInput", () => {
@@ -137,6 +138,60 @@ describe("couponDetailsSchema", () => {
       expiresAt: "2026-07-01T00:00",
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("simpleCouponSchema", () => {
+  it("מקבל קופון אחוז בסיסי בלי הגדרות מתקדמות", () => {
+    const result = simpleCouponSchema.safeParse({
+      code: "friends10",
+      discountType: "PERCENT",
+      percentInput: "10",
+      active: true,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("דורש percentInput תקין כש-discountType=PERCENT", () => {
+    expect(
+      simpleCouponSchema.safeParse({ code: "friends10", discountType: "PERCENT", active: true }).success,
+    ).toBe(false);
+    expect(
+      simpleCouponSchema.safeParse({
+        code: "friends10",
+        discountType: "PERCENT",
+        percentInput: "150",
+        active: true,
+      }).success,
+    ).toBe(false);
+  });
+
+  it("דורש amountShekels כש-discountType=FIXED_AMOUNT", () => {
+    expect(
+      simpleCouponSchema.safeParse({ code: "SAVE20", discountType: "FIXED_AMOUNT", active: true }).success,
+    ).toBe(false);
+    expect(
+      simpleCouponSchema.safeParse({
+        code: "SAVE20",
+        discountType: "FIXED_AMOUNT",
+        amountShekels: "20",
+        active: true,
+      }).success,
+    ).toBe(true);
+  });
+
+  it("מקבל הגדרות מתקדמות אופציונליות (תפוגה/סכום מינימום/תקרה/החרגות)", () => {
+    const result = simpleCouponSchema.safeParse({
+      code: "friends10",
+      discountType: "PERCENT",
+      percentInput: "10",
+      active: true,
+      expiresAt: "2026-12-31T00:00",
+      minSubtotalShekels: "100",
+      usageLimitInput: "50",
+      excludedProductIds: ["prod-1", "prod-2"],
+    });
+    expect(result.success).toBe(true);
   });
 });
 

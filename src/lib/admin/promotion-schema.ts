@@ -207,3 +207,53 @@ export const generateCouponsSchema = z.object({
 });
 
 export type GenerateCouponsInput = z.infer<typeof generateCouponsSchema>;
+
+/**
+ * קופון פשוט (Phase 20) — טופס יחיד "מה שרואים זה מה שיש": קוד, סוג הנחה
+ * (אחוז/סכום קבוע), ערך, פעיל. הגדרות מתקדמות (מתקפלות, לא חובה): תפוגה,
+ * סכום מינימום, תקרת שימושים, מוצרים מוחרגים. בשרת זה יוצר/מעדכן זוג
+ * Promotion+Coupon יחד בטרנזקציה אחת — המשתמש לעולם לא רואה "שני מודלים".
+ */
+export const SIMPLE_DISCOUNT_TYPES = ["PERCENT", "FIXED_AMOUNT"] as const;
+export type SimpleDiscountType = (typeof SIMPLE_DISCOUNT_TYPES)[number];
+
+export const simpleCouponSchema = z
+  .object({
+    code: z
+      .string()
+      .trim()
+      .min(3, "קוד חייב להכיל לפחות 3 תווים")
+      .max(40, "קוד ארוך מדי")
+      .regex(/^[A-Za-z0-9_-]+$/, "קוד יכול להכיל רק אותיות/ספרות באנגלית, מקף וקו תחתון"),
+    discountType: z.enum(SIMPLE_DISCOUNT_TYPES),
+    percentInput: optionalShekelsSchema, // ולידציה מדויקת יותר ב-superRefine למטה
+    amountShekels: optionalShekelsSchema,
+    active: z.boolean(),
+    // מתקדם — כולם אופציונליים במפורש, לא נכפים בטופס הבסיסי.
+    expiresAt: datetimeLocalSchema,
+    minSubtotalShekels: optionalMinSubtotalSchema,
+    usageLimitInput: z
+      .string()
+      .trim()
+      .optional()
+      .or(z.literal(""))
+      .refine((value) => !value || (Number.isInteger(Number(value)) && Number(value) > 0), "מספר לא תקין"),
+    excludedProductIds: eligibleIdsSchema.optional(),
+  })
+  .superRefine((row, ctx) => {
+    if (row.discountType === "PERCENT") {
+      if (!row.percentInput || !/^\d{1,3}(\.\d{1,2})?$/.test(row.percentInput)) {
+        ctx.addIssue({ code: "custom", path: ["percentInput"], message: "אחוז לא תקין" });
+      } else {
+        const num = Number(row.percentInput);
+        if (!(num >= 0 && num <= 100)) {
+          ctx.addIssue({ code: "custom", path: ["percentInput"], message: "אחוז חייב להיות בין 0 ל-100" });
+        }
+      }
+    }
+    if (row.discountType === "FIXED_AMOUNT" && !row.amountShekels) {
+      ctx.addIssue({ code: "custom", path: ["amountShekels"], message: "שדה חובה" });
+    }
+  });
+
+export type SimpleCouponInput = z.infer<typeof simpleCouponSchema>;
